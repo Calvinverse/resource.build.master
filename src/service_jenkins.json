@@ -1,0 +1,26 @@
+{
+    "service": {
+        "name": "build",
+        "id": "jenkins",
+        "tags": [
+            "inactive",
+            "urlprefix-/jenkins"
+        ],
+        "port": 8080,
+        "enableTagOverride": false,
+        "checks": [
+            {
+                "id": "jenkins_ping",
+                "name": "Jenkins HTTP ping",
+                "http": "http://localhost:8080/jenkins/metrics/$ACCESS_KEY$/ping",
+                "interval": "15s"
+            },
+            {
+                "id": "jenkins_health",
+                "name": "Jenkins HTTP health check",
+                "http": "http://localhost:8080/jenkins/metrics/$ACCESS_KEY$/healtcheck",
+                "interval": "60s"
+            }
+        ]
+    }
+}
