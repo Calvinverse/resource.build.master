@@ -27,7 +27,7 @@ ENV JENKINS_SLAVE_AGENT_PORT 50000
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
-ARG gid=1000
+ARG gid=2000
 
 # Jenkins is run with user `jenkins`, uid = 1000
 # If you bind mount a volume from the host or a data container,
@@ -37,9 +37,9 @@ RUN groupadd -g ${gid} ${group} \
 
 # Expose the jenkins data directory as a volume because it has mutable data
 VOLUME /var/jenkins_home
-VOLUME /var/jenkins_builds
 
-COPY init.groovy /etc/jenkins/ref/init.groovy.d/tcp-slave-agent-port.groovy
+ENV JENKINS_BUILD_DATA /var/jenkins_builds
+VOLUME /var/jenkins_builds
 
 # jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
@@ -53,46 +53,57 @@ ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-w
 
 # could use ADD but this one does not check Last-Modified header neither does it allow to control checksum
 # see https://github.com/docker/docker/issues/8331
+RUN mkdir /etc/jenkins
 RUN curl -fsSL ${JENKINS_URL} -o /etc/jenkins/jenkins.war \
   && echo "${JENKINS_SHA}  /etc/jenkins/jenkins.war" | sha256sum -c -
 
 ENV JENKINS_UC https://updates.jenkins.io
+RUN mkdir /etc/jenkins/ref
 RUN chown -R ${user} "$JENKINS_HOME" /etc/jenkins/ref
 
 # Expose the HTTP port
 EXPOSE 8080
 
 # Expose the port used by jenkins to talk to the slaves
+# If this port is changed then it also needs to be changed in the jenkins config.xml file.
 EXPOSE 50000
 
 # install the plugins
-RUN plugins.sh structs:1.7 junit:1.20 script-security:1.27 matrix-project:1.11 build-failure-analyzer:1.19.0
-RUN plugins.sh token-macro:2.1 build-name-setter:1.6.5
-RUN plugins.sh build-timeout:1.18
-RUN plugins.sh build-user-vars:1.5
-RUN plugins.sh credentials:2.1.13 cloudbees-folder:6.0.4
-RUN plugins.sh display-url-api:2.0 mailer:1.20 javadoc:1.4 maven-plugin:2.15.1 analysis-core:1.86 email-ext:2.57.2
-RUN plugins.sh embeddable-build-status:1.9
-RUN plugins.sh workflow-step-api:2.10 workflow-scm-step:2.4 scm-api:2.1.1 ssh-credentials:1.13 git-client:2.4.6 git:3.3.0
-RUN plugins.sh greenballs:1.15
-RUN plugins.sh gravatar:2.1
-RUN plugins.sh hashicorp-vault-plugin:2.1.0
-RUN plugins.sh job-dsl:1.63
-RUN plugins.sh jackson-api:2.7.3 metrics:3.1.2.9
-RUN plugins.sh msbuild:1.27
-RUN plugins.sh nomad:0.4
-RUN plugins.sh nunit:0.20
-RUN plugins.sh powershell:1.3
-RUN plugins.sh PrioritySorter:3.5.0
-RUN plugins.sh role-strategy:2.4.0
-RUN plugins.sh violations:0.7.11
-RUN plugins.sh warnings:4.62
-RUN plugins.sh workflow-api:2.15 workflow-support:2.14 workflow-durable-task-step:2.11 resource-disposer:0.6 ws-cleanup:0.33
+COPY install-plugins.sh /tmp/install-plugins.sh
+RUN dos2unix /tmp/install-plugins.sh
+RUN chmod +x /tmp/install-plugins.sh
+
+COPY jenkins-support.sh /tmp/jenkins-support.sh
+RUN dos2unix /tmp/jenkins-support.sh
+
+RUN /tmp/install-plugins.sh structs:1.7 junit:1.20 script-security:1.27 matrix-project:1.11 build-failure-analyzer:1.19.0
+RUN /tmp/install-plugins.sh token-macro:2.1 build-name-setter:1.6.5
+RUN /tmp/install-plugins.sh build-timeout:1.18
+RUN /tmp/install-plugins.sh build-user-vars:1.5
+RUN /tmp/install-plugins.sh credentials:2.1.13 cloudbees-folder:6.0.4
+RUN /tmp/install-plugins.sh display-url-api:2.0 mailer:1.20 javadoc:1.4 maven-plugin:2.15.1 analysis-core:1.86 email-ext:2.57.2
+RUN /tmp/install-plugins.sh embeddable-build-status:1.9
+RUN /tmp/install-plugins.sh workflow-step-api:2.10 workflow-scm-step:2.4 scm-api:2.1.1 ssh-credentials:1.13 git-client:2.4.6 git:3.3.0
+RUN /tmp/install-plugins.sh greenballs:1.15
+RUN /tmp/install-plugins.sh gravatar:2.1
+RUN /tmp/install-plugins.sh hashicorp-vault-plugin:2.1.0
+RUN /tmp/install-plugins.sh job-dsl:1.63
+RUN /tmp/install-plugins.sh jackson2-api:2.7.3 metrics:3.1.2.9
+RUN /tmp/install-plugins.sh msbuild:1.27
+RUN /tmp/install-plugins.sh nomad:0.4
+RUN /tmp/install-plugins.sh nunit:0.20
+RUN /tmp/install-plugins.sh powershell:1.3
+RUN /tmp/install-plugins.sh PrioritySorter:3.5.0
+RUN /tmp/install-plugins.sh role-strategy:2.4.0
+RUN /tmp/install-plugins.sh violations:0.7.11
+RUN /tmp/install-plugins.sh warnings:4.62
+RUN /tmp/install-plugins.sh workflow-api:2.15 workflow-support:2.14 workflow-durable-task-step:2.11 resource-disposer:0.6 ws-cleanup:0.33
 
 # Update the configuration files
+COPY jenkins/ /etc/jenkins/
 
 # Mark jenkins as fully installed
-RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
+RUN echo 2.0 > /etc/jenkins/ref/jenkins.install.UpgradeWizard.state
 
 # Add the jenkins configurations for consul
 COPY service_jenkins.json /etc/consul/conf.d/service_jenkins.json

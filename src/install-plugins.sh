@@ -7,10 +7,12 @@
 
 set -o pipefail
 
-REF_DIR=${REF:-/usr/share/jenkins/ref/plugins}
+REF_DIR=${REF:-/etc/jenkins/ref/plugins}
 FAILED="$REF_DIR/failed-plugins.txt"
 
-. /usr/local/bin/jenkins-support
+. /tmp/jenkins-support.sh
+
+echo "$(readlink -f $(which java))"
 
 getLockFile() {
     printf '%s' "$REF_DIR/${1}.lock"
@@ -122,16 +124,16 @@ resolveDependencies() {
 }
 
 bundledPlugins() {
-    local JENKINS_WAR=/usr/share/jenkins/jenkins.war
+    local JENKINS_WAR=/etc/jenkins/jenkins.war
     if [ -f $JENKINS_WAR ]
     then
         TEMP_PLUGIN_DIR=/tmp/plugintemp.$$
-        for i in $(jar tf $JENKINS_WAR | egrep '[^detached-]plugins.*\..pi' | sort)
+        for i in $(${JAVA_HOME}/jar tf $JENKINS_WAR | egrep '[^detached-]plugins.*\..pi' | sort)
         do
             rm -fr $TEMP_PLUGIN_DIR
             mkdir -p $TEMP_PLUGIN_DIR
             PLUGIN=$(basename "$i"|cut -f1 -d'.')
-            (cd $TEMP_PLUGIN_DIR;jar xf "$JENKINS_WAR" "$i";jar xvf "$TEMP_PLUGIN_DIR/$i" META-INF/MANIFEST.MF >/dev/null 2>&1)
+            (cd $TEMP_PLUGIN_DIR;${JAVA_HOME}/jar xf "$JENKINS_WAR" "$i";${JAVA_HOME}/jar xvf "$TEMP_PLUGIN_DIR/$i" META-INF/MANIFEST.MF >/dev/null 2>&1)
             VER=$(egrep -i Plugin-Version "$TEMP_PLUGIN_DIR/META-INF/MANIFEST.MF"|cut -d: -f2|sed 's/ //')
             echo "$PLUGIN:$VER"
         done
