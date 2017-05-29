@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+    <version></version>
+
+    <!-- JENKINS SECURITY -->
+    <useSecurity>true</useSecurity>
+    <authorizationStrategy class="hudson.security.AuthorizationStrategy$Unsecured"/>
+    <securityRealm class="hudson.security.SecurityRealm$None"/>
+    <disableRememberMe>false</disableRememberMe>
+
+    <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+        <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+    </crumbIssuer>
+
+    <!-- SLAVES -->
+    <!--
+        Set the agent port to 50000. If this is changed here it also needs to be changed in
+        the Dockerfile which exposes this port.
+    -->
+    <slaveAgentPort>50000</slaveAgentPort>
+    <enabledAgentProtocols>
+        <string>JNLP3-connect</string>
+    </enabledAgentProtocols>
+
+    <!-- JENKINS DIRECTORIES -->
+    <!--
+        The global directory where the job workspaces are located on the master. Since we don't run
+        jobs on the master we don't care where the workspaces are placed. A temp directory will do
+    -->
+    <workspaceDir>/tmp/jenkins/workspace/${ITEM_FULL_NAME}</workspaceDir>
+
+    <!--
+        The global directory where the build data (logs etc.) will be kept. These should be in the
+        directory that is exposed as a volume so that we can back it up.
+    -->
+    <buildsDir>${JENKINS_BUILD_DATA}/builds/${ITEM_FULL_NAME}</buildsDir>
+
+    <!-- MASTER EXECUTORS -->
+    <!--
+        By default we don't want the master to execute any jobs, so we set
+        the executors to zero.
+    -->
+    <numExecutors>0</numExecutors>
+    <mode>EXCLUSIVE</mode>
+    <label></label>
+
+    <!-- SCM -->
+    <quietPeriod>5</quietPeriod>
+    <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+
+    <!-- JENKINS ADMIN -->
+    <disabledAdministrativeMonitors/>
+
+
+    <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+
+    <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter" plugin="antisamy-markup-formatter@1.5">
+        <disableSyntaxHighlighting>false</disableSyntaxHighlighting>
+    </markupFormatter>
+
+    <jdks/>
+    <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+    <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+    <clouds/>
+
+    <views>
+        <hudson.model.AllView>
+            <owner class="hudson" reference="../../.."/>
+            <name>All</name>
+            <filterExecutors>false</filterExecutors>
+            <filterQueue>false</filterQueue>
+            <properties class="hudson.model.View$PropertyList"/>
+        </hudson.model.AllView>
+    </views>
+    <primaryView>All</primaryView>
+
+    <nodeProperties/>
+    <globalNodeProperties/>
+</hudson>

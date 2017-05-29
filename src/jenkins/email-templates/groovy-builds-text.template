@@ -1,0 +1,191 @@
+The build result is: <%= build.result.toString().toUpperCase() %>
+
+## Build information ##
+Project:    ${project.name}
+Build:      ${build.displayName} (${rooturl}${build.url})
+Built on:   ${it.timestampString}
+Time taken: ${build.durationString}
+<%
+    def healthReports = project.buildHealthReports
+    if (healthReports != null)
+    {
+%>
+## Health report ##
+Score        Description
+<%
+        for (hudson.model.HealthReport healthReport : healthReports)
+        {
+%>${healthReport.score}          ${healthReport.description}
+<%
+        }
+    }
+
+    def parametersAction = build.getAction(ParametersAction.class)
+    if (parametersAction != null)
+    {
+%>
+## Build parameters ##
+<%
+        parametersAction.parameters.each()
+        {
+            p ->
+%>${p.name}             ${p.value}
+<%
+        }
+    }
+
+    def changeSet = build.changeSet
+    if(changeSet != null && !changeSet.isEmptySet())
+    {
+        def hadChanges = false
+        def count = 0
+%>
+## Changes in detail ##
+----------------------------------------------------
+<%
+        changeSet.each()
+        {
+            cs ->
+                hadChanges = true
+                def aUser = cs.author
+%>* ${cs.msgAnnotated} (${aUser.displayName})(${rooturl}${build.url}changes#detail${count})
+<%
+                count ++
+        }
+    }
+    else
+    {
+%>
+## Changes in detail ##
+No changes relative to the previous build were found in the version control system.
+<%
+    }
+
+    def artifacts = build.artifacts
+    if(artifacts != null && artifacts.size() > 0)
+    {
+%>
+## Build Artifacts ##
+<%
+        artifacts.each()
+        {
+            f ->
+%>* ${f} (${rooturl}${build.url}artifact/${f})
+<%
+        }
+    }
+
+    def failureCauseObj = it.getAction('com.sonyericsson.jenkins.plugins.bfa.model.FailureCauseBuildAction')
+    def hasFailureCauses = false
+    if (failureCauseObj != null)
+    {
+        def failureCauses = failureCauseObj.getFoundFailureCauses()
+        if (failureCauses != null)
+        {
+            if (failureCauses.size() > 0)
+            {
+%>
+## Probable failure causes ##
+<%
+                hasFailureCauses = true
+                failureCauses.each()
+                {
+                    cause ->
+%>${cause.name}           ${cause.description}
+<%
+                }
+            }
+        }
+    }
+
+    if (!hasFailureCauses && (build.result.toString() != "SUCCESS"))
+    {
+%>
+## Probable failure causes ##
+The cause of the build failure could not be determined. If you know why this build failed you can
+add a suitable failure cause</a> for it here: ${rooturl}${project.url}/failure-cause-management.
+<%
+    }
+
+    def unitTests = it.JUnitTestResult
+    if(unitTests != null && unitTests.size() > 0)
+    {
+%>
+## Unit tests ##
+<%
+        unitTests.each()
+        {
+            junitResult ->
+            junitResult.getChildren().each()
+            {
+                packageResult ->
+%>* Name: ${packageResult.getName()} Failed: ${packageResult.getFailCount()} test(s), Passed: ${packageResult.getPassCount()} test(s), Skipped: ${packageResult.getSkipCount()} test(s), Total: ${packageResult.getPassCount()+packageResult.getFailCount()+packageResult.getSkipCount()} test(s)
+<%
+                packageResult.getFailedTests().each()
+                {
+                        failed_test ->
+%>* Failed: ${failed_test.getFullName()}
+<%
+                }
+            }
+        }
+%>    The test report has more specific information about the unit tests at: ${rooturl}${build.url}testReport.<%
+    }
+
+    def coverage = it.coberturaAction
+    if(coverage != null)
+    {
+        def coverageResult = coverage.result
+        if (coverageResult != null)
+        {
+%>
+## Test coverage ##
+<%
+            coverageResult.metrics.each()
+            {
+                metric ->
+%>${metric.name}
+<%
+            }
+%>${coberturaResult.name}
+<%
+            coverageResult.metrics.each()
+            {
+                metric ->
+%>${coverageResult.getCoverage(metric).percentage}%(${coverageResult.getCoverage(metric)})
+<%
+            }
+        }
+    }
+
+    def staticAnalysis = it.staticAnalysisActions
+    if ((staticAnalysis != null) && !staticAnalysis.isEmpty())
+    {
+%>
+## Static Analysis ##
+Name                                Result    Total    High    Normal    Low
+<%
+        staticAnalysis.each()
+        {
+            analysis ->
+%>
+${analysis.displayName}             ${analysis.result.numberOfAnnotations}    ${analysis.result.getNumberOfAnnotations('HIGH')} ${analysis.result.getNumberOfAnnotations('NORMAL')}    ${analysis.result.getNumberOfAnnotations('LOW')}
+<%
+        }
+    }
+
+    if(build.result == hudson.model.Result.FAILURE)
+    {
+%>
+## Console output ##
+<%
+        build.getLog(100).each()
+        {
+            line ->
+%>${org.apache.commons.lang.StringEscapeUtils.escapeHtml(line)}
+<%
+        }
+    }
+%>
+You are receiving this email because either one of your commits was part of this build or you requested it
+For more information visit the build server website at: ${rooturl}
