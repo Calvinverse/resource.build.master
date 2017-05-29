@@ -1,4 +1,4 @@
-FROM calvinverse/resource.consul.ubuntu:0.1.0
+FROM 192.168.100.2:5000/calvinverse/resource.java.ubuntu:0.1.0
 LABEL maintainer "Petrik van der Velde (@petrikvdvelde)"
 
 # Use baseimage-docker's init system.
@@ -7,35 +7,12 @@ CMD ["/sbin/my_init"]
 # Update apt-get so that we can get all the packages
 RUN apt-get update
 
+
+#
 # Install GIT
-RUN apt-get --assume-yes git
-
-
-#
-# INSTALL JAVA
 #
 
-# Default to UTF-8 file.encoding
-ENV LANG C.UTF-8
-
-# add a simple script that can auto-detect the appropriate JAVA_HOME value
-# based on whether the JDK or only the JRE is installed
-RUN { \
-        echo '#!/bin/sh'; \
-        echo 'set -e'; \
-        echo; \
-        echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
-    } > /usr/local/bin/docker-java-home \
-    && chmod +x /usr/local/bin/docker-java-home
-
-# Set JAVA_HOME
-# do some fancy footwork to create a JAVA_HOME that's cross-architecture-safe
-RUN ln -svT "/usr/lib/jvm/java-9-openjdk-$(dpkg --print-architecture)" /docker-java-home
-ENV JAVA_HOME /docker-java-home
-
-ENV JAVA_VERSION 9~b114
-ENV JAVA_UBUNTU_VERSION 9~b114-0ubuntu1
-RUN apt-get --assume-yes install openjdk-9-jre-headless="$JAVA_UBUNTU_VERSION"
+RUN apt-get --assume-yes install git
 
 
 #
