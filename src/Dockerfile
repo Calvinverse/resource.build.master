@@ -16,6 +16,18 @@ RUN apt-get --assume-yes install git
 
 
 #
+# INSTALL FONTS
+#
+# Because apparently we might need these fonts because we are running in headless mode
+# see: https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+got+java.awt.headless+problem
+RUN apt-get --assume-yes install libfontconfig1
+RUN apt-get --assume-yes install fonts-dejavu
+RUN apt-get --assume-yes install fonts-dejavu-core
+RUN apt-get --assume-yes install fonts-dejavu-extra
+RUN apt-get --assume-yes install xvfb
+
+
+#
 # INSTALL JENKINS
 #
 
