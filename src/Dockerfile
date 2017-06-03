@@ -16,23 +16,11 @@ RUN apt-get --assume-yes install git
 
 
 #
-# INSTALL FONTS
-#
-# Because apparently we might need these fonts because we are running in headless mode
-# see: https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+got+java.awt.headless+problem
-RUN apt-get --assume-yes install libfontconfig1
-RUN apt-get --assume-yes install fonts-dejavu
-RUN apt-get --assume-yes install fonts-dejavu-core
-RUN apt-get --assume-yes install fonts-dejavu-extra
-RUN apt-get --assume-yes install xvfb
-
-
-#
 # INSTALL JENKINS
 #
 
-ENV JENKINS_HOME /var/jenkins_home
 ENV JENKINS_SLAVE_AGENT_PORT 50000
+ENV JENKINS_HOME /var/jenkins
 
 # Create a user and group first so the IDs get set the same way, even as
 # the rest of this may change over time.
@@ -47,11 +35,12 @@ ARG gid=2000
 RUN groupadd -g ${gid} ${group} \
     && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user}
 
-# Expose the jenkins data directory as a volume because it has mutable data
-VOLUME /var/jenkins_home
+# Expose the build data directory because it contains the information describing the builds
+ENV JENKINS_BUILD_DATA /var/builds
+VOLUME /var/builds
 
-ENV JENKINS_BUILD_DATA /var/jenkins_builds
-VOLUME /var/jenkins_builds
+# Update the configuration files
+COPY jenkins/ $JENKINS_HOME
 
 # jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
@@ -65,13 +54,10 @@ ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-w
 
 # could use ADD but this one does not check Last-Modified header neither does it allow to control checksum
 # see https://github.com/docker/docker/issues/8331
-RUN mkdir /etc/jenkins
-RUN curl -fsSL ${JENKINS_URL} -o /etc/jenkins/jenkins.war \
-  && echo "${JENKINS_SHA}  /etc/jenkins/jenkins.war" | sha256sum -c -
+RUN curl --fail --silent --show-error --location --create-dirs --output /usr/local/jenkins/jenkins.war "${JENKINS_URL}" && \
+    echo "${JENKINS_SHA} /usr/local/jenkins/jenkins.war" | sha256sum -c -
 
 ENV JENKINS_UC https://updates.jenkins.io
-RUN mkdir /etc/jenkins/ref
-RUN chown -R ${user} "$JENKINS_HOME" /etc/jenkins/ref
 
 # Expose the HTTP port
 EXPOSE 8080
@@ -82,40 +68,14 @@ EXPOSE 50000
 
 # install the plugins
 COPY install-plugins.sh /tmp/install-plugins.sh
-RUN dos2unix /tmp/install-plugins.sh
-RUN chmod +x /tmp/install-plugins.sh
+COPY plugins.txt /tmp/plugins.txt
+RUN dos2unix /tmp/install-plugins.sh && \
+    dos2unix /tmp/plugins.txt && \
+    /tmp/install-plugins.sh /tmp/plugins.txt && \
+    rm -rf /tmp
 
-COPY jenkins-support.sh /tmp/jenkins-support.sh
-RUN dos2unix /tmp/jenkins-support.sh
-
-RUN /tmp/install-plugins.sh structs:1.7 junit:1.20 script-security:1.27 matrix-project:1.11 build-failure-analyzer:1.19.0
-RUN /tmp/install-plugins.sh token-macro:2.1 build-name-setter:1.6.5
-RUN /tmp/install-plugins.sh build-timeout:1.18
-RUN /tmp/install-plugins.sh build-user-vars:1.5
-RUN /tmp/install-plugins.sh credentials:2.1.13 cloudbees-folder:6.0.4
-RUN /tmp/install-plugins.sh display-url-api:2.0 mailer:1.20 javadoc:1.4 maven-plugin:2.15.1 analysis-core:1.86 email-ext:2.57.2
-RUN /tmp/install-plugins.sh embeddable-build-status:1.9
-RUN /tmp/install-plugins.sh workflow-step-api:2.10 workflow-scm-step:2.4 scm-api:2.1.1 ssh-credentials:1.13 git-client:2.4.6 git:3.3.0
-RUN /tmp/install-plugins.sh greenballs:1.15
-RUN /tmp/install-plugins.sh gravatar:2.1
-RUN /tmp/install-plugins.sh hashicorp-vault-plugin:2.1.0
-RUN /tmp/install-plugins.sh job-dsl:1.63
-RUN /tmp/install-plugins.sh jackson2-api:2.7.3 metrics:3.1.2.9
-RUN /tmp/install-plugins.sh msbuild:1.27
-RUN /tmp/install-plugins.sh nomad:0.4
-RUN /tmp/install-plugins.sh nunit:0.20
-RUN /tmp/install-plugins.sh powershell:1.3
-RUN /tmp/install-plugins.sh PrioritySorter:3.5.0
-RUN /tmp/install-plugins.sh role-strategy:2.4.0
-RUN /tmp/install-plugins.sh violations:0.7.11
-RUN /tmp/install-plugins.sh warnings:4.62
-RUN /tmp/install-plugins.sh workflow-api:2.15 workflow-support:2.14 workflow-durable-task-step:2.11 resource-disposer:0.6 ws-cleanup:0.33
-
-# Update the configuration files
-COPY jenkins/ /etc/jenkins/
-
-# Mark jenkins as fully installed
-RUN echo 2.0 > /etc/jenkins/ref/jenkins.install.UpgradeWizard.state
+RUN chown -R ${user} "$JENKINS_HOME"
+RUN chown -R ${user} /usr/local/jenkins
 
 # Add the jenkins configurations for consul
 COPY service_jenkins.json /etc/consul/conf.d/service_jenkins.json
@@ -128,3 +88,7 @@ RUN chmod +x /etc/service/jenkins/run
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Re-create the /tmp directory so that jenkins can use it for workspaces etc.
+# Make sure that everybody can write to it
+RUN mkdir -p /tmp && chmod 1777 /tmp
