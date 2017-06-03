@@ -1,4 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <jenkins.metrics.api.MetricsAccessKey_-DescriptorImpl plugin="metrics@3.1.2.9">
-  <accessKeys/>
+  <accessKeys>
+    <jenkins.metrics.api.MetricsAccessKey>
+      <key>76735659-529a-4065-9d3e-8374d47e71f8</key>
+      <description>Consul ping check</description>
+      <canPing>true</canPing>
+      <canThreadDump>false</canThreadDump>
+      <canHealthCheck>false</canHealthCheck>
+      <canMetrics>false</canMetrics>
+    </jenkins.metrics.api.MetricsAccessKey>
+    <jenkins.metrics.api.MetricsAccessKey>
+      <key>fb3a3ff2-e941-49f7-8f2f-b0e8b0b41941</key>
+      <description>Consul health check</description>
+      <canPing>false</canPing>
+      <canThreadDump>false</canThreadDump>
+      <canHealthCheck>true</canHealthCheck>
+      <canMetrics>false</canMetrics>
+    </jenkins.metrics.api.MetricsAccessKey>
+  </accessKeys>
 </jenkins.metrics.api.MetricsAccessKey_-DescriptorImpl>
