@@ -12,13 +12,13 @@
             {
                 "id": "jenkins_ping",
                 "name": "Jenkins HTTP ping",
-                "http": "http://localhost:8080/metrics/${GuidHealthPing}/ping",
+                "http": "http://localhost:8080/builds/metrics/${GuidHealthPing}/ping",
                 "interval": "15s"
             },
             {
                 "id": "jenkins_health",
                 "name": "Jenkins HTTP health check",
-                "http": "http://localhost:8080/metrics/${GuidHealthCheck}/healthcheck",
+                "http": "http://localhost:8080/builds/metrics/${GuidHealthCheck}/healthcheck",
                 "interval": "60s"
             }
         ]

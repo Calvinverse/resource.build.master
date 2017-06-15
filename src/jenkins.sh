@@ -15,6 +15,9 @@ JAVA_AWT_ARGS="-Djava.awt.headless=true"
 # -jenkins.install.runSetupWizard -> Skip the install wizzard
 JENKINS_JAVA_ARGS="-Dhudson.model.UpdateCenter.never=true -Dhudson.model.DownloadService.never=true -Djenkins.model.Jenkins.slaveAgentPort=$JENKINS_SLAVE_AGENT_PORT -Djenkins.model.Jenkins.slaveAgentPortEnforce=true -Djenkins.CLI.disabled=true -Djenkins.install.runSetupWizard=false"
 
-# `/sbin/setuser memcache` runs the given command as the user `memcache`.
+# Set jenkins to be served at http://localhost:8080/builds
+JENKINS_REVERSE_PROXY_ARGS="--prefix=/builds"
+
+# `/sbin/setuser jenkins` runs the given command as the user `jenkins`.
 # If you omit that part, the command will be run as root.
-exec /sbin/setuser jenkins java $JAVA_SERVER_ARGS $JAVA_G1_GC_ARGS $JAVA_HEAP_ARGS $JAVA_AWT_ARGS $JENKINS_JAVA_ARGS -jar /usr/local/jenkins/jenkins.war --httpPort=8080 2>&1 | logger
+exec /sbin/setuser jenkins java $JAVA_SERVER_ARGS $JAVA_G1_GC_ARGS $JAVA_HEAP_ARGS $JAVA_AWT_ARGS $JENKINS_JAVA_ARGS -jar /usr/local/jenkins/jenkins.war $JENKINS_REVERSE_PROXY_ARGS --httpPort=8080 2>&1 | logger
