@@ -502,6 +502,15 @@
             <ReplacementValue></ReplacementValue>
         </TemplateTokens>
         -->
+
+        <TemplateTokens Include="GuidHealthPing">
+            <ReplacementValue>$([System.Guid]::NewGuid())</ReplacementValue>
+        </TemplateTokens>
+        <TemplateTokens Include="GuidHealthCheck">
+            <ReplacementValue>$([System.Guid]::NewGuid())</ReplacementValue>
+        </TemplateTokens>
+
+
     </ItemGroup>
 
 
