@@ -10,32 +10,51 @@
             * Copyrights
             * API documentation
         -->
-        <ProductName>My Product</ProductName>
+        <ProductName>Resource.Build.Master</ProductName>
 
         <!--
             The name of the product that can be used as part of a file path. This is for instance used for:
             * Deployment directory naming
         -->
-        <ProductNameInFilePath>MyProduct</ProductNameInFilePath>
+        <ProductNameInFilePath>Resource.Build.Master</ProductNameInFilePath>
 
         <!--
             The namespace in which all the code for the product is placed. This is for instance used for:
             * Finding the correct assemblies and namespaces for unit testing and coverage reporting
             * Generated code files that contain namespaces
         -->
-        <ProductNamespace>MyProduct</ProductNamespace>
+        <ProductNamespace>Resource.Build.Master</ProductNamespace>
 
         <!--
             The URL of the product website. This is for instance used for:
             * nuspec files
         -->
-        <ProductUrl>UNDEFINED</ProductUrl>
+        <ProductUrl>https://github.com/Calvinverse/resource.build.master</ProductUrl>
 
         <!--
             The first year the product was available / created. This is for instance used for:
             * Copyrights
         -->
-        <ProductStartingYear>UNDEFINED</ProductStartingYear>
+        <ProductStartingYear>2017</ProductStartingYear>
+
+        <!--
+            The name of the company. This is for instance used for:
+            * Copyrights
+            * API documentation
+        -->
+        <CompanyName>Calvinverse</CompanyName>
+
+        <!--
+            The name of the company that can be used as a part of a file path. This is for instance used for:
+            * Installer file paths
+        -->
+        <CompanyNameInFilePath>calvinverse</CompanyNameInFilePath>
+
+        <!--
+            The URL of the company website. This is for instance used for:
+            * nuspec files
+        -->
+        <CompanyUrl>https://github.com/Calvinverse</CompanyUrl>
     </PropertyGroup>
 
     <!--
@@ -46,7 +65,7 @@
             The full URL to the GIT repository. Can include the '%GitHubToken%' environment variable for authenticated
             connection to the repository, e.g. https://%GitHubToken%:@github.com/MyUser/MyProject.git
         -->
-        <GitRemoteRepository>origin</GitRemoteRepository>
+        <GitRemoteRepository>https://github.com/Calvinverse/resource.build.master.git</GitRemoteRepository>
     </PropertyGroup>
 
     <!--
@@ -155,13 +174,10 @@
 
         <!-- The directory that will contain all the temporary files needed during the build process -->
         <!-- <DirBuildTemp>$(DirBuild)\temp</DirBuildTemp> -->
+        <DirBuildTempUbuntu>$(DirBuildTemp)\ubuntu</DirBuildTempUbuntu>
 
         <!-- The directory that will contain all the test files generated during the test process -->
         <!-- <DirBuildTest>$(DirBuild)\tests</DirBuildTest> -->
-
-        <!-- The directory that contains all the ruby gems -->
-        <!-- <DirGems>$(DirWorkspace)\gems</DirGems> -->
-        <!-- <DirGemsBin>$(DirGems)\bin</DirGemsBin> -->
 
         <!-- The directory that contains all the NuGet packages for the project -->
         <!-- <DirPackages>$(DirWorkspace)\packages</DirPackages> -->
@@ -174,9 +190,6 @@
 
         <!-- The directory that contains all the test files for the project -->
         <!-- <DirTest>$(DirWorkspace)\tests</DirTest> -->
-
-        <!-- The directory that contains all the vendor cookbooks -->
-        <!-- <DirVendorCookbooks>$(DirWorkspace)\berks\cookbooks</DirVendorCookbooks> -->
     </PropertyGroup>
 
     <!--
@@ -198,7 +211,7 @@
             A flag that indicates whether or not the current build should assume that the GitFlow (http://nvie.com/posts/a-successful-git-branching-model/)
             workflow is being used.
         -->
-        <!-- <IsGitFlow>UNDEFINED</IsGitFlow> -->
+        <IsGitFlow>true</IsGitFlow>
     </PropertyGroup>
 
 
@@ -303,7 +316,7 @@
 
         Any failure during the branching process will stop the build process.
     -->
-    <ItemGroup>
+    <ItemGroup Condition=" '$(ShouldLoadBranchMergeTarget)' == 'true' ">
         <!-- GITFLOW: If the input branch (GitBranchExpected) is a feature branch then we merge to develop -->
         <!--
         <BranchMergeTarget Include="develop"
@@ -496,12 +509,10 @@
         Additional items that should be available for the template replacement.
         The default template parameters, as indicated at the top of this file, are always available.
     -->
-    <ItemGroup>
-        <!--
-        <TemplateTokens Include="">
-            <ReplacementValue></ReplacementValue>
+    <ItemGroup Condition=" '$(ShouldLoadTemplateTokens)' == 'true' ">
+        <TemplateTokens Include="VersionJenkins">
+            <ReplacementValue>2.46.3</ReplacementValue>
         </TemplateTokens>
-        -->
 
         <TemplateTokens Include="GuidHealthPing">
             <ReplacementValue>$([System.Guid]::NewGuid())</ReplacementValue>
@@ -546,29 +557,6 @@
 
     <!-- Overrides for the tools paths -->
     <PropertyGroup>
-        <!--
-            The full path and version of the Bower command line executable. If not defined the packages directory is searched.
-        -->
-        <!-- <ToolsExternalBowerPath>bower</ToolsExternalBowerPath>
-        <ToolsExternalBowerVersion>1.3.11</ToolsExternalBowerVersion> -->
-
-        <!--
-            The full path and version of the Node.js command line executable. If not defined the packages directory is searched.
-        -->
-        <!-- <ToolsExternalNodeJsPath>node</ToolsExternalNodeJsPath>
-        <ToolsExternalNodeJsVersion>4.2.3</ToolsExternalNodeJsVersion> -->
-
-        <!--
-            The full path and version of the NPM command line executable. If not defined the packages directory is searched.
-        -->
-        <!-- <ToolsExternalNpmPath>npm</ToolsExternalNpmPath>
-        <ToolsExternalNpmVersion>3.5.2</ToolsExternalNpmVersion> -->
-
-        <!--
-            The full path and version of the python command line executable. If not defined the packages directory is searched.
-        -->
-        <!-- <ToolsExternalPythonPath>UNDEFINED</ToolsExternalPythonPath>
-        <ToolsExternalPythonVersion>2.7.9</ToolsExternalPythonVersion> -->
     </PropertyGroup>
 
 
@@ -584,7 +572,7 @@
     -->
 
     <PropertyGroup>
-        <OpsConfigurationVersion>0.2</OpsConfigurationVersion>
+        <OpsConfigurationVersion>0.3</OpsConfigurationVersion>
     </PropertyGroup>
 
     <!--
@@ -592,7 +580,7 @@
         NuGet if no package is specified in the packages.config file.
     -->
     <PropertyGroup>
-        <PackageMinimumVersion Condition=" '$(PackageMinimumVersion)' == '' ">0.2.0</PackageMinimumVersion>
-        <PackageMaximumVersion Condition=" '$(PackageMaximumVersion)' == '' ">0.3.0</PackageMaximumVersion>
+        <PackageMinimumVersion Condition=" '$(PackageMinimumVersion)' == '' ">0.3.0</PackageMinimumVersion>
+        <PackageMaximumVersion Condition=" '$(PackageMaximumVersion)' == '' ">0.4.0</PackageMaximumVersion>
     </PropertyGroup>
 </Project>

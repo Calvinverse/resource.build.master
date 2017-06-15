@@ -74,16 +74,6 @@
     <!--
         **** PREPARE - COPY FILES ****
     -->
-    <!--
-        Files that should be copied, either from the file system or from a NuGet package.
-    -->
-    <ItemGroup Condition=" '$(ShouldLoadFilesToCopy)' == 'true' ">
-        <!--
-        <FilesToCopy Include="">
-            <Destination></Destination>
-        </FilesToCopy>
-        -->
-    </ItemGroup>
     <ItemGroup Condition=" '$(ShouldLoadNuGetFilesToCopy)' == 'true' ">
         <!--
         <NuGetFilesToCopy Include="My.Cool.NuGet.Package">
@@ -92,10 +82,177 @@
         </NuGetFilesToCopy>
         -->
     </ItemGroup>
+    <ItemGroup Condition=" '$(ShouldLoadHttpFilesToCopy)' == 'true' ">
+        <HttpFilesToCopy Include="https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${VersionJenkins}/jenkins-war-${VersionJenkins}.war">
+            <Destination>$(DirBuildTempUbuntu)</Destination>
+            <GpgKey></GpgKey>
+            <HashAlgorithm>SHA256</HashAlgorithm>
+            <Hash>00424d3c851298b29376d1d09d7d3578a2bc4a03acf3914b317c47707cd5739a</Hash>
+            <Name>jenkins.war</Name>
+            <Unzip>false</Unzip>
+        </HttpFilesToCopy>
+
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/analysis-core/1.86/analysis-core.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/antisamy-markup-formatter/1.5/antisamy-markup-formatter.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-failure-analyzer/1.19.0/build-failure-analyzer.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-name-setter/1.6.5/build-name-setter.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-timeout/1.18/build-timeout.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-user-vars-plugin/1.5/build-user-vars-plugin.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/cloudbees-folder/6.0.4/cloudbees-folder.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/credentials/2.1.13/credentials.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/display-url-api/2.0/display-url-api.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/durable-task/1.13/durable-task.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/email-ext/2.57.2/email-ext.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/embeddable-build-status/1.9/embeddable-build-status.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/git-client/2.4.6/git-client.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/git/3.3.0/git.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/gravatar/2.1/gravatar.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/greenballs/1.15/greenballs.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/hashicorp-vault-plugin/2.1.0/hashicorp-vault-plugin.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/icon-shim/2.0.3/icon-shim.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/jackson2-api/2.7.3/jackson2-api.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/javadoc/1.4/javadoc.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/job-dsl/1.63/job-dsl.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/junit/1.20/junit.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/mailer/1.20/mailer.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/matrix-auth/1.6/matrix-auth.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/matrix-project/1.11/matrix-project.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/maven-plugin/2.15.1/maven-plugin.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/metrics/3.1.2.9/metrics.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/msbuild/1.27/msbuild.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/nomad/0.4/nomad.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/nunit/0.20/nunit.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/powershell/1.3/powershell.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/PrioritySorter/3.5.0/PrioritySorter.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/resource-disposer/0.6/resource-disposer.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/role-strategy/2.4.0/role-strategy.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/scm-api/2.1.1/scm-api.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/script-security/1.27/script-security.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/short-workspace-path/0.2/short-workspace-path.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/ssh-credentials/1.13/ssh-credentials.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/structs/1.7/structs.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/token-macro/2.1/token-macro.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/violations/0.7.11/violations.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/warnings/4.62/warnings.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-api/2.15/workflow-api.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-durable-task-step/2.11/workflow-durable-task-step.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-scm-step/2.4/workflow-scm-step.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-step-api/2.10/workflow-step-api.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-support/2.14/workflow-support.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/ws-cleanup/0.33/ws-cleanup.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(ShouldLoadFilesToCopy)' == 'true' ">
+        <FilesToCopy
+            Exclude="$(DirSrc)\Dockerfile;$(DirSrc)\service_jenkins.json;$(DirSrc)\jenkins\jenkins.metrics.api.MetricsAccessKey.xml"
+            Include="$(DirSrc)\**\*">
+            <Destination>$(DirBuildTempUbuntu)</Destination>
+        </FilesToCopy>
+    </ItemGroup>
     <ItemGroup Condition=" '$(ShouldLoadArchiveFilesToCopy)' == 'true' ">
         <!--
         <ArchiveFilesToCopy Include="">
             <Destination></Destination>
+            <GpgKey></GpgKey>
+            <Hash></Hash>
+            <HashAlgorithm></HashAlgorithm>
+            <HashFile></HashFile>
+            <SignatureFile></SignatureFile>
         </ArchiveFilesToCopy>
         -->
     </ItemGroup>
@@ -138,17 +295,24 @@
         Additional parameters can be provided through the 'TemplateTokens' ItemGroup below.
     -->
     <ItemGroup Condition=" '$(ShouldLoadBuildFilesToGenerate)' == 'true' ">
-        <!--
         <BuildFilesToGenerate
             Condition=" '$(DirBuildTemp)' != '' "
-            Include="$(DirBuildTemp)\MyFile.txt">
+            Include="$(DirBuildTempUbuntu)\Dockerfile">
             <Encoding>UTF-8</Encoding>
-            <Expression>(MyRegex)</Expression>
-            <ReplacementValue>MyAdditionalTemplateValue</ReplacementValue>
-            <Template>$(DirTemplates)\MyOtherTemplatefile.txt</Template>
-            <Token>MyAdditionalTemplateParameter</Token>
+            <Template>$(DirSrc)\Dockerfile</Template>
         </BuildFilesToGenerate>
-        -->
+        <BuildFilesToGenerate
+            Condition=" '$(DirBuildTemp)' != '' "
+            Include="$(DirBuildTempUbuntu)\service_jenkins.json">
+            <Encoding>ASCII</Encoding> <!-- Consul hates UTF-8 with BOM -->
+            <Template>$(DirSrc)\service_jenkins.json</Template>
+        </BuildFilesToGenerate>
+        <BuildFilesToGenerate
+            Condition=" '$(DirBuildTemp)' != '' "
+            Include="$(DirBuildTempUbuntu)\jenkins\jenkins.metrics.api.MetricsAccessKey.xml">
+            <Encoding>UTF-8</Encoding>
+            <Template>$(DirSrc)\jenkins\jenkins.metrics.api.MetricsAccessKey.xml</Template>
+        </BuildFilesToGenerate>
     </ItemGroup>
 
 
@@ -492,6 +656,21 @@
 
 
     <!--
+        **** DOCKER - PACK ****
+    -->
+    <PropertyGroup>
+        <!-- Indicate that docker should ignore cached images if possible. -->
+        <!-- <DockerIgnoreCache>true</DockerIgnoreCache> -->
+
+        <!-- Indicate that docker should always pull images if possible -->
+        <!-- <DockerAlwaysPull>true</DockerAlwaysPull> -->
+
+        <!-- Indicate that docker should squash intermediate layers when creating an image -->
+        <!-- <DockerSquashImages>true</DockerSquashImages> -->
+    </PropertyGroup>
+
+
+    <!--
         **** PACK - NUGET ****
     -->
     <PropertyGroup>
@@ -714,7 +893,6 @@
             </PostSteps>
         </BuildStepsToExecute>
 
-        <!--
         <BuildStepsToExecute Include="$(BuildStepsPrepareReleaseNotes)">
             <Properties>
             </Properties>
@@ -728,7 +906,6 @@
             <PostSteps>
             </PostSteps>
         </BuildStepsToExecute>
-        -->
 
         <!--
         <BuildStepsToExecute Include="$(BuildStepsPrepareRestoreNpm)">
@@ -792,6 +969,19 @@
                 prepare;
                 prepare.copy;
                 prepare.copy.nuget;
+            </Groups>
+            <PreSteps>
+            </PreSteps>
+            <PostSteps>
+            </PostSteps>
+        </BuildStepsToExecute>
+        <BuildStepsToExecute Include="$(BuildStepsPrepareCopyHttp)">
+            <Properties>
+            </Properties>
+            <Groups>
+                prepare;
+                prepare.copy;
+                prepare.copy.url;
             </Groups>
             <PreSteps>
             </PreSteps>
@@ -895,6 +1085,7 @@
         </BuildStepsToExecute>
         -->
 
+        <!--
         <BuildStepsToExecute Include="$(BuildStepsUnitTestNUnit)">
             <Properties>
                 Configuration=$(TestConfiguration);
@@ -910,6 +1101,7 @@
             <PostSteps>
             </PostSteps>
         </BuildStepsToExecute>
+        -->
 
         <!--
         <BuildStepsToExecute Include="$(BuildStepsUnitTestMsTest)">
@@ -975,7 +1167,6 @@
             </PostSteps>
         </BuildStepsToExecute>
 
-        <!--
         <BuildStepsToExecute Include="$(BuildStepsUnitTestChefSpec)">
             <Properties>
                 Configuration=$(TestConfiguration);
@@ -991,7 +1182,6 @@
             <PostSteps>
             </PostSteps>
         </BuildStepsToExecute>
-        -->
 
         <!--
         <BuildStepsToExecute Include="$(BuildStepsAnalyzeXml)">
@@ -1043,6 +1233,7 @@
         </BuildStepsToExecute>
         -->
 
+        <!--
         <BuildStepsToExecute Include="$(BuildStepsPackIso)">
             <Properties>
                 Configuration=$(ProductionConfiguration);
@@ -1071,6 +1262,22 @@
             <PostSteps>
             </PostSteps>
         </BuildStepsToExecute>
+        -->
+        <BuildStepsToExecute Include="$(BuildStepsPackDocker)">
+            <Properties>
+                Configuration=$(ProductionConfiguration);
+                Platform=$(Platform)
+            </Properties>
+            <Groups>
+                package;
+                package.docker;
+            </Groups>
+            <PreSteps>
+            </PreSteps>
+            <PostSteps>
+            </PostSteps>
+        </BuildStepsToExecute>
+        <!--
         <BuildStepsToExecute Include="$(BuildStepsPackNuGet)">
             <Properties>
                 Configuration=$(ProductionConfiguration);
@@ -1085,6 +1292,7 @@
             <PostSteps>
             </PostSteps>
         </BuildStepsToExecute>
+        -->
         <BuildStepsToExecute Include="$(BuildStepsPackZip)">
             <Properties>
                 Configuration=$(ProductionConfiguration);
@@ -1152,6 +1360,6 @@
     -->
 
     <PropertyGroup>
-        <OpsConfigurationVersion>0.2</OpsConfigurationVersion>
+        <OpsConfigurationVersion>0.3</OpsConfigurationVersion>
     </PropertyGroup>
 </Project>

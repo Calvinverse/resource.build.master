@@ -767,6 +767,6 @@
     -->
 
     <PropertyGroup>
-        <OpsToolsBuildEntryPointVersion>0.2</OpsToolsBuildEntryPointVersion>
+        <OpsToolsBuildEntryPointVersion>0.3</OpsToolsBuildEntryPointVersion>
     </PropertyGroup>
 </Project>

@@ -30,16 +30,6 @@
     <!--
         **** PREPARE - COPY FILES ****
     -->
-    <!--
-        Files that should be copied, either from the file system or from a NuGet package.
-    -->
-    <ItemGroup Condition=" '$(ShouldLoadFilesToCopy)' == 'true' ">
-        <!--
-        <FilesToCopy Include="">
-            <Destination></Destination>
-        </FilesToCopy>
-        -->
-    </ItemGroup>
     <ItemGroup Condition=" '$(ShouldLoadNuGetFilesToCopy)' == 'true' ">
         <!--
         <NuGetFilesToCopy Include="My.Cool.NuGet.Package">
@@ -48,10 +38,39 @@
         </NuGetFilesToCopy>
         -->
     </ItemGroup>
+    <ItemGroup Condition=" '$(ShouldLoadHttpFilesToCopy)' == 'true' ">
+        <!--
+        <HttpFilesToCopy Include="">
+            <Destination></Destination>
+            <GpgKey></GpgKey>
+            <Hash></Hash>
+            <HashAlgorithm></HashAlgorithm>
+            <HashFile></HashFile>
+            <Name></Name>
+            <Password></Password>
+            <SignatureFile></SignatureFile>
+            <UseDefaultCredentials></UseDefaultCredentials>
+            <UserName></UserName>
+            <Unzip></Unzip>
+        </HttpFilesToCopy>
+        -->
+    </ItemGroup>
+    <ItemGroup Condition=" '$(ShouldLoadFilesToCopy)' == 'true' ">
+        <!--
+        <FilesToCopy Include="">
+            <Destination></Destination>
+        </FilesToCopy>
+        -->
+    </ItemGroup>
     <ItemGroup Condition=" '$(ShouldLoadArchiveFilesToCopy)' == 'true' ">
         <!--
         <ArchiveFilesToCopy Include="">
             <Destination></Destination>
+            <GpgKey></GpgKey>
+            <Hash></Hash>
+            <HashAlgorithm></HashAlgorithm>
+            <HashFile></HashFile>
+            <SignatureFile></SignatureFile>
         </ArchiveFilesToCopy>
         -->
     </ItemGroup>
@@ -152,6 +171,14 @@
              </ExcludedFiles>
         </PushToGitHubReleaseSpecs>
         -->
+    </ItemGroup>
+
+
+    <!--
+        **** PUSHTO - DOCKER ****
+    -->
+    <ItemGroup Condition=" '$(ShouldLoadDockerImagesToPush)' == 'true' ">
+        <DockerImagesToPush Include="192.168.100.2:5000/${CompanyNameInFilePath}/resource.build.master:${VersionSemantic}" />
     </ItemGroup>
 
 
@@ -349,6 +376,19 @@
             <PostSteps>
             </PostSteps>
         </DeployStepsToExecute>
+        <DeployStepsToExecute Include="$(DeployStepsPrepareCopyHttp)">
+            <Properties>
+            </Properties>
+            <Groups>
+                prepare;
+                prepare.copy;
+                prepare.copy.url;
+            </Groups>
+            <PreSteps>
+            </PreSteps>
+            <PostSteps>
+            </PostSteps>
+        </DeployStepsToExecute>
         <DeployStepsToExecute Include="$(DeployStepsPrepareCopyFiles)">
             <Properties>
             </Properties>
@@ -405,6 +445,7 @@
             </PostSteps>
         </DeployStepsToExecute>
         -->
+        <!--
         <DeployStepsToExecute Include="$(DeployStepsPushToNuget)">
             <Properties>
                 Configuration=$(ProductionConfiguration);
@@ -419,6 +460,7 @@
             <PostSteps>
             </PostSteps>
         </DeployStepsToExecute>
+        -->
         <!--
         <DeployStepsToExecute Include="$(DeployStepsPushToDirectory)">
             <Properties>
@@ -448,6 +490,24 @@
             <PostSteps>
             </PostSteps>
         </DeployStepsToExecute>
+        -->
+
+        <DeployStepsToExecute Include="$(DeployStepsPushToDockerRepository)">
+            <Properties>
+                Configuration=$(ProductionConfiguration);
+                Platform=$(Platform);
+            </Properties>
+            <Groups>
+                deploy;
+                deploy.docker;
+            </Groups>
+            <PreSteps>
+            </PreSteps>
+            <PostSteps>
+            </PostSteps>
+        </DeployStepsToExecute>
+
+        <!--
         <DeployStepsToExecute Include="$(DeployStepsPushToGitHubRelease)">
             <Properties>
                 Configuration=$(ProductionConfiguration);
@@ -463,6 +523,7 @@
             </PostSteps>
         </DeployStepsToExecute>
         -->
+        <!--
         <DeployStepsToExecute Include="$(DeployStepsPushToGitBranch)">
             <Properties>
                 Configuration=$(ProductionConfiguration);
@@ -491,6 +552,7 @@
             <PostSteps>
             </PostSteps>
         </DeployStepsToExecute>
+        -->
     </ItemGroup>
 
     <!--
@@ -543,6 +605,6 @@
     -->
 
     <PropertyGroup>
-        <OpsConfigurationVersion>0.2</OpsConfigurationVersion>
+        <OpsConfigurationVersion>0.3</OpsConfigurationVersion>
     </PropertyGroup>
 </Project>

@@ -155,6 +155,16 @@
     </ItemGroup>
 
 
+    <!--
+        **** DOCKER - PACK ****
+    -->
+    <ItemGroup Condition=" '$(ShouldLoadDockerImagesToBuild)' == 'true' ">
+        <DockerImagesToBuild Include="$(DirBuildTempUbuntu)">
+            <Tags>192.168.100.2:5000/${CompanyNameInFilePath}/resource.build.master:${VersionSemantic}</Tags>
+        </DockerImagesToBuild>
+    </ItemGroup>
+
+
 
 
 
@@ -167,6 +177,6 @@
     -->
 
     <PropertyGroup>
-        <OpsConfigurationVersion>0.2</OpsConfigurationVersion>
+        <OpsConfigurationVersion>0.3</OpsConfigurationVersion>
     </PropertyGroup>
 </Project>
