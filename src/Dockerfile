@@ -32,15 +32,12 @@ ARG gid=2000
 RUN groupadd -g ${gid} ${group} \
     && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user}
 
-# Expose the build data directory because it contains the information describing the builds
 ENV JENKINS_BUILD_DATA /var/builds
-VOLUME /var/builds
+RUN mkdir /var/builds
 
 # Update the configuration files
 COPY jenkins/ $JENKINS_HOME
 COPY jenkins.war /usr/local/jenkins/jenkins.war
-
-#ENV JENKINS_UC https://updates.jenkins.io
 
 # Expose the HTTP port
 EXPOSE 8080
@@ -48,14 +45,6 @@ EXPOSE 8080
 # Expose the port used by jenkins to talk to the slaves
 # If this port is changed then it also needs to be changed in the jenkins config.xml file.
 EXPOSE 50000
-
-# install the plugins
-#COPY install-plugins.sh /tmp/install-plugins.sh
-#COPY plugins.txt /tmp/plugins.txt
-#RUN dos2unix /tmp/install-plugins.sh && \
-#    dos2unix /tmp/plugins.txt && \
-#    /tmp/install-plugins.sh /tmp/plugins.txt && \
-#    rm -rf /tmp
 
 RUN chown -R ${user} "$JENKINS_HOME"
 RUN chown -R ${user} /usr/local/jenkins
