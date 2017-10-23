@@ -1,4 +1,4 @@
-FROM 192.168.100.2:5000/calvinverse/resource.java.jre.ubuntu:0.1.0
+FROM 192.168.6.76:5000/calvinverse/resource.java.jre.ubuntu:0.1.0
 LABEL maintainer "Petrik van der Velde (@petrikvdvelde)"
 
 # Use baseimage-docker's init system.
@@ -8,7 +8,7 @@ CMD ["/sbin/my_init"]
 # Install tools via apt
 #
 RUN apt-get update && \
-    apt-get --assume-yes install git && \
+    apt-get --assume-yes -o Dpkg::Options::="--force-confnew" install git && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
@@ -33,11 +33,18 @@ RUN groupadd -g ${gid} ${group} \
     && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user}
 
 ENV JENKINS_BUILD_DATA /var/builds
-RUN mkdir /var/builds
+RUN mkdir /var/builds \
+    && chown -R ${user} /var/builds
 
 # Update the configuration files
 COPY jenkins/ $JENKINS_HOME
 COPY jenkins.war /usr/local/jenkins/jenkins.war
+
+ENV JAVA_APP_JAR /usr/local/jenkins/jenkins.war
+
+# `/sbin/setuser jenkins` runs the given command as the user `jenkins`.
+# If you omit that part, the command will be run as root.
+ENV JAVA_EXEC_ARGS "/sbin/setuser jenkins"
 
 # Expose the HTTP port
 EXPOSE 8080
@@ -51,10 +58,11 @@ RUN chown -R ${user} /usr/local/jenkins
 
 # Run jenkins
 RUN mkdir /etc/service/jenkins
+COPY run-java-options.sh /opt/
 COPY jenkins.sh /etc/service/jenkins/run
-RUN dos2unix /etc/service/jenkins/run
-RUN chmod +x /etc/service/jenkins/run
-
+RUN dos2unix /opt/run-java-options.sh \
+    && dos2unix /etc/service/jenkins/run \
+    && chmod +x /etc/service/jenkins/run
 
 #
 # ADD THE SERVICE TO CONSUL
