@@ -160,7 +160,7 @@
     -->
     <ItemGroup Condition=" '$(ShouldLoadDockerImagesToBuild)' == 'true' ">
         <DockerImagesToBuild Include="$(DirBuildTempUbuntu)">
-            <Tags>192.168.100.2:5000/${CompanyNameInFilePath}/resource.build.master:${VersionSemantic}</Tags>
+            <Tags>192.168.6.76:5000/${CompanyNameInFilePath}/resource.build.master:${VersionSemantic}</Tags>
         </DockerImagesToBuild>
     </ItemGroup>
 
