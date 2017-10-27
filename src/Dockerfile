@@ -59,8 +59,10 @@ RUN chown -R ${user} /usr/local/jenkins
 # Run jenkins
 RUN mkdir /etc/service/jenkins
 COPY run-java-options.sh /opt/
+COPY run-java-jar-options.sh /opt/
 COPY jenkins.sh /etc/service/jenkins/run
 RUN dos2unix /opt/run-java-options.sh \
+    && dos2unix /opt/run-java-jar-options.sh \
     && dos2unix /etc/service/jenkins/run \
     && chmod +x /etc/service/jenkins/run
 
