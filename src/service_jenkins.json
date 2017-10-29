@@ -4,7 +4,7 @@
         "id": "jenkins",
         "tags": [
             "inactive",
-            "urlprefix-/builds"
+            "edgeproxyprefix-/builds"
         ],
         "port": 8080,
         "enableTagOverride": false,
@@ -14,12 +14,6 @@
                 "name": "Jenkins HTTP ping",
                 "http": "http://localhost:8080/builds/metrics/${GuidHealthPing}/ping",
                 "interval": "15s"
-            },
-            {
-                "id": "jenkins_health",
-                "name": "Jenkins HTTP health check",
-                "http": "http://localhost:8080/builds/metrics/${GuidHealthCheck}/healthcheck",
-                "interval": "60s"
             }
         ]
     }

@@ -9,13 +9,5 @@
       <canHealthCheck>false</canHealthCheck>
       <canMetrics>false</canMetrics>
     </jenkins.metrics.api.MetricsAccessKey>
-    <jenkins.metrics.api.MetricsAccessKey>
-      <key>${GuidHealthCheck}</key>
-      <description>Consul health check</description>
-      <canPing>false</canPing>
-      <canThreadDump>false</canThreadDump>
-      <canHealthCheck>true</canHealthCheck>
-      <canMetrics>false</canMetrics>
-    </jenkins.metrics.api.MetricsAccessKey>
   </accessKeys>
 </jenkins.metrics.api.MetricsAccessKey_-DescriptorImpl>

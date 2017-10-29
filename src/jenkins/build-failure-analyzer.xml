@@ -3,7 +3,7 @@
   <noCausesMessage>No problems were identified. If you know why this problem occurred, please add a suitable Cause for it.</noCausesMessage>
   <globalEnabled>true</globalEnabled>
   <doNotAnalyzeAbortedJob>false</doNotAnalyzeAbortedJob>
-  <gerritTriggerEnabled>true</gerritTriggerEnabled>
+  <gerritTriggerEnabled>false</gerritTriggerEnabled>
   <knowledgeBase class="com.sonyericsson.jenkins.plugins.bfa.db.LocalFileKnowledgeBase">
     <causes>
       <entry>

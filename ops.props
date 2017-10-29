@@ -511,17 +511,12 @@
     -->
     <ItemGroup Condition=" '$(ShouldLoadTemplateTokens)' == 'true' ">
         <TemplateTokens Include="VersionJenkins">
-            <ReplacementValue>2.46.3</ReplacementValue>
+            <ReplacementValue>2.73.2</ReplacementValue>
         </TemplateTokens>
 
         <TemplateTokens Include="GuidHealthPing">
             <ReplacementValue>$([System.Guid]::NewGuid())</ReplacementValue>
         </TemplateTokens>
-        <TemplateTokens Include="GuidHealthCheck">
-            <ReplacementValue>$([System.Guid]::NewGuid())</ReplacementValue>
-        </TemplateTokens>
-
-
     </ItemGroup>
 
 

@@ -34,7 +34,11 @@ RUN groupadd -g ${gid} ${group} \
 
 ENV JENKINS_BUILD_DATA /var/builds
 RUN mkdir /var/builds \
-    && chown -R ${user} /var/builds
+    && chown -R ${user} /var/builds \
+    && mkdir /var/log/jenkins \
+    && chown -R ${user} /var/log/jenkins \
+    && mkdir /tmp/jenkins \
+    && chown -R ${user} /tmp/jenkins
 
 # Update the configuration files
 COPY jenkins/ $JENKINS_HOME

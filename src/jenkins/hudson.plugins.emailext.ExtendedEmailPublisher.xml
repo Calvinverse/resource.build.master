@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <hudson.plugins.emailext.ExtendedEmailPublisherDescriptor plugin="email-ext@2.57">
-  <defaultSuffix>@calvinverse.org</defaultSuffix>
-  <smtpHost>mail.calvinverse.org</smtpHost>
+  <defaultSuffix>@ad.calvinverse.org</defaultSuffix>
+  <smtpHost>mail.ad.calvinverse.org</smtpHost>
   <useSsl>false</useSsl>
   <charset>UTF-8</charset>
   <defaultContentType>text/html</defaultContentType>

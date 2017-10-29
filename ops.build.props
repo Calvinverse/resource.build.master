@@ -87,15 +87,21 @@
             <Destination>$(DirBuildTempUbuntu)</Destination>
             <GpgKey></GpgKey>
             <HashAlgorithm>SHA256</HashAlgorithm>
-            <Hash>00424d3c851298b29376d1d09d7d3578a2bc4a03acf3914b317c47707cd5739a</Hash>
+            <Hash>F6D1351BEEF34D980B32F8C463BE505445F637E2FC62156FECD42891C53C97D3</Hash>
             <Name>jenkins.war</Name>
             <Unzip>false</Unzip>
         </HttpFilesToCopy>
 
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/analysis-core/1.86/analysis-core.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/active-directory/2.6/active-directory.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/analysis-core/1.92/analysis-core.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/antisamy-markup-formatter/1.5/antisamy-markup-formatter.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/apache-httpcomponents-client-4-api/4.5.3-2.0/apache-httpcomponents-client-4-api.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-failure-analyzer/1.19.0/build-failure-analyzer.hpi">
@@ -104,34 +110,37 @@
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-name-setter/1.6.5/build-name-setter.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-timeout/1.18/build-timeout.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-timeout/1.19/build-timeout.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/build-user-vars-plugin/1.5/build-user-vars-plugin.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/cloudbees-folder/6.0.4/cloudbees-folder.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/cloudbees-folder/6.2.1/cloudbees-folder.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/credentials/2.1.13/credentials.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/cobertura/1.11/cobertura.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/display-url-api/2.0/display-url-api.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/credentials/2.1.16/credentials.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/durable-task/1.13/durable-task.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/display-url-api/2.1.0/display-url-api.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/email-ext/2.57.2/email-ext.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/durable-task/1.15/durable-task.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/email-ext/2.61/email-ext.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/embeddable-build-status/1.9/embeddable-build-status.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/git-client/2.4.6/git-client.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/git-client/2.5.0/git-client.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/git/3.3.0/git.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/git/3.6.3/git.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/gravatar/2.1/gravatar.hpi">
@@ -146,58 +155,70 @@
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/icon-shim/2.0.3/icon-shim.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/jackson2-api/2.7.3/jackson2-api.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/jackson2-api/2.8.7.0/jackson2-api.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/javadoc/1.4/javadoc.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/job-dsl/1.63/job-dsl.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/job-dsl/1.66/job-dsl.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/junit/1.20/junit.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/junit/1.21/junit.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/jsch/0.1.54.1/jsch.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/mailer/1.20/mailer.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/matrix-auth/1.6/matrix-auth.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/matrix-auth/2.1/matrix-auth.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/matrix-project/1.11/matrix-project.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/matrix-project/1.12/matrix-project.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/maven-plugin/2.15.1/maven-plugin.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/maven-plugin/3.0/maven-plugin.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/metrics/3.1.2.9/metrics.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/metrics/3.1.2.10/metrics.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/msbuild/1.27/msbuild.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/msbuild/1.28/msbuild.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/nomad/0.4/nomad.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/nunit/0.20/nunit.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/nunit/0.21/nunit.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/powershell/1.3/powershell.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/PrioritySorter/3.5.0/PrioritySorter.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/PrioritySorter/3.5.1/PrioritySorter.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/resource-disposer/0.6/resource-disposer.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/rabbitmq-build-trigger/2.5/rabbitmq-build-trigger.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/role-strategy/2.4.0/role-strategy.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/rabbitmq-consumer/2.7/rabbitmq-consumer.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/scm-api/2.1.1/scm-api.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/rebuild/1.27/rebuild.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/script-security/1.27/script-security.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/resource-disposer/0.8/resource-disposer.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/role-strategy/2.6.1/role-strategy.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/scm-api/2.2.3/scm-api.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/script-security/1.34/script-security.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/short-workspace-path/0.2/short-workspace-path.hpi">
@@ -206,34 +227,40 @@
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/ssh-credentials/1.13/ssh-credentials.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/structs/1.7/structs.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/structs/1.10/structs.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/token-macro/2.1/token-macro.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/swarm/3.6/swarm.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/token-macro/2.3/token-macro.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/violations/0.7.11/violations.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/warnings/4.62/warnings.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/warnings/4.63/warnings.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-api/2.15/workflow-api.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-api/2.23.1/workflow-api.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
         <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-durable-task-step/2.11/workflow-durable-task-step.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-scm-step/2.4/workflow-scm-step.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-job/2.15/workflow-job.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-step-api/2.10/workflow-step-api.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-scm-step/2.6/workflow-scm-step.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-support/2.14/workflow-support.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-step-api/2.13/workflow-step-api.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
-        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/ws-cleanup/0.33/ws-cleanup.hpi">
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/workflow-support/2.16/workflow-support.hpi">
+            <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
+        </HttpFilesToCopy>
+        <HttpFilesToCopy Include="https://updates.jenkins.io/download/plugins/ws-cleanup/0.34/ws-cleanup.hpi">
             <Destination>$(DirBuildTempUbuntu)\jenkins\plugins</Destination>
         </HttpFilesToCopy>
     </ItemGroup>

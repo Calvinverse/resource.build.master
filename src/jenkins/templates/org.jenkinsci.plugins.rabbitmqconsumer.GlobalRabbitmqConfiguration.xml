@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
+  <urlValidator>
+    <options>8</options>
+    <allowedSchemes>
+      <string>amqps</string>
+      <string>amqp</string>
+    </allowedSchemes>
+  </urlValidator>
+  <enableConsumer>true</enableConsumer>
+  <serviceUri>amqp://active.queue.service.CONSUL_DOMAIN:5672/builds</serviceUri>
+  <userName>jenkins</userName>
+  <userPassword>{AQAAABAAAAAQBaKDoI9ijL76thuzz9qZUq1ZGEzgbSJZHLVT7I9esbE=}</userPassword>
+  <watchdogPeriod>60000</watchdogPeriod>
+  <consumeItems>
+    <org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem>
+      <appId>remote-build</appId>
+      <queueName>builds</queueName>
+    </org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem>
+  </consumeItems>
+  <enableDebug>false</enableDebug>
+</org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration>
