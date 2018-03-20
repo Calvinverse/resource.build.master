@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jenkins.model.JenkinsLocationConfiguration>
+  <adminAddress>Builds &lt;builds@calvinverse.net&gt;</adminAddress>
+  <jenkinsUrl>http://infrastructure.calvinverse.net/builds</jenkinsUrl>
+</jenkins.model.JenkinsLocationConfiguration>

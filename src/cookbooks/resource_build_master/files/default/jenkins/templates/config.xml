@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+    <version></version>
+    <!-- JENKINS SECURITY -->
+    <useSecurity>true</useSecurity>
+
+    <!--
+        If the role names change then the 'security.groovy' script in the 'init.goovy.d' directory might need
+        to be updated as well.
+    -->
+    <authorizationStrategy class="com.michelin.cio.hudson.plugins.rolestrategy.RoleBasedAuthorizationStrategy">
+        <roleMap type="projectRoles"/>
+        <roleMap type="globalRoles">
+            <role name="global.admin" pattern=".*">
+                <permissions>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View</permission>
+                    <permission>com.sonyericsson.jenkins.plugins.bfa.PluginImpl.RemoveCause</permission>
+                    <permission>com.sonyericsson.jenkins.plugins.bfa.PluginImpl.UpdateCauses</permission>
+                    <permission>com.sonyericsson.jenkins.plugins.bfa.PluginImpl.ViewCauses</permission>
+                    <permission>hudson.model.Computer.Build</permission>
+                    <permission>hudson.model.Computer.Configure</permission>
+                    <permission>hudson.model.Computer.Connect</permission>
+                    <permission>hudson.model.Computer.Create</permission>
+                    <permission>hudson.model.Computer.Delete</permission>
+                    <permission>hudson.model.Computer.Disconnect</permission>
+                    <permission>hudson.model.Computer.Provision</permission>
+                    <permission>hudson.model.Hudson.Administer</permission>
+                    <permission>hudson.model.Hudson.Read</permission>
+                    <permission>hudson.model.Item.Build</permission>
+                    <permission>hudson.model.Item.Cancel</permission>
+                    <permission>hudson.model.Item.Configure</permission>
+                    <permission>hudson.model.Item.Create</permission>
+                    <permission>hudson.model.Item.Delete</permission>
+                    <permission>hudson.model.Item.Discover</permission>
+                    <permission>hudson.model.Item.Move</permission>
+                    <permission>hudson.model.Item.Read</permission>
+                    <permission>hudson.model.Item.ViewStatus</permission>
+                    <permission>hudson.model.Item.Workspace</permission>
+                    <permission>hudson.model.Run.Delete</permission>
+                    <permission>hudson.model.Run.Replay</permission>
+                    <permission>hudson.model.Run.Update</permission>
+                    <permission>hudson.model.View.Configure</permission>
+                    <permission>hudson.model.View.Create</permission>
+                    <permission>hudson.model.View.Delete</permission>
+                    <permission>hudson.model.View.Read</permission>
+                    <permission>hudson.scm.SCM.Tag</permission>
+                    <permission>jenkins.metrics.api.Metrics.HealthCheck</permission>
+                    <permission>jenkins.metrics.api.Metrics.ThreadDump</permission>
+                    <permission>jenkins.metrics.api.Metrics.View</permission>
+                </permissions>
+                <assignedSIDs>
+                    <sid>admin</sid>
+                </assignedSIDs>
+            </role>
+            <role name="global.anonymous" pattern=".*">
+                <permissions>
+                    <permission>hudson.model.Item.Discover</permission>
+                </permissions>
+                <assignedSIDs>
+                    <sid>anonymous</sid>
+                </assignedSIDs>
+            </role>
+            <role name="global.authenticated" pattern=".*">
+                <permissions>
+                    <permission>com.sonyericsson.jenkins.plugins.bfa.PluginImpl.ViewCauses</permission>
+                    <permission>hudson.model.Hudson.Read</permission>
+                    <permission>hudson.model.Item.Build</permission>
+                </permissions>
+                <assignedSIDs/>
+            </role>
+        </roleMap>
+        <roleMap type="slaveRoles">
+            <role name="agent.connect" pattern=".*">
+                <permissions>
+                    <permission>hudson.model.Computer.Connect</permission>
+                    <permission>hudson.model.Computer.Disconnect</permission>
+                </permissions>
+                <assignedSIDs/>
+            </role>
+            <role name="agent.build" pattern=".*">
+                <permissions>
+                    <permission>hudson.model.Computer.Build</permission>
+                </permissions>
+                <assignedSIDs/>
+            </role>
+        </roleMap>
+    </authorizationStrategy>
+    <securityRealm class="hudson.security.SecurityRealm$None"/>
+    <disableRememberMe>false</disableRememberMe>
+    <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+        <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+    </crumbIssuer>
+    <!-- SLAVES -->
+    <!--
+        Set the agent port to 50000. If this is changed here it also needs to be changed in
+        the Dockerfile which exposes this port.
+    -->
+    <slaveAgentPort>50000</slaveAgentPort>
+    <enabledAgentProtocols>
+        <string>JNLP3-connect</string>
+    </enabledAgentProtocols>
+    <!-- JENKINS DIRECTORIES -->
+    <!--
+        The global directory where the job workspaces are located on the master. Since we don't run
+        jobs on the master we don't care where the workspaces are placed. A temp directory will do
+    -->
+    <workspaceDir>/tmp/jenkins/workspace/${ITEM_FULL_NAME}</workspaceDir>
+    <!--
+        The global directory where the build data (logs etc.) will be kept. These should be in the
+        directory that is exposed as a volume so that we can back it up.
+    -->
+    <buildsDir>/var/builds/${ITEM_FULL_NAME}</buildsDir>
+    <!-- MASTER EXECUTORS -->
+    <!--
+        By default we don't want the master to execute any jobs, so we set
+        the executors to zero.
+    -->
+    <numExecutors>0</numExecutors>
+    <mode>EXCLUSIVE</mode>
+    <label></label>
+    <!-- SCM -->
+    <quietPeriod>5</quietPeriod>
+    <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+    <!-- JENKINS ADMIN -->
+    <disabledAdministrativeMonitors/>
+    <!-- PROJECT NAMING -->
+    <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+    <!-- ALLOW HTML IN EDIT BOXES -->
+    <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter" plugin="antisamy-markup-formatter@1.5">
+        <disableSyntaxHighlighting>false</disableSyntaxHighlighting>
+    </markupFormatter>
+    <jdks/>
+    <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+    <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+    <clouds/>
+    <views>
+        <hudson.model.AllView>
+            <owner class="hudson" reference="../../.."/>
+            <name>All</name>
+            <filterExecutors>false</filterExecutors>
+            <filterQueue>false</filterQueue>
+            <properties class="hudson.model.View$PropertyList"/>
+        </hudson.model.AllView>
+    </views>
+    <primaryView>All</primaryView>
+    <nodeProperties/>
+    <globalNodeProperties/>
+    <!-- -->
+    <clouds>
+        <org.jenkinsci.plugins.nomad.NomadCloud plugin="nomad@0.4">
+            <name>Nomad</name>
+            <instanceCap>2147483647</instanceCap>
+            <templates>
+                <org.jenkinsci.plugins.nomad.NomadSlaveTemplate>
+                    <idleTerminationInMinutes>10</idleTerminationInMinutes>
+                    <numExecutors>1</numExecutors>
+                    <cpu>500</cpu>
+                    <memory>512</memory>
+                    <disk>10</disk>
+                    <priority>1</priority>
+                    <labels>linux</labels>
+                    <region>NOMAD_REGION</region>
+                    <remoteFs></remoteFs>
+                    <image>DOCKER_IMAGE_UNDEFINED</image>
+                    <privileged>false</privileged>
+                    <network>DOCKER_NETWORK_UNDEFINED</network>
+                    <username></username>
+                    <password></password>
+                    <prefixCmd></prefixCmd>
+                    <mode>EXCLUSIVE</mode>
+                    <cloud reference="../../.."/>
+                    <driver>docker</driver>
+                    <datacenters>NOMAD_DATACENTER</datacenters>
+                    <labelSet class="sorted-set">
+                        <hudson.model.labels.LabelAtom>linux</hudson.model.labels.LabelAtom>
+                    </labelSet>
+                </org.jenkinsci.plugins.nomad.NomadSlaveTemplate>
+            </templates>
+            <name defined-in="org.jenkinsci.plugins.nomad.NomadCloud">Nomad</name>
+            <nomadUrl>http://http.nomad.service.CONSUL_DOMAIN:4646</nomadUrl>
+            <jenkinsUrl>http://active.builds.service.CONSUL_DOMAIN:8080/builds</jenkinsUrl>
+            <slaveUrl>http://active.builds.service.CONSUL_DOMAIN:8080/builds/jnlpJars/slave.jar</slaveUrl>
+            <nomad>
+                <nomadApi>http://http.nomad.service.CONSUL_DOMAIN:4646</nomadApi>
+            </nomad>
+            <pending>0</pending>
+        </org.jenkinsci.plugins.nomad.NomadCloud>
+    </clouds>
+</hudson>
