@@ -71,8 +71,9 @@ default['jenkins']['consul_template']['vault_config_script_file'] = 'jenkins_vau
 default['jenkins']['consul_template']['vault_config_file'] = '/tmp/jenkins_vault_configuration.sh'
 
 default['jenkins']['version'] = '2.107.1'
-default['jenkins']['checksum'] = '8bc54e7005c1e4ff7d68a7cd724b65cddb9d8e09ad81c89e01f6819254f97a86'
-default['jenkins']['url'] = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/#{node['jenkins']['version']}/jenkins-war-#{node['jenkins']['version']}.war"
+default['jenkins']['checksum'] = 'CEC74C80190ED1F6CE55D705D2F649DDB2EAF8ABA3AE26796152921D46B31280'
+default['jenkins']['url']['war'] = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/#{node['jenkins']['version']}/jenkins-war-#{node['jenkins']['version']}.war"
+default['jenkins']['url']['plugins'] = 'https://updates.jenkins.io/download/plugins'
 
 #
 # TELEGRAF
