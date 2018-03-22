@@ -21,13 +21,13 @@ jenkins_slave_agent_port = node['jenkins']['port']['slave']
 # From here: https://jenkins.io/blog/2016/11/21/gc-tuning/
 java_server_args = '-server -XX:+AlwaysPreTouch'
 java_g1_gc_args =
-  '-XX:+UseG1GC' +
-  ' -XX:+ExplicitGCInvokesConcurrent' +
-  ' -XX:+ParallelRefProcEnabled' +
-  ' -XX:+UseStringDeduplication' +
-  ' -XX:+UnlockExperimentalVMOptions' +
-  ' -XX:G1NewSizePercent=20' +
-  ' -XX:+UnlockDiagnosticVMOptions' +
+  '-XX:+UseG1GC' \
+  ' -XX:+ExplicitGCInvokesConcurrent' \
+  ' -XX:+ParallelRefProcEnabled' \
+  ' -XX:+UseStringDeduplication' \
+  ' -XX:+UnlockExperimentalVMOptions' \
+  ' -XX:G1NewSizePercent=20' \
+  ' -XX:+UnlockDiagnosticVMOptions' \
   ' -XX:G1SummarizeRSetStatsPeriod=1'
 java_awt_args = '-Djava.awt.headless=true'
 
@@ -39,17 +39,17 @@ java_awt_args = '-Djava.awt.headless=true'
 # -jenkins.CLI.disabled -> Disable the CLI through JNLP and HTTP
 # -jenkins.install.runSetupWizard -> Skip the install wizzard
 jenkins_java_args =
-  '-Dhudson.model.UpdateCenter.never=true' +
-  ' -Dhudson.model.DownloadService.never=true' +
-  " -Djenkins.model.Jenkins.slaveAgentPort=#{jenkins_slave_agent_port}" +
-  ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' +
-  ' -Djenkins.CLI.disabled=true' +
+  '-Dhudson.model.UpdateCenter.never=true' \
+  ' -Dhudson.model.DownloadService.never=true' \
+  " -Djenkins.model.Jenkins.slaveAgentPort=#{jenkins_slave_agent_port}" \
+  ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' \
+  ' -Djenkins.CLI.disabled=true' \
   ' -Djenkins.install.runSetupWizard=false'
 
 # Set jenkins to be served at http://localhost:8080/builds
 proxy_path = node['jenkins']['proxy_path']
 jenkins_args =
-  "--httpPort=#{jenkins_http_port}" +
+  "--httpPort=#{jenkins_http_port}" \
   " --prefix=/#{proxy_path}"
 
 jenkins_user = node['jenkins']['service_user']
@@ -127,7 +127,7 @@ systemd_service jenkins_service_name do
   service do
     environment_file jenkins_environment_file
     exec_reload "curl http://localhost:#{jenkins_http_port}/#{proxy_path}/reload"
-    exec_start "#{run_jenkins_script}"
+    exec_start run_jenkins_script
     exec_stop "curl http://localhost:#{jenkins_http_port}/#{proxy_path}/safeExit"
     restart 'on-failure'
   end

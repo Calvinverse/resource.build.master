@@ -181,8 +181,8 @@ describe 'resource_build_master::jenkins_templates' do
                 </templates>
                 <name defined-in="org.jenkinsci.plugins.nomad.NomadCloud">Nomad</name>
                 <nomadUrl>http://{{ key "config/services/jobs/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/jobs/protocols/http/port" }}</nomadUrl>
-                <jenkinsUrl>http://active./builds.service.{{ key "config/services/consul/domain" }}:8080/builds</jenkinsUrl>
-                <slaveUrl>http://active./builds.service.{{ key "config/services/consul/domain" }}:8080/builds/jnlpJars/slave.jar</slaveUrl>
+                <jenkinsUrl>http://active.builds.service.{{ key "config/services/consul/domain" }}:8080/builds</jenkinsUrl>
+                <slaveUrl>http://active.builds.service.{{ key "config/services/consul/domain" }}:8080/builds/jnlpJars/slave.jar</slaveUrl>
                 <nomad>
                   <nomadApi>http://{{ key "config/services/jobs/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/jobs/protocols/http/port" }}</nomadApi>
                 </nomad>

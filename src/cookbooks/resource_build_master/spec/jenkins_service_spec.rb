@@ -8,29 +8,31 @@ describe 'resource_build_master::jenkins_service' do
 
     java_server_args = '-server -XX:+AlwaysPreTouch'
     java_g1_gc_args =
-      '-XX:+UseG1GC' +
-      ' -XX:+ExplicitGCInvokesConcurrent' +
-      ' -XX:+ParallelRefProcEnabled' +
-      ' -XX:+UseStringDeduplication' +
-      ' -XX:+UnlockExperimentalVMOptions' +
-      ' -XX:G1NewSizePercent=20' +
-      ' -XX:+UnlockDiagnosticVMOptions' +
+      '-XX:+UseG1GC' \
+      ' -XX:+ExplicitGCInvokesConcurrent' \
+      ' -XX:+ParallelRefProcEnabled' \
+      ' -XX:+UseStringDeduplication' \
+      ' -XX:+UnlockExperimentalVMOptions' \
+      ' -XX:G1NewSizePercent=20' \
+      ' -XX:+UnlockDiagnosticVMOptions' \
       ' -XX:G1SummarizeRSetStatsPeriod=1'
     java_awt_args = '-Djava.awt.headless=true'
 
     jenkins_java_args =
-      '-Dhudson.model.UpdateCenter.never=true' +
-      ' -Dhudson.model.DownloadService.never=true' +
-      ' -Djenkins.model.Jenkins.slaveAgentPort=5000' +
-      ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' +
-      ' -Djenkins.CLI.disabled=true' +
+      '-Dhudson.model.UpdateCenter.never=true' \
+      ' -Dhudson.model.DownloadService.never=true' \
+      ' -Djenkins.model.Jenkins.slaveAgentPort=5000' \
+      ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' \
+      ' -Djenkins.CLI.disabled=true' \
       ' -Djenkins.install.runSetupWizard=false'
 
     # Set jenkins to be served at http://localhost:8080/builds
-    proxy_path = node['jenkins']['proxy_path']
     jenkins_args =
-      '--httpPort=8080' +
+      '--httpPort=8080' \
       ' --prefix=/builds'
+
+    jenkins_user = 'jenkins'
+    jenkins_war_path = '/usr/local/jenkins/jenkins.war'
     jenkins_run_script_content = <<~SH
       #!/bin/sh
 
@@ -92,7 +94,7 @@ describe 'resource_build_master::jenkins_service' do
     it 'creates the jenkins systemd service' do
       expect(chef_run).to create_systemd_service('jenkins').with(
         action: [:create],
-        after: %w[network.target],
+        after: %w[network-online.target],
         description: 'Jenkins CI system',
         wanted_by: %w[multi-user.target],
         exec_reload: 'curl http://localhost:8080/builds/reload',
