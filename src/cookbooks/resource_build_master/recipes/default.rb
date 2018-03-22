@@ -23,3 +23,6 @@ include_recipe 'resource_build_master::provisioning'
 
 include_recipe 'resource_build_master::java'
 include_recipe 'resource_build_master::jenkins'
+include_recipe 'resource_build_master::jenkins_service'
+include_recipe 'resource_build_master::jenkins_templates'
+include_recipe 'resource_build_master::jenkins_plugins'
