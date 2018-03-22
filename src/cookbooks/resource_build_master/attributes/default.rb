@@ -31,9 +31,16 @@ default['java']['jdk_version'] = '9'
 default['java']['install_flavor'] = 'openjdk'
 default['java']['accept_license_agreement'] = true
 
+#
+# JENKINS
+#
+
+default['jenkins']['path']['build_data'] = '/var/builds'
+default['jenkins']['path']['environment_file'] = '/etc/jenkins_environment'
 default['jenkins']['path']['home'] = '/var/jenkins'
 default['jenkins']['path']['war'] = '/usr/local/jenkins/jenkins.war'
 
+default['jenkins']['consul']['service_name'] = 'builds'
 default['jenkins']['proxy_path'] = 'builds'
 
 default['jenkins']['port']['http'] = 8080
@@ -44,9 +51,23 @@ default['jenkins']['service_name'] = 'jenkins'
 default['jenkins']['service_user'] = 'jenkins'
 default['jenkins']['service_group'] = 'jenkins'
 
-#
-# JENKINS
-#
+default['jenkins']['consul_template']['config_script_file'] = 'jenkins_configuration.ctmpl'
+default['jenkins']['consul_template']['config_file'] = '/tmp/jenkins_configuration.sh'
+
+default['jenkins']['consul_template']['location_config_script_file'] = 'jenkins_location_configuration.ctmpl'
+default['jenkins']['consul_template']['location_config_file'] = '/tmp/jenkins_location_configuration.sh'
+
+default['jenkins']['consul_template']['mailer_config_script_file'] = 'jenkins_mailer_configuration.ctmpl'
+default['jenkins']['consul_template']['mailer_config_file'] = '/tmp/jenkins_mailer_configuration.sh'
+
+default['jenkins']['consul_template']['rabbitmq_config_script_file'] = 'jenkins_rabbitmq_configuration.ctmpl'
+default['jenkins']['consul_template']['rabbitmq_config_file'] = '/tmp/jenkins_rabbitmq_configuration.sh'
+
+default['jenkins']['consul_template']['start_script_file'] = 'jenkins_start_script.ctmpl'
+default['jenkins']['consul_template']['start_file'] = '/tmp/jenkins_start_script.sh'
+
+default['jenkins']['consul_template']['vault_config_script_file'] = 'jenkins_vault_configuration.ctmpl'
+default['jenkins']['consul_template']['vault_config_file'] = '/tmp/jenkins_vault_configuration.sh'
 
 default['jenkins']['version'] = '2.107.1'
 default['jenkins']['checksum'] = '8bc54e7005c1e4ff7d68a7cd724b65cddb9d8e09ad81c89e01f6819254f97a86'
