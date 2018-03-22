@@ -38,14 +38,22 @@ remote_directory jenkins_home do
   source 'jenkins'
 end
 
-jenkins_war_path = node['jenkins']['path']['war']
+jenkins_install_path = node['jenkins']['path']['war']
+directory jenkins_install_path do
+  action :create
+  group node['jenkins']['service_group']
+  mode '0775'
+  owner node['jenkins']['service_user']
+end
+
+jenkins_war_path = node['jenkins']['path']['war_file']
 remote_file jenkins_war_path do
   action :create
   checksum node['jenkins']['checksum']
   group 'root'
   mode '0755'
   owner 'root'
-  source node['jenkins']['url']
+  source node['jenkins']['url']['war']
 end
 
 consul_metrics_key = '13f716ae-9fcd-409a-9ca5-12461ab53405'

@@ -25,6 +25,10 @@ describe 'resource_build_master::jenkins' do
         )
     end
 
+    it 'creates the jenkins install directory' do
+      expect(chef_run).to create_directory('/usr/local/jenkins')
+    end
+
     it 'installs the jenkins war file' do
       expect(chef_run).to create_remote_file('/usr/local/jenkins/jenkins.war')
         .with(

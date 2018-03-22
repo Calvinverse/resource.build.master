@@ -53,6 +53,7 @@ jenkins_args =
   " --prefix=/#{proxy_path}"
 
 jenkins_user = node['jenkins']['service_user']
+jenkins_war_path = node['jenkins']['path']['war_file']
 run_jenkins_script = '/usr/local/jenkins/run_jenkins.sh'
 file run_jenkins_script do
   action :create

@@ -38,7 +38,8 @@ default['java']['accept_license_agreement'] = true
 default['jenkins']['path']['build_data'] = '/var/builds'
 default['jenkins']['path']['environment_file'] = '/etc/jenkins_environment'
 default['jenkins']['path']['home'] = '/var/jenkins'
-default['jenkins']['path']['war'] = '/usr/local/jenkins/jenkins.war'
+default['jenkins']['path']['war'] = '/usr/local/jenkins'
+default['jenkins']['path']['war_file'] = "#{node['jenkins']['path']['war']}/jenkins.war"
 
 default['jenkins']['consul']['service_name'] = 'builds'
 default['jenkins']['proxy_path'] = 'builds'
