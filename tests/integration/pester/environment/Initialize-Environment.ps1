@@ -61,6 +61,15 @@ function Set-ConsulKV
 {
     Write-Output "Setting consul key-values ..."
 
+    # Load config/environment/mail
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/environment/mail/smtp/host 'smtp.example.com'
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/environment/mail/suffix 'example.com'
+
+    # Load config/services/builds
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/builds/protocols/http/host 'active.builds'
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/builds/protocols/http/port '8080'
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/builds/url/proxy 'http://example.com/builds'
+
     # Load config/services/consul
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/consul/datacenter 'test-integration'
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/consul/domain 'integrationtest'
