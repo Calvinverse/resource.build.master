@@ -8,6 +8,50 @@
 #
 
 #
+# FLAG FILES
+#
+
+flag_config = '/var/log/jenkins_config.log'
+file flag_config do
+  action :create
+  content <<~TXT
+    NotInitialized
+  TXT
+end
+
+flag_location_config = '/var/log/jenkins_location_config.log'
+file flag_location_config do
+  action :create
+  content <<~TXT
+    NotInitialized
+  TXT
+end
+
+flag_mailer_config = '/var/log/jenkins_mailer_config.log'
+file flag_mailer_config do
+  action :create
+  content <<~TXT
+    NotInitialized
+  TXT
+end
+
+flag_rabbitmq_config = '/var/log/jenkins_rabbitmq_config.log'
+file flag_rabbitmq_config do
+  action :create
+  content <<~TXT
+    NotInitialized
+  TXT
+end
+
+flag_vault_config = '/var/log/jenkins_vault_config.log'
+file flag_vault_config do
+  action :create
+  content <<~TXT
+    NotInitialized
+  TXT
+end
+
+#
 # CONSUL-TEMPLATE FILES
 #
 
@@ -27,8 +71,6 @@ jenkins_slave_agent_port = node['jenkins']['port']['slave']
 # JENKINS CONFIGURATION
 #
 
-flag_config = '/var/log/jenkins_config.log'
-
 jenkins_config_script_template_file = node['jenkins']['consul_template']['config_script_file']
 file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" do
   action :create
@@ -37,8 +79,8 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
 
     {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
-    FLAG="#{flag_config}"
-    if [ ! -f $FLAG ]; then
+    FLAG=$(<#{flag_config})
+    if [ "$FLAG" == 'NotInitialized' ]; then
         echo 'Write the jenkins configuration ...'
         cat <<EOT > #{jenkins_home}/config.xml
         <?xml version='1.0' encoding='UTF-8'?>
@@ -222,7 +264,7 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
             systemctl reload #{jenkins_service_name}
         fi
 
-        touch $FLAG
+        echo 'Initialized' > #{flag_config}
     fi
 
     {{ else }}
@@ -310,8 +352,6 @@ end
 # LOCATION CONFIGURATION
 #
 
-flag_location_config = '/var/log/jenkins_location_config.log'
-
 jenkins_location_config_script_template_file = node['jenkins']['consul_template']['location_config_script_file']
 file "#{consul_template_template_path}/#{jenkins_location_config_script_template_file}" do
   action :create
@@ -320,8 +360,8 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
 
     {{ if keyExists "config/environment/mail/suffix" }}
     {{ if keyExists "config/services/builds/url/proxy" }}
-    FLAG="#{flag_location_config}"
-    if [ ! -f $FLAG ]; then
+    FLAG=$(<#{flag_location_config})
+    if [ "$FLAG" == 'NotInitialized' ]; then
         echo 'Write the jenkins vault configuration ...'
         cat <<EOT > #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
         <?xml version='1.0' encoding='UTF-8'?>
@@ -335,7 +375,7 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
             systemctl reload #{jenkins_service_name}
         fi
 
-        touch $FLAG
+        echo 'Initialized' > #{flag_location_config}
     fi
 
     {{ else }}
@@ -423,8 +463,6 @@ end
 # MAILER CONFIGURATION
 #
 
-flag_mailer_config = '/var/log/jenkins_mailer_config.log'
-
 jenkins_mailer_config_script_template_file = node['jenkins']['consul_template']['mailer_config_script_file']
 file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_file}" do
   action :create
@@ -434,8 +472,8 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
     {{ if keyExists "config/environment/mail/smtp/host" }}
     {{ if keyExists "config/environment/mail/suffix" }}
     {{ if keyExists "config/services/builds/url/proxy" }}
-    FLAG="#{flag_mailer_config}"
-    if [ ! -f $FLAG ]; then
+    FLAG=$(<#{flag_mailer_config})
+    if [ "$FLAG" == 'NotInitialized' ]; then
         echo 'Write the jenkins vault configuration ...'
         cat <<EOT > #{jenkins_home}/hudson.tasks.Mailer.xml
         <?xml version='1.0' encoding='UTF-8'?>
@@ -452,7 +490,7 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
             systemctl reload #{jenkins_service_name}
         fi
 
-        touch $FLAG
+        echo 'Initialized' > #{flag_mailer_config}
     fi
 
     {{ else }}
@@ -543,8 +581,6 @@ end
 # RABBITMQ CONFIGURATION
 #
 
-flag_rabbitmq_config = '/var/log/jenkins_rabbitmq_config.log'
-
 jenkins_rabbitmq_config_script_template_file = node['jenkins']['consul_template']['rabbitmq_config_script_file']
 file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template_file}" do
   action :create
@@ -553,8 +589,8 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
 
     {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
-    FLAG="#{flag_rabbitmq_config}"
-    if [ ! -f $FLAG ]; then
+    FLAG=$(<#{flag_rabbitmq_config})
+    if [ "$FLAG" == 'NotInitialized' ]; then
         echo 'Write the jenkins rabbitmq configuration ...'
         cat <<EOT > #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
         <?xml version='1.0' encoding='UTF-8'?>
@@ -589,7 +625,7 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
             systemctl reload #{jenkins_service_name}
         fi
 
-        touch $FLAG
+        echo 'Initialized' > #{flag_rabbitmq_config}
     fi
 
     {{ else }}
@@ -677,8 +713,6 @@ end
 # VAULT CONFIGURATION
 #
 
-flag_vault_config = '/var/log/jenkins_vault_config.log'
-
 jenkins_vault_config_script_template_file = node['jenkins']['consul_template']['vault_config_script_file']
 file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_file}" do
   action :create
@@ -687,8 +721,8 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
 
     {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
-    FLAG="#{flag_vault_config}"
-    if [ ! -f $FLAG ]; then
+    FLAG=$(<#{flag_vault_config})
+    if [ "$FLAG" == 'NotInitialized' ]; then
         echo 'Write the jenkins vault configuration ...'
         cat <<EOT > #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
         <?xml version='1.0' encoding='UTF-8'?>
@@ -704,7 +738,7 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
             systemctl reload #{jenkins_service_name}
         fi
 
-        touch $FLAG
+        echo 'Initialized' > #{flag_vault_config}
     fi
 
     {{ else }}
@@ -806,11 +840,11 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
     # {{ file "#{flag_rabbitmq_config}" }}
     # {{ file "#{flag_vault_config}" }}
 
-    if [ -f '#{flag_config}' ]; then
-      if [ -f '#{flag_location_config}' ]; then
-        if [ -f '#{flag_mailer_config}' ]; then
-          if [ -f '#{flag_rabbitmq_config}' ]; then
-            if [ -f '#{flag_vault_config}' ]; then
+    if [ "$(<#{flag_config})" == 'Initialized' ]; then
+      if [ "$(<#{flag_location_config})" == 'Initialized' ]; then
+        if [ "$(<#{flag_mailer_config})" == 'Initialized' ]; then
+          if [ "$(<#{flag_rabbitmq_config})" == 'Initialized' ]; then
+            if [ "$(<#{flag_vault_config})" == 'Initialized' ]; then
               if ( ! $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
                 systemctl enable #{jenkins_service_name}
 

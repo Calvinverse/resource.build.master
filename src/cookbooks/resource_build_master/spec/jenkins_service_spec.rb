@@ -97,9 +97,9 @@ describe 'resource_build_master::jenkins_service' do
         after: %w[network-online.target],
         description: 'Jenkins CI system',
         wanted_by: %w[multi-user.target],
-        exec_reload: 'curl http://localhost:8080/builds/reload',
+        exec_reload: '/usr/bin/curl http://localhost:8080/builds/reload',
         exec_start: '/usr/local/jenkins/run_jenkins.sh',
-        exec_stop: 'curl http://localhost:8080/builds/safeExit',
+        exec_stop: '/usr/bin/curl http://localhost:8080/builds/safeExit',
         restart: 'on-failure',
         user: 'jenkins'
       )

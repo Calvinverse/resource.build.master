@@ -2,17 +2,26 @@
 
 require 'spec_helper'
 
+flag_content = <<~CONF
+  NotInitialized
+CONF
+
 describe 'resource_build_master::jenkins_templates' do
   context 'adds the consul-template files for the jenkins configuration' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
+
+    it 'creates flag files for the jenkins configuration' do
+      expect(chef_run).to create_file('/var/log/jenkins_config.log')
+        .with_content(flag_content)
+    end
 
     jenkins_configuration_script_template_content = <<~CONF
       #!/bin/sh
 
       {{ if keyExists "config/services/consul/datacenter" }}
       {{ if keyExists "config/services/consul/domain" }}
-      FLAG="/var/log/jenkins_config.log"
-      if [ ! -f $FLAG ]; then
+      FLAG=$(</var/log/jenkins_config.log)
+      if [ "$FLAG" == 'NotInitialized' ]; then
           echo 'Write the jenkins configuration ...'
           cat <<EOT > /var/jenkins/config.xml
           <?xml version='1.0' encoding='UTF-8'?>
@@ -196,7 +205,7 @@ describe 'resource_build_master::jenkins_templates' do
               systemctl reload jenkins
           fi
 
-          touch $FLAG
+          echo 'Initialized' > /var/log/jenkins_config.log
       fi
 
       {{ else }}
@@ -285,13 +294,18 @@ describe 'resource_build_master::jenkins_templates' do
   context 'adds the consul-template files for the jenkins location configuration' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
+    it 'creates flag files for the jenkins location configuration' do
+      expect(chef_run).to create_file('/var/log/jenkins_location_config.log')
+        .with_content(flag_content)
+    end
+
     jenkins_location_configuration_script_template_content = <<~CONF
       #!/bin/sh
 
       {{ if keyExists "config/environment/mail/suffix" }}
       {{ if keyExists "config/services/builds/url/proxy" }}
-      FLAG="/var/log/jenkins_location_config.log"
-      if [ ! -f $FLAG ]; then
+      FLAG=$(</var/log/jenkins_location_config.log)
+      if [ "$FLAG" == 'NotInitialized' ]; then
           echo 'Write the jenkins vault configuration ...'
           cat <<EOT > /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
           <?xml version='1.0' encoding='UTF-8'?>
@@ -305,7 +319,7 @@ describe 'resource_build_master::jenkins_templates' do
               systemctl reload jenkins
           fi
 
-          touch $FLAG
+          echo 'Initialized' > /var/log/jenkins_location_config.log
       fi
 
       {{ else }}
@@ -394,14 +408,19 @@ describe 'resource_build_master::jenkins_templates' do
   context 'adds the consul-template files for the jenkins mailer configuration' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
+    it 'creates flag files for the jenkins mailer configuration' do
+      expect(chef_run).to create_file('/var/log/jenkins_mailer_config.log')
+        .with_content(flag_content)
+    end
+
     jenkins_mailer_configuration_script_template_content = <<~CONF
       #!/bin/sh
 
       {{ if keyExists "config/environment/mail/smtp/host" }}
       {{ if keyExists "config/environment/mail/suffix" }}
       {{ if keyExists "config/services/builds/url/proxy" }}
-      FLAG="/var/log/jenkins_mailer_config.log"
-      if [ ! -f $FLAG ]; then
+      FLAG=$(</var/log/jenkins_mailer_config.log)
+      if [ "$FLAG" == 'NotInitialized' ]; then
           echo 'Write the jenkins vault configuration ...'
           cat <<EOT > /var/jenkins/hudson.tasks.Mailer.xml
           <?xml version='1.0' encoding='UTF-8'?>
@@ -418,7 +437,7 @@ describe 'resource_build_master::jenkins_templates' do
               systemctl reload jenkins
           fi
 
-          touch $FLAG
+          echo 'Initialized' > /var/log/jenkins_mailer_config.log
       fi
 
       {{ else }}
@@ -510,13 +529,18 @@ describe 'resource_build_master::jenkins_templates' do
   context 'adds the consul-template files for the jenkins rabbitmq configuration' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
+    it 'creates flag files for the jenkins rabbitmq configuration' do
+      expect(chef_run).to create_file('/var/log/jenkins_rabbitmq_config.log')
+        .with_content(flag_content)
+    end
+
     jenkins_rabbitmq_configuration_script_template_content = <<~CONF
       #!/bin/sh
 
       {{ if keyExists "config/services/consul/datacenter" }}
       {{ if keyExists "config/services/consul/domain" }}
-      FLAG="/var/log/jenkins_rabbitmq_config.log"
-      if [ ! -f $FLAG ]; then
+      FLAG=$(</var/log/jenkins_rabbitmq_config.log)
+      if [ "$FLAG" == 'NotInitialized' ]; then
           echo 'Write the jenkins rabbitmq configuration ...'
           cat <<EOT > /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
           <?xml version='1.0' encoding='UTF-8'?>
@@ -551,7 +575,7 @@ describe 'resource_build_master::jenkins_templates' do
               systemctl reload jenkins
           fi
 
-          touch $FLAG
+          echo 'Initialized' > /var/log/jenkins_rabbitmq_config.log
       fi
 
       {{ else }}
@@ -640,13 +664,18 @@ describe 'resource_build_master::jenkins_templates' do
   context 'adds the consul-template files for the jenkins vault configuration' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
+    it 'creates flag files for the jenkins vault configuration' do
+      expect(chef_run).to create_file('/var/log/jenkins_vault_config.log')
+        .with_content(flag_content)
+    end
+
     jenkins_vault_configuration_script_template_content = <<~CONF
       #!/bin/sh
 
       {{ if keyExists "config/services/consul/datacenter" }}
       {{ if keyExists "config/services/consul/domain" }}
-      FLAG="/var/log/jenkins_vault_config.log"
-      if [ ! -f $FLAG ]; then
+      FLAG=$(</var/log/jenkins_vault_config.log)
+      if [ "$FLAG" == 'NotInitialized' ]; then
           echo 'Write the jenkins vault configuration ...'
           cat <<EOT > /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
           <?xml version='1.0' encoding='UTF-8'?>
@@ -662,7 +691,7 @@ describe 'resource_build_master::jenkins_templates' do
               systemctl reload jenkins
           fi
 
-          touch $FLAG
+          echo 'Initialized' > /var/log/jenkins_vault_config.log
       fi
 
       {{ else }}
@@ -762,11 +791,11 @@ describe 'resource_build_master::jenkins_templates' do
       # {{ file "/var/log/jenkins_rabbitmq_config.log" }}
       # {{ file "/var/log/jenkins_vault_config.log" }}
 
-      if [ -f '/var/log/jenkins_config.log' ]; then
-        if [ -f '/var/log/jenkins_location_config.log' ]; then
-          if [ -f '/var/log/jenkins_mailer_config.log' ]; then
-            if [ -f '/var/log/jenkins_rabbitmq_config.log' ]; then
-              if [ -f '/var/log/jenkins_vault_config.log' ]; then
+      if [ "$(</var/log/jenkins_config.log)" == 'Initialized' ]; then
+        if [ "$(</var/log/jenkins_location_config.log)" == 'Initialized' ]; then
+          if [ "$(</var/log/jenkins_mailer_config.log)" == 'Initialized' ]; then
+            if [ "$(</var/log/jenkins_rabbitmq_config.log)" == 'Initialized' ]; then
+              if [ "$(</var/log/jenkins_vault_config.log)" == 'Initialized' ]; then
                 if ( ! $(systemctl is-enabled --quiet jenkins) ); then
                   systemctl enable jenkins
 

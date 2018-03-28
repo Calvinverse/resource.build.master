@@ -126,9 +126,9 @@ systemd_service jenkins_service_name do
   requires %w[network-online.target]
   service do
     environment_file jenkins_environment_file
-    exec_reload "curl http://localhost:#{jenkins_http_port}/#{proxy_path}/reload"
+    exec_reload "/usr/bin/curl http://localhost:#{jenkins_http_port}/#{proxy_path}/reload"
     exec_start run_jenkins_script
-    exec_stop "curl http://localhost:#{jenkins_http_port}/#{proxy_path}/safeExit"
+    exec_stop "/usr/bin/curl http://localhost:#{jenkins_http_port}/#{proxy_path}/safeExit"
     restart 'on-failure'
   end
   user jenkins_user
