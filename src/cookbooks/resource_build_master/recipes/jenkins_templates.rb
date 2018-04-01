@@ -79,9 +79,9 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
 
     {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
-    FLAG=$(<#{flag_config})
-    if [ "$FLAG" == 'NotInitialized' ]; then
-        echo 'Write the jenkins configuration ...'
+    FLAG=$(cat #{flag_config})
+    if [ "$FLAG" = "NotInitialized" ]; then
+        echo "Write the jenkins configuration ..."
         cat <<EOT > #{jenkins_home}/config.xml
         <?xml version='1.0' encoding='UTF-8'?>
         <hudson>
@@ -260,18 +260,18 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
         </hudson>
         EOT
 
-        if ( ! $(systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
         fi
 
-        echo 'Initialized' > #{flag_config}
+        echo "Initialized" > #{flag_config}
     fi
 
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
   mode '755'
@@ -360,9 +360,9 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
 
     {{ if keyExists "config/environment/mail/suffix" }}
     {{ if keyExists "config/services/builds/url/proxy" }}
-    FLAG=$(<#{flag_location_config})
-    if [ "$FLAG" == 'NotInitialized' ]; then
-        echo 'Write the jenkins vault configuration ...'
+    FLAG=$(cat #{flag_location_config})
+    if [ "$FLAG" = "NotInitialized" ]; then
+        echo "Write the jenkins vault configuration ..."
         cat <<EOT > #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
         <?xml version='1.0' encoding='UTF-8'?>
         <jenkins.model.JenkinsLocationConfiguration>
@@ -371,18 +371,18 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
         </jenkins.model.JenkinsLocationConfiguration>
         EOT
 
-        if ( ! $(systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
         fi
 
-        echo 'Initialized' > #{flag_location_config}
+        echo "Initialized" > #{flag_location_config}
     fi
 
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
   mode '755'
@@ -472,9 +472,9 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
     {{ if keyExists "config/environment/mail/smtp/host" }}
     {{ if keyExists "config/environment/mail/suffix" }}
     {{ if keyExists "config/services/builds/url/proxy" }}
-    FLAG=$(<#{flag_mailer_config})
-    if [ "$FLAG" == 'NotInitialized' ]; then
-        echo 'Write the jenkins vault configuration ...'
+    FLAG=$(cat #{flag_mailer_config})
+    if [ "$FLAG" = "NotInitialized" ]; then
+        echo "Write the jenkins vault configuration ..."
         cat <<EOT > #{jenkins_home}/hudson.tasks.Mailer.xml
         <?xml version='1.0' encoding='UTF-8'?>
         <hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@1.19">
@@ -486,21 +486,21 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
         </hudson.tasks.Mailer_-DescriptorImpl>
         EOT
 
-        if ( ! $(systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
         fi
 
-        echo 'Initialized' > #{flag_mailer_config}
+        echo "Initialized" > #{flag_mailer_config}
     fi
 
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
   mode '755'
@@ -589,9 +589,10 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
 
     {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
-    FLAG=$(<#{flag_rabbitmq_config})
-    if [ "$FLAG" == 'NotInitialized' ]; then
-        echo 'Write the jenkins rabbitmq configuration ...'
+    {{ if keyExists "config/services/queue/protocols/amqp/host" }}
+    FLAG=$(cat #{flag_rabbitmq_config})
+    if [ "$FLAG" = "NotInitialized" ]; then
+        echo "Write the jenkins rabbitmq configuration ..."
         cat <<EOT > #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
         <?xml version='1.0' encoding='UTF-8'?>
         <org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
@@ -621,18 +622,21 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
         </org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration>
         EOT
 
-        if ( ! $(systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
         fi
 
-        echo 'Initialized' > #{flag_rabbitmq_config}
+        echo "Initialized" > #{flag_rabbitmq_config}
     fi
 
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
   mode '755'
@@ -721,9 +725,9 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
 
     {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
-    FLAG=$(<#{flag_vault_config})
-    if [ "$FLAG" == 'NotInitialized' ]; then
-        echo 'Write the jenkins vault configuration ...'
+    FLAG=$(cat #{flag_vault_config})
+    if [ "$FLAG" = "NotInitialized" ]; then
+        echo "Write the jenkins vault configuration ..."
         cat <<EOT > #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
         <?xml version='1.0' encoding='UTF-8'?>
         <com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration plugin="hashicorp-vault-plugin@2.1.0">
@@ -734,18 +738,18 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
         </com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration>
         EOT
 
-        if ( ! $(systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
         fi
 
-        echo 'Initialized' > #{flag_vault_config}
+        echo "Initialized" > #{flag_vault_config}
     fi
 
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
     {{ else }}
-    echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
   mode '755'
@@ -840,16 +844,16 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
     # {{ file "#{flag_rabbitmq_config}" }}
     # {{ file "#{flag_vault_config}" }}
 
-    if [ "$(<#{flag_config})" == 'Initialized' ]; then
-      if [ "$(<#{flag_location_config})" == 'Initialized' ]; then
-        if [ "$(<#{flag_mailer_config})" == 'Initialized' ]; then
-          if [ "$(<#{flag_rabbitmq_config})" == 'Initialized' ]; then
-            if [ "$(<#{flag_vault_config})" == 'Initialized' ]; then
+      if [ "$(cat #{flag_config})" = "Initialized" ]; then
+        if [ "$(cat #{flag_location_config})" = "Initialized" ]; then
+          if [ "$(cat #{flag_mailer_config})" = "Initialized" ]; then
+            if [ "$(cat #{flag_rabbitmq_config})" = "Initialized" ]; then
+              if [ "$(cat #{flag_vault_config})" = "Initialized" ]; then
               if ( ! $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
                 systemctl enable #{jenkins_service_name}
 
                 while true; do
-                  if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+                    if ( (systemctl is-enabled --quiet #{jenkins_service_name}) ); then
                       break
                   fi
 
@@ -857,11 +861,11 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
                 done
               fi
 
-              if ( ! $(systemctl is-active --quiet #{jenkins_service_name}) ); then
+                if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
                 systemctl start #{jenkins_service_name}
 
                 while true; do
-                  if ( $(systemctl is-active --quiet #{jenkins_service_name}) ); then
+                    if ( (systemctl is-active --quiet #{jenkins_service_name}) ); then
                       break
                   fi
 

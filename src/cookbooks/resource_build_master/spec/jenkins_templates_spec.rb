@@ -20,9 +20,9 @@ describe 'resource_build_master::jenkins_templates' do
 
       {{ if keyExists "config/services/consul/datacenter" }}
       {{ if keyExists "config/services/consul/domain" }}
-      FLAG=$(</var/log/jenkins_config.log)
-      if [ "$FLAG" == 'NotInitialized' ]; then
-          echo 'Write the jenkins configuration ...'
+      FLAG=$(cat /var/log/jenkins_config.log)
+      if [ "$FLAG" = "NotInitialized" ]; then
+          echo "Write the jenkins configuration ..."
           cat <<EOT > /var/jenkins/config.xml
           <?xml version='1.0' encoding='UTF-8'?>
           <hudson>
@@ -201,18 +201,18 @@ describe 'resource_build_master::jenkins_templates' do
           </hudson>
           EOT
 
-          if ( ! $(systemctl is-active --quiet jenkins) ); then
+          if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
           fi
 
-          echo 'Initialized' > /var/log/jenkins_config.log
+          echo "Initialized" > /var/log/jenkins_config.log
       fi
 
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
     CONF
     it 'creates jenkins configuration script template file in the consul-template template directory' do
@@ -304,9 +304,9 @@ describe 'resource_build_master::jenkins_templates' do
 
       {{ if keyExists "config/environment/mail/suffix" }}
       {{ if keyExists "config/services/builds/url/proxy" }}
-      FLAG=$(</var/log/jenkins_location_config.log)
-      if [ "$FLAG" == 'NotInitialized' ]; then
-          echo 'Write the jenkins vault configuration ...'
+      FLAG=$(cat /var/log/jenkins_location_config.log)
+      if [ "$FLAG" = "NotInitialized" ]; then
+          echo "Write the jenkins vault configuration ..."
           cat <<EOT > /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
           <?xml version='1.0' encoding='UTF-8'?>
           <jenkins.model.JenkinsLocationConfiguration>
@@ -315,18 +315,18 @@ describe 'resource_build_master::jenkins_templates' do
           </jenkins.model.JenkinsLocationConfiguration>
           EOT
 
-          if ( ! $(systemctl is-active --quiet jenkins) ); then
+          if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
           fi
 
-          echo 'Initialized' > /var/log/jenkins_location_config.log
+          echo "Initialized" > /var/log/jenkins_location_config.log
       fi
 
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
     CONF
     it 'creates jenkins location configuration script template file in the consul-template template directory' do
@@ -419,9 +419,9 @@ describe 'resource_build_master::jenkins_templates' do
       {{ if keyExists "config/environment/mail/smtp/host" }}
       {{ if keyExists "config/environment/mail/suffix" }}
       {{ if keyExists "config/services/builds/url/proxy" }}
-      FLAG=$(</var/log/jenkins_mailer_config.log)
-      if [ "$FLAG" == 'NotInitialized' ]; then
-          echo 'Write the jenkins vault configuration ...'
+      FLAG=$(cat /var/log/jenkins_mailer_config.log)
+      if [ "$FLAG" = "NotInitialized" ]; then
+          echo "Write the jenkins vault configuration ..."
           cat <<EOT > /var/jenkins/hudson.tasks.Mailer.xml
           <?xml version='1.0' encoding='UTF-8'?>
           <hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@1.19">
@@ -433,21 +433,21 @@ describe 'resource_build_master::jenkins_templates' do
           </hudson.tasks.Mailer_-DescriptorImpl>
           EOT
 
-          if ( ! $(systemctl is-active --quiet jenkins) ); then
+          if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
           fi
 
-          echo 'Initialized' > /var/log/jenkins_mailer_config.log
+          echo "Initialized" > /var/log/jenkins_mailer_config.log
       fi
 
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
     CONF
     it 'creates jenkins mailer configuration script template file in the consul-template template directory' do
@@ -539,9 +539,10 @@ describe 'resource_build_master::jenkins_templates' do
 
       {{ if keyExists "config/services/consul/datacenter" }}
       {{ if keyExists "config/services/consul/domain" }}
-      FLAG=$(</var/log/jenkins_rabbitmq_config.log)
-      if [ "$FLAG" == 'NotInitialized' ]; then
-          echo 'Write the jenkins rabbitmq configuration ...'
+      {{ if keyExists "config/services/queue/protocols/amqp/host" }}
+      FLAG=$(cat /var/log/jenkins_rabbitmq_config.log)
+      if [ "$FLAG" = "NotInitialized" ]; then
+          echo "Write the jenkins rabbitmq configuration ..."
           cat <<EOT > /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
           <?xml version='1.0' encoding='UTF-8'?>
           <org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
@@ -571,18 +572,21 @@ describe 'resource_build_master::jenkins_templates' do
           </org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration>
           EOT
 
-          if ( ! $(systemctl is-active --quiet jenkins) ); then
+          if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
           fi
 
-          echo 'Initialized' > /var/log/jenkins_rabbitmq_config.log
+          echo "Initialized" > /var/log/jenkins_rabbitmq_config.log
       fi
 
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
+      {{ end }}
+      {{ else }}
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
     CONF
     it 'creates jenkins rabbitmq configuration script template file in the consul-template template directory' do
@@ -674,9 +678,9 @@ describe 'resource_build_master::jenkins_templates' do
 
       {{ if keyExists "config/services/consul/datacenter" }}
       {{ if keyExists "config/services/consul/domain" }}
-      FLAG=$(</var/log/jenkins_vault_config.log)
-      if [ "$FLAG" == 'NotInitialized' ]; then
-          echo 'Write the jenkins vault configuration ...'
+      FLAG=$(cat /var/log/jenkins_vault_config.log)
+      if [ "$FLAG" = "NotInitialized" ]; then
+          echo "Write the jenkins vault configuration ..."
           cat <<EOT > /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
           <?xml version='1.0' encoding='UTF-8'?>
           <com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration plugin="hashicorp-vault-plugin@2.1.0">
@@ -687,18 +691,18 @@ describe 'resource_build_master::jenkins_templates' do
           </com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration>
           EOT
 
-          if ( ! $(systemctl is-active --quiet jenkins) ); then
+          if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
           fi
 
-          echo 'Initialized' > /var/log/jenkins_vault_config.log
+          echo "Initialized" > /var/log/jenkins_vault_config.log
       fi
 
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
       {{ else }}
-      echo 'Not all Consul K-V values are available. Will not start Jenkins.'
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
     CONF
     it 'creates jenkins vault configuration script template file in the consul-template template directory' do
@@ -791,16 +795,16 @@ describe 'resource_build_master::jenkins_templates' do
       # {{ file "/var/log/jenkins_rabbitmq_config.log" }}
       # {{ file "/var/log/jenkins_vault_config.log" }}
 
-      if [ "$(</var/log/jenkins_config.log)" == 'Initialized' ]; then
-        if [ "$(</var/log/jenkins_location_config.log)" == 'Initialized' ]; then
-          if [ "$(</var/log/jenkins_mailer_config.log)" == 'Initialized' ]; then
-            if [ "$(</var/log/jenkins_rabbitmq_config.log)" == 'Initialized' ]; then
-              if [ "$(</var/log/jenkins_vault_config.log)" == 'Initialized' ]; then
+        if [ "$(cat /var/log/jenkins_config.log)" = "Initialized" ]; then
+          if [ "$(cat /var/log/jenkins_location_config.log)" = "Initialized" ]; then
+            if [ "$(cat /var/log/jenkins_mailer_config.log)" = "Initialized" ]; then
+              if [ "$(cat /var/log/jenkins_rabbitmq_config.log)" = "Initialized" ]; then
+                if [ "$(cat /var/log/jenkins_vault_config.log)" = "Initialized" ]; then
                 if ( ! $(systemctl is-enabled --quiet jenkins) ); then
                   systemctl enable jenkins
 
                   while true; do
-                    if ( $(systemctl is-enabled --quiet jenkins) ); then
+                      if ( (systemctl is-enabled --quiet jenkins) ); then
                         break
                     fi
 
@@ -808,11 +812,11 @@ describe 'resource_build_master::jenkins_templates' do
                   done
                 fi
 
-                if ( ! $(systemctl is-active --quiet jenkins) ); then
+                  if ( ! (systemctl is-active --quiet jenkins) ); then
                   systemctl start jenkins
 
                   while true; do
-                    if ( $(systemctl is-active --quiet jenkins) ); then
+                      if ( (systemctl is-active --quiet jenkins) ); then
                         break
                     fi
 
