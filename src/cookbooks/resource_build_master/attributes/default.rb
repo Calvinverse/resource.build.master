@@ -55,6 +55,9 @@ default['jenkins']['service_group'] = 'jenkins'
 default['jenkins']['consul_template']['config_script_file'] = 'jenkins_configuration.ctmpl'
 default['jenkins']['consul_template']['config_file'] = '/tmp/jenkins_configuration.sh'
 
+default['jenkins']['consul_template']['groovy_ad_script_file'] = 'jenkins_groovy_ad.ctmpl'
+default['jenkins']['consul_template']['groovy_ad_file'] = '/tmp/jenkins_groovy_ad.sh'
+
 default['jenkins']['consul_template']['location_config_script_file'] = 'jenkins_location_configuration.ctmpl'
 default['jenkins']['consul_template']['location_config_file'] = '/tmp/jenkins_location_configuration.sh'
 
