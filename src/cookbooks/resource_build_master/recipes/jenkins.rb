@@ -32,9 +32,13 @@ end
 
 remote_directory jenkins_home do
   action :create
+  files_group jenkins_group
+  files_mode '0755'
+  files_owner jenkins_user
   group jenkins_group
   owner jenkins_user
   mode '0755'
+  recursive true
   source 'jenkins'
 end
 
