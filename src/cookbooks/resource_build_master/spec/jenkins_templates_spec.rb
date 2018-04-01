@@ -116,7 +116,10 @@ describe 'resource_build_master::jenkins_templates' do
                 </role>
               </roleMap>
             </authorizationStrategy>
-            <securityRealm class="hudson.security.SecurityRealm$None"/>
+        <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+          <disableSignup>true</disableSignup>
+          <enableCaptcha>false</enableCaptcha>
+        </securityRealm>
             <disableRememberMe>false</disableRememberMe>
             <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
               <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
@@ -127,6 +130,11 @@ describe 'resource_build_master::jenkins_templates' do
             <enabledAgentProtocols>
               <string>JNLP4-connect</string>
             </enabledAgentProtocols>
+        <disabledAgentProtocols>
+          <string>JNLP-connect</string>
+          <string>JNLP2-connect</string>
+          <string>JNLP3-connect</string>
+        </disabledAgentProtocols>
 
             <!-- JENKINS DIRECTORIES -->
             <!--

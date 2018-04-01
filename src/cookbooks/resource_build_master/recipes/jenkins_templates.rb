@@ -175,7 +175,10 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
               </role>
             </roleMap>
           </authorizationStrategy>
-          <securityRealm class="hudson.security.SecurityRealm$None"/>
+      <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+        <disableSignup>true</disableSignup>
+        <enableCaptcha>false</enableCaptcha>
+      </securityRealm>
           <disableRememberMe>false</disableRememberMe>
           <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
             <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
@@ -186,18 +189,22 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
           <enabledAgentProtocols>
             <string>JNLP4-connect</string>
           </enabledAgentProtocols>
+      <disabledAgentProtocols>
+        <string>JNLP-connect</string>
+        <string>JNLP2-connect</string>
+        <string>JNLP3-connect</string>
+      </disabledAgentProtocols>
 
           <!-- JENKINS DIRECTORIES -->
           <!--
                 The global directory where the job workspaces are located on the master. Since we don't run
                 jobs on the master we don't care where the workspaces are placed. A temp directory will do
             -->
-          <workspaceDir>/tmp/jenkins/workspace/${ITEM_FULL_NAME}</workspaceDir>
+      <workspaceDir>/tmp/jenkins/workspace/\${ITEM_FULL_NAME}</workspaceDir>
           <!--
-                The global directory where the build data (logs etc.) will be kept. These should be in the
-                directory that is exposed as a volume so that we can back it up.
+            The global directory where the build data (logs etc.) will be kept.
             -->
-          <buildsDir>#{jenkins_build_data_path}/${ITEM_FULL_NAME}</buildsDir>
+      <buildsDir>#{jenkins_build_data_path}/\${ITEM_FULL_NAME}</buildsDir>
 
           <!-- MASTER EXECUTORS -->
           <!--
