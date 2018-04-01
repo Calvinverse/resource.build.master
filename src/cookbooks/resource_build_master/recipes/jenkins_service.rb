@@ -8,6 +8,14 @@
 #
 
 #
+# INSTALL THE CALCULATOR
+#
+
+apt_package 'bc' do
+  action :install
+end
+
+#
 # SYSTEMD SERVICE
 #
 
@@ -74,15 +82,12 @@ file run_jenkins_script do
     # ==========================================================
 
     max_memory() {
-      max_mem=$(free -m | grep -oP '\d+' | head -n 1)
+      max_mem=$(free -m | grep -oP '\\d+' | head -n 1)
       echo "${max_mem}"
     }
 
     # Start JVM
     startup() {
-      # Initialize environment
-      local_dir="/opt/java/run"
-
       echo "Determining max memory usage ..."
       java_max_memory=""
 
@@ -90,8 +95,10 @@ file run_jenkins_script do
       # given (default is 75%)
       max_mem="$(max_memory)"
       if [ "x${max_mem}" != "x0" ]; then
-        ratio=-75
-        mx=$(echo "${max_mem} ${ratio} 1048576" | awk '{printf "%d\n" , ($1*$2)/(100*$3) + 0.5}')
+        ratio=70
+
+        # for some reason the result of the calculation comes up as negative, so we multiply by -1 ...
+        mx=$(echo "-1 * (${max_mem} * ${ratio} / 100 + 0.5)" | bc | awk '{printf("%d\\n",$1 + 0.5)}')
         java_max_memory="-Xmx${mx}m"
 
         echo "Maximum memory for VM set to ${max_mem}. Setting max memory for java to ${mx} Mb"
