@@ -90,7 +90,7 @@ describe 'resource_build_master::jenkins_templates' do
         .with_content(jenkins_groovy_ad_script_template_content)
     end
 
-    consul_template_jenkins_configuration_content = <<~CONF
+    consul_template_jenkins_groovy_ad_configuration_content = <<~CONF
       # This block defines the configuration for a template. Unlike other blocks,
       # this block may be specified multiple times to configure multiple templates.
       # It is also possible to configure templates via the CLI directly.
@@ -156,8 +156,8 @@ describe 'resource_build_master::jenkins_templates' do
       }
     CONF
     it 'creates jenkins_configuration.hcl in the consul-template template directory' do
-      expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_configuration.hcl')
-        .with_content(consul_template_jenkins_configuration_content)
+      expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_groovy_ad.hcl')
+        .with_content(consul_template_jenkins_groovy_ad_configuration_content)
     end
   end
 
@@ -298,8 +298,7 @@ describe 'resource_build_master::jenkins_templates' do
           -->
         <workspaceDir>/tmp/jenkins/workspace/${ITEM_FULL_NAME}</workspaceDir>
         <!--
-              The global directory where the build data (logs etc.) will be kept. These should be in the
-              directory that is exposed as a volume so that we can back it up.
+              The global directory where the build data (logs etc.) will be kept.
           -->
         <buildsDir>/var/builds/${ITEM_FULL_NAME}</buildsDir>
 

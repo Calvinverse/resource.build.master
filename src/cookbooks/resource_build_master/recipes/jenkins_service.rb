@@ -54,6 +54,20 @@ jenkins_java_args =
   ' -Djenkins.CLI.disabled=true' \
   ' -Djenkins.install.runSetupWizard=false'
 
+# Set the Jolokia jar as an agent so that we can export the JMX metrics to influx
+# For the settings see here: https://jolokia.org/reference/html/agents.html#agents-jvm
+jolokia_jar_path = node['jolokia']['path']['jar_file']
+jolokia_agent_context = node['jolokia']['agent']['context']
+jolokia_agent_host = node['jolokia']['agent']['host']
+jolokia_agent_port = node['jolokia']['agent']['port']
+jenkins_metrics_args =
+  "-javaagent:#{jolokia_jar_path}=" \
+  'protocol=http' \
+  ",host=#{jolokia_agent_host}" \
+  ",port=#{jolokia_agent_port}" \
+  ",agentContext=#{jolokia_agent_context}" \
+  ',discoveryEnabled=false'
+
 # Set jenkins to be served at http://localhost:8080/builds
 proxy_path = node['jenkins']['proxy_path']
 jenkins_args =
@@ -109,8 +123,8 @@ file run_jenkins_script do
       user_java_opts="#{java_server_args} #{java_g1_gc_args} #{java_awt_args} #{jenkins_java_args}"
       user_java_jar_opts="#{jenkins_args}"
 
-      echo exec /sbin/setuser #{jenkins_user} java ${user_java_opts} ${java_max_memory} ${java_diagnostics} -jar #{jenkins_war_path} ${user_java_jar_opts}
-      exec /sbin/setuser #{jenkins_user} java ${user_java_opts} ${java_max_memory} ${java_diagnostics} -jar #{jenkins_war_path} ${user_java_jar_opts}
+      echo exec java ${user_java_opts} ${java_max_memory} ${java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
+      exec java ${user_java_opts} ${java_max_memory} ${java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
     }
 
     # =============================================================================

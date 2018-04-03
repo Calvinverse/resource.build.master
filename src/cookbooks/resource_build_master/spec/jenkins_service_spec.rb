@@ -26,12 +26,19 @@ describe 'resource_build_master::jenkins_service' do
       ' -Djenkins.CLI.disabled=true' \
       ' -Djenkins.install.runSetupWizard=false'
 
+    jenkins_metrics_args =
+      '-javaagent:/usr/local/jolokia/jolokia.jar=' \
+      'protocol=http' \
+      ',host=localhost' \
+      ',port=8090' \
+      ',agentContext=jenkins' \
+      ',discoveryEnabled=false'
+
     # Set jenkins to be served at http://localhost:8080/builds
     jenkins_args =
       '--httpPort=8080' \
       ' --prefix=/builds'
 
-    jenkins_user = 'jenkins'
     jenkins_war_path = '/usr/local/jenkins/jenkins.war'
     jenkins_run_script_content = <<~SH
       #!/bin/sh
@@ -77,8 +84,8 @@ describe 'resource_build_master::jenkins_service' do
         user_java_opts="#{java_server_args} #{java_g1_gc_args} #{java_awt_args} #{jenkins_java_args}"
         user_java_jar_opts="#{jenkins_args}"
 
-        echo exec /sbin/setuser #{jenkins_user} java ${user_java_opts} ${java_max_memory} ${java_diagnostics} -jar #{jenkins_war_path} ${user_java_jar_opts}
-        exec /sbin/setuser #{jenkins_user} java ${user_java_opts} ${java_max_memory} ${java_diagnostics} -jar #{jenkins_war_path} ${user_java_jar_opts}
+        echo exec java ${user_java_opts} ${java_max_memory} ${java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
+        exec java ${user_java_opts} ${java_max_memory} ${java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
       }
 
       # =============================================================================

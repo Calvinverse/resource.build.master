@@ -166,7 +166,7 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
 end
 
 jenkins_groovy_ad_script_file = node['jenkins']['consul_template']['groovy_ad_file']
-file "#{consul_template_config_path}/jenkins_configuration.hcl" do
+file "#{consul_template_config_path}/jenkins_groovy_ad.hcl" do
   action :create
   content <<~HCL
     # This block defines the configuration for a template. Unlike other blocks,
