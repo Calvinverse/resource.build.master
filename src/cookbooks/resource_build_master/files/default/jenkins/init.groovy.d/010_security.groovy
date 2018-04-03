@@ -65,8 +65,6 @@ if (authStrategy instanceof RoleBasedAuthorizationStrategy)
                 println "Adding: " + nodeUser + " to role: " + roleName + " ..."
                 roleAuthStrategy.assignRole(RoleBasedAuthorizationStrategy.GLOBAL, roleEntry.getKey(), nodeUser);
             }
-
-            instance.save()
         }
         else
         {
@@ -94,8 +92,6 @@ if (authStrategy instanceof RoleBasedAuthorizationStrategy)
                 println "Adding: " + nodeUser + " to role: " + roleName + " ..."
                 roleAuthStrategy.assignRole(RoleBasedAuthorizationStrategy.GLOBAL, roleEntry.getKey(), nodeUser);
             }
-
-            instance.save()
         }
         else
         {
@@ -106,6 +102,8 @@ if (authStrategy instanceof RoleBasedAuthorizationStrategy)
     {
         println "No agent roles found!"
     }
+
+    instance.save()
 }
 else
 {

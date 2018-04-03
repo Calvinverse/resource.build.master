@@ -22,7 +22,7 @@ describe 'resource_build_master::jenkins_templates' do
       FLAG=$(cat /var/log/jenkins_groovy_ad.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins active directory groovy script ..."
-          cat <<EOT > /var/jenkins/init.groovy.d/activedirectory.groovy
+          cat <<EOT > /var/jenkins/init.groovy.d/050_activedirectory.groovy
       import hudson.plugins.active_directory.*
       import jenkins.model.*
 
