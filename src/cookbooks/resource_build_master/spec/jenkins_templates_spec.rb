@@ -45,7 +45,7 @@ describe 'resource_build_master::jenkins_templates' do
         "{{ key "config/environment/directory/users/bindcn" }}",
 
         // bindPassword
-        {{ with secret "secrets/environment/directory/users/bind" }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }},
+        {{ with secret "secret/environment/directory/users/bind" }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }},
 
         // server
         "",

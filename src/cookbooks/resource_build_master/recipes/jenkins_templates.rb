@@ -123,7 +123,7 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
       "{{ key "config/environment/directory/users/bindcn" }}",
 
       // bindPassword
-      {{ with secret "secrets/environment/directory/users/bind" }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }},
+      {{ with secret "secret/environment/directory/users/bind" }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }},
 
       // server
       "",
