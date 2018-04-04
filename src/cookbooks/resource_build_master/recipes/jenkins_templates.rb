@@ -100,7 +100,7 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
     FLAG=$(cat #{flag_groovy_ad})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins active directory groovy script ..."
-        cat <<EOT > #{jenkins_home}/init.groovy.d/050_activedirectory.groovy
+        cat <<EOT > #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
     import hudson.plugins.active_directory.*
     import jenkins.model.*
 
