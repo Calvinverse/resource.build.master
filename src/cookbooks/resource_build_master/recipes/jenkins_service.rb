@@ -111,8 +111,7 @@ file run_jenkins_script do
       if [ "x${max_mem}" != "x0" ]; then
         ratio=70
 
-        # for some reason the result of the calculation comes up as negative, so we multiply by -1 ...
-        mx=$(echo "-1 * (${max_mem} * ${ratio} / 100 + 0.5)" | bc | awk '{printf("%d\\n",$1 + 0.5)}')
+        mx=$(echo "(${max_mem} * ${ratio} / 100 + 0.5)" | bc | awk '{printf("%d\\n",$1 + 0.5)}')
         java_max_memory="-Xmx${mx}m"
 
         echo "Maximum memory for VM set to ${max_mem}. Setting max memory for java to ${mx} Mb"
