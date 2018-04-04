@@ -717,7 +717,7 @@ describe 'resource_build_master::jenkins_templates' do
       </urlValidator>
       <enableConsumer>true</enableConsumer>
       <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/builds</serviceUri>
-      {{ with secret "rabbitmq/creds/builds.reader" }}
+      {{ with secret "rabbitmq/creds/builds.queue.reader" }}
       {{ if .Data.password }}
           <userName>{{ .Data.username }}</userName>
           <userPassword>{{ .Data.password }}</userPassword>
