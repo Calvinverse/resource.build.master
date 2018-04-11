@@ -85,8 +85,8 @@ default['jenkins']['url']['plugins'] = 'https://updates.jenkins.io/download/plug
 default['jolokia']['path']['jar'] = '/usr/local/jolokia'
 default['jolokia']['path']['jar_file'] = "#{node['jolokia']['path']['jar']}/jolokia.jar"
 
-default['jolokia']['agent']['context'] = 'jenkins'
-default['jolokia']['agent']['host'] = 'localhost'
+default['jolokia']['agent']['context'] = 'jolokia' # Set this to default because the runtime gets angry otherwise
+default['jolokia']['agent']['host'] = '127.0.0.1' # Linux prefers going to IPv6, but Jolokia hates IPv6
 default['jolokia']['agent']['port'] = 8090
 
 default['jolokia']['telegraf']['consul_template_inputs_file'] = 'telegraf_jolokia_inputs.ctmpl'

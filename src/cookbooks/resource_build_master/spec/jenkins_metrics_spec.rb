@@ -29,7 +29,7 @@ describe 'resource_build_master::jenkins_metrics' do
       ###############################################################################
 
       [[inputs.jolokia2_agent]]
-      urls = ["http://localhost:8090/jenkins"]
+      urls = ["http://127.0.0.1:8090/jolokia"]
 
       [[inputs.jolokia2_agent.metric]]
         name  = "jvm_runtime"

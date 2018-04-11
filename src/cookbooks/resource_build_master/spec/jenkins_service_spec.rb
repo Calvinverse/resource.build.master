@@ -18,6 +18,8 @@ describe 'resource_build_master::jenkins_service' do
       ' -XX:G1SummarizeRSetStatsPeriod=1'
     java_awt_args = '-Djava.awt.headless=true'
 
+    java_ipv4_args = '-Djava.net.preferIPv4Stack=true'
+
     jenkins_java_args =
       '-Dhudson.model.UpdateCenter.never=true' \
       ' -Dhudson.model.DownloadService.never=true' \
@@ -29,9 +31,8 @@ describe 'resource_build_master::jenkins_service' do
     jenkins_metrics_args =
       '-javaagent:/usr/local/jolokia/jolokia.jar=' \
       'protocol=http' \
-      ',host=localhost' \
+      ',host=127.0.0.1' \
       ',port=8090' \
-      ',agentContext=jenkins' \
       ',discoveryEnabled=false'
 
     # Set jenkins to be served at http://localhost:8080/builds
@@ -80,7 +81,7 @@ describe 'resource_build_master::jenkins_service' do
 
         java_diagnostics="-XX:NativeMemoryTracking=summary -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UnlockDiagnosticVMOptions"
 
-        user_java_opts="#{java_server_args} #{java_g1_gc_args} #{java_awt_args} #{jenkins_java_args}"
+        user_java_opts="#{java_server_args} #{java_g1_gc_args} #{java_awt_args} #{java_ipv4_args} #{jenkins_java_args}"
         user_java_jar_opts="#{jenkins_args}"
 
         echo exec java ${user_java_opts} ${java_max_memory} ${java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}

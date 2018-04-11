@@ -37,7 +37,11 @@ java_g1_gc_args =
   ' -XX:G1NewSizePercent=20' \
   ' -XX:+UnlockDiagnosticVMOptions' \
   ' -XX:G1SummarizeRSetStatsPeriod=1'
+
 java_awt_args = '-Djava.awt.headless=true'
+
+# Make sure java prefers IPv4 over IPv6 because Jolokia doesn't like IPv6
+java_ipv4_args = '-Djava.net.preferIPv4Stack=true'
 
 # Settings (from here: https://wiki.jenkins-ci.org/display/JENKINS/Features+controlled+by+system+properties)
 # -hudson.model.UpdateCenter.never -> never download new jenkins versions
@@ -57,7 +61,6 @@ jenkins_java_args =
 # Set the Jolokia jar as an agent so that we can export the JMX metrics to influx
 # For the settings see here: https://jolokia.org/reference/html/agents.html#agents-jvm
 jolokia_jar_path = node['jolokia']['path']['jar_file']
-jolokia_agent_context = node['jolokia']['agent']['context']
 jolokia_agent_host = node['jolokia']['agent']['host']
 jolokia_agent_port = node['jolokia']['agent']['port']
 jenkins_metrics_args =
@@ -65,7 +68,6 @@ jenkins_metrics_args =
   'protocol=http' \
   ",host=#{jolokia_agent_host}" \
   ",port=#{jolokia_agent_port}" \
-  ",agentContext=#{jolokia_agent_context}" \
   ',discoveryEnabled=false'
 
 # Set jenkins to be served at http://localhost:8080/builds
@@ -119,7 +121,7 @@ file run_jenkins_script do
 
       java_diagnostics="-XX:NativeMemoryTracking=summary -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UnlockDiagnosticVMOptions"
 
-      user_java_opts="#{java_server_args} #{java_g1_gc_args} #{java_awt_args} #{jenkins_java_args}"
+      user_java_opts="#{java_server_args} #{java_g1_gc_args} #{java_awt_args} #{java_ipv4_args} #{jenkins_java_args}"
       user_java_jar_opts="#{jenkins_args}"
 
       echo exec java ${user_java_opts} ${java_max_memory} ${java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}

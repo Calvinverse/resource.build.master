@@ -23,9 +23,9 @@ jolokia_jar_path = node['jolokia']['path']['jar_file']
 remote_file jolokia_jar_path do
   action :create
   checksum node['jolokia']['checksum']
-  group 'root'
+  group node['jolokia']['service_group']
   mode '0755'
-  owner 'root'
+  owner node['jolokia']['service_user']
   source node['jolokia']['url']['jar']
 end
 
