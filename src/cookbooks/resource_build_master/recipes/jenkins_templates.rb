@@ -105,7 +105,21 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
     import jenkins.model.*
 
     def instance = Jenkins.getInstance();
-    def ActiveDirectoryDomain adDomain = new ActiveDirectoryDomain("{{ key "config/environment/directory/name" }}");
+    def ActiveDirectoryDomain adDomain = new ActiveDirectoryDomain(
+      // name
+      "{{ key "config/environment/directory/name" }}",
+
+      // servers
+      "{{ range ls "config/environment/directory/endpoints/hosts" }}{{ .Value }},{{ end }}",
+
+      // site
+      "",
+
+      // bindName,
+      "{{ key "config/environment/directory/users/bindcn" }}",
+
+      // bindPassword
+      {{ with secret "secret/environment/directory/users/bind" }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }});
     def domains = new ArrayList<ActiveDirectoryDomain>();
     domains.add(adDomain);
 
@@ -120,10 +134,10 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
       "",
 
       // bindName
-      "{{ key "config/environment/directory/users/bindcn" }}",
+      "",
 
       // bindPassword
-      {{ with secret "secret/environment/directory/users/bind" }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }},
+      "",
 
       // server
       "",
@@ -147,7 +161,7 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
       null,
 
       // internalUsersDatabase: Note that this user name should be updated if the admin user name changes
-      "admin")
+      new ActiveDirectoryInternalUsersDatabase("admin"));
 
     instance.setSecurityRealm(securityRealm)
     instance.save()
