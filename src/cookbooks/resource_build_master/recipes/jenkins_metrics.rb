@@ -54,13 +54,146 @@ file "#{consul_template_template_path}/#{telegraf_jolokia_inputs_template_file}"
 
     [[inputs.jolokia2_agent]]
     urls = ["http://#{jolokia_agent_host}:#{jolokia_agent_port}/#{jolokia_agent_context}"]
-
-    [[inputs.jolokia2_agent.metric]]
-      name  = "jvm_runtime"
-      mbean = "java.lang:type=Runtime"
-      [inputs.influxdb.tags]
+      [inputs.jolokia2_agent.tags]
         influxdb_database = "{{ keyOrDefault "config/services/metrics/databases/services" "services" }}"
         service = "jenkins"
+
+      # JVM metrics
+      # Runtime
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jvm_runtime"
+        mbean = "java.lang:type=Runtime"
+        paths = ["Uptime"]
+
+      # Memory
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jvm_memory"
+        mbean = "java.lang:type=Memory"
+        paths = ["HeapMemoryUsage", "NonHeapMemoryUsage", "ObjectPendingFinalizationCount"]
+
+      # GC
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jvm_garbage_collector"
+        mbean = "java.lang:name=*,type=GarbageCollector"
+        paths = ["CollectionTime", "CollectionCount"]
+        tag_keys = ["name"]
+
+      # MemoryPool
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jvm_memory_pool"
+        mbean = "java.lang:name=*,type=MemoryPool"
+        paths = ["Usage", "PeakUsage", "CollectionUsage"]
+        tag_keys = ["name"]
+        tag_prefix = "pool_"
+
+      # Operating system
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jvm_operating_system"
+        mbean = "java.lang:type=OperatingSystem"
+        paths = [
+          "CommittedVirtualMemorySize",
+          "FreePhysicalMemorySize",
+          "FreeSwapSpaceSize",
+          "TotalPhysicalMemorySize",
+          "TotalSwapSpaceSize",
+          "AvailableProcessors",
+          "SystemCpuLoad",
+          "ProcessCpuTime",
+          "ProcessCpuLoad",
+          "SystemLoadAverage",
+        ]
+
+      # Java.nio
+      # BufferPool
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jvm_buffer_pool"
+        mbean = "java.nio:name=*,type=MemoryPool"
+        paths = ["TotalCapacity", "MemoryUsed", "Count"]
+        tag_keys = ["name"]
+        tag_prefix = "buffer_"
+
+      # Jenkins
+      # Threading
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_vm_threads"
+        mbean = "metrics:name=vm.*count"
+        paths = ["Value"]
+        tag_keys = ["name"]
+
+      # CPU
+      # vm.cpu.load
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_vm_cpu"
+        mbean = "metrics:name=vm.cpu.load"
+        paths = ["Value"]
+        tag_keys = ["name"]
+
+      # Memory
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_vm_memory"
+        mbean = "metrics:name=vm.memory.*"
+        paths = ["Value"]
+        tag_keys = ["name"]
+
+      # Web
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_web_requests"
+        mbean = "metrics:name=http.requests"
+        paths = ["Mean", "MeanRate", "Min","Max","Count",]
+        tag_keys = ["name"]
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_web_requests_active"
+        mbean = "metrics:name=http.activerequests"
+        paths = ["Count"]
+        tag_keys = ["name"]
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_web_reponsecodes"
+        mbean = "metrics:name=http.responseCodes.*"
+        paths = ["Count","MeanRate"]
+        tag_keys = ["name"]
+
+      # nodes
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_node"
+        mbean = "metrics:name=jenkins.node.*.value"
+        paths = ["Value"]
+        tag_keys = ["name"]
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_executor"
+        mbean = "metrics:name=jenkins.executor.*.value"
+        paths = ["Value"]
+        tag_keys = ["name"]
+
+      # Jobs
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_job_count"
+        mbean = "metrics:name=jenkins.job.count"
+        paths = ["Value"]
+        tag_keys = ["name"]
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_job_scheduled"
+        mbean = "metrics:name=jenkins.job.scheduled"
+        paths = ["Count", "MeanRate"]
+        tag_keys = ["name"]
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_job_duration"
+        mbean = "metrics:name=jenkins.job.*.duration"
+        paths = ["Mean", "Min", "Max", "Count"]
+        tag_keys = ["name"]
+
+      # Queue
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_queue"
+        mbean = "metrics:name=jenkins.queue.*.value"
+        paths = ["Value"]
+        tag_keys = ["name"]
+
+      # Plugins
+      [[inputs.jolokia2_agent.metric]]
+        name  = "jenkins_plugins"
+        mbean = "metrics:name=jenkins.plugins.*"
+        paths = ["Value"]
+        tag_keys = ["name"]
   CONF
   mode '755'
 end
