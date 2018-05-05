@@ -1,0 +1,5 @@
+config:
+  # Define the dashboard for jenkins
+  - key: config/services/dashboards/metrics/provisioning/dashboards/services/service-jenkins
+    file: dashboards/services/service-jenkins.json
+
