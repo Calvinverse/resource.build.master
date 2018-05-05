@@ -8,15 +8,6 @@ Describe 'The jenkins application' {
             '/var/jenkins' | Should Exist
             '/var/jenkins/config.xml' | Should Exist
         }
-
-        It 'with environment configuration in /etc/consul/conf.d' {
-            '/etc/consul/conf.d/bootstrap.json' | Should NOT Exist
-
-            '/etc/consul/conf.d/location.json' | Should Exist
-            '/etc/consul/conf.d/metrics.json' | Should Exist
-            '/etc/consul/conf.d/region.json' | Should Exist
-            '/etc/consul/conf.d/secrets.json' | Should Exist
-        }
     }
 
     Context 'has been daemonized' {
