@@ -84,3 +84,15 @@ plugins.each do |name, version|
     source "#{node['jenkins']['url']['plugins']}/#{name}/#{version}/#{name}.hpi"
   end
 end
+
+# Create this file manually because for some reason berkshelf throughs a hissy when we add this file to the
+# cookbook files. Probably because the name is quite long
+file "#{node['jenkins']['path']['home']}/org.jenkinsci.plugins.workflow.flow.GlobalDefaultFlowDurabilityLevel.xml" do
+  action :create
+  content <<~XML
+    <?xml version='1.1' encoding='UTF-8'?>
+    <org.jenkinsci.plugins.workflow.flow.GlobalDefaultFlowDurabilityLevel_-DescriptorImpl plugin="workflow-api@2.26">
+      <durabilityHint>PERFORMANCE_OPTIMIZED</durabilityHint>
+    </org.jenkinsci.plugins.workflow.flow.GlobalDefaultFlowDurabilityLevel_-DescriptorImpl>
+  XML
+end
