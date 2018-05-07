@@ -22,7 +22,7 @@ describe 'resource_build_master::jenkins_templates' do
       FLAG=$(cat /var/log/jenkins_groovy_ad.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins active directory groovy script ..."
-          cat <<EOT > /var/jenkins/init.groovy.d/p050.activedirectory.groovy
+          cat <<'EOT' > /var/jenkins/init.groovy.d/p050.activedirectory.groovy
       import hudson.plugins.active_directory.*
       import jenkins.model.*
 
@@ -191,7 +191,7 @@ describe 'resource_build_master::jenkins_templates' do
       FLAG=$(cat /var/log/jenkins_config.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins configuration ..."
-          cat <<EOT > /var/jenkins/config.xml
+          cat <<'EOT' > /var/jenkins/config.xml
       <?xml version='1.0' encoding='UTF-8'?>
       <hudson>
         <version></version>
@@ -483,7 +483,7 @@ describe 'resource_build_master::jenkins_templates' do
       FLAG=$(cat /var/log/jenkins_location_config.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins vault configuration ..."
-          cat <<EOT > /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+          cat <<'EOT' > /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
       <?xml version='1.0' encoding='UTF-8'?>
       <jenkins.model.JenkinsLocationConfiguration>
         <adminAddress>Builds &lt;builds@{{ key "config/environment/mail/suffix" }}&gt;</adminAddress>
@@ -598,7 +598,7 @@ describe 'resource_build_master::jenkins_templates' do
       FLAG=$(cat /var/log/jenkins_mailer_config.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins vault configuration ..."
-          cat <<EOT > /var/jenkins/hudson.tasks.Mailer.xml
+          cat <<'EOT' > /var/jenkins/hudson.tasks.Mailer.xml
       <?xml version='1.0' encoding='UTF-8'?>
       <hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@1.19">
         <defaultSuffix>@{{ key "config/environment/mail/suffix" }}</defaultSuffix>
@@ -719,7 +719,7 @@ describe 'resource_build_master::jenkins_templates' do
       FLAG=$(cat /var/log/jenkins_rabbitmq_config.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins rabbitmq configuration ..."
-          cat <<EOT > /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
+          cat <<'EOT' > /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
       <?xml version='1.0' encoding='UTF-8'?>
       <org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
       <urlValidator>
@@ -857,7 +857,7 @@ describe 'resource_build_master::jenkins_templates' do
       FLAG=$(cat /var/log/jenkins_vault_config.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins vault configuration ..."
-          cat <<EOT > /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
+          cat <<'EOT' > /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
       <?xml version='1.0' encoding='UTF-8'?>
       <com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration plugin="hashicorp-vault-plugin@2.1.0">
       <configuration>
