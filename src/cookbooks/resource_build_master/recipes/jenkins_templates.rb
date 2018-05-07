@@ -100,7 +100,7 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
     FLAG=$(cat #{flag_groovy_ad})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins active directory groovy script ..."
-        cat <<EOT > #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
+        cat <<'EOT' > #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
     import hudson.plugins.active_directory.*
     import jenkins.model.*
 
@@ -265,7 +265,7 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
     FLAG=$(cat #{flag_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins configuration ..."
-        cat <<EOT > #{jenkins_home}/config.xml
+        cat <<'EOT' > #{jenkins_home}/config.xml
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <version></version>
@@ -554,7 +554,7 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
     FLAG=$(cat #{flag_location_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins vault configuration ..."
-        cat <<EOT > #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
+        cat <<'EOT' > #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
     <?xml version='1.0' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
       <adminAddress>Builds &lt;builds@{{ key "config/environment/mail/suffix" }}&gt;</adminAddress>
@@ -666,7 +666,7 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
     FLAG=$(cat #{flag_mailer_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins vault configuration ..."
-        cat <<EOT > #{jenkins_home}/hudson.tasks.Mailer.xml
+        cat <<'EOT' > #{jenkins_home}/hudson.tasks.Mailer.xml
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@1.19">
       <defaultSuffix>@{{ key "config/environment/mail/suffix" }}</defaultSuffix>
@@ -784,7 +784,7 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
     FLAG=$(cat #{flag_rabbitmq_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins rabbitmq configuration ..."
-        cat <<EOT > #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
+        cat <<'EOT' > #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
     <?xml version='1.0' encoding='UTF-8'?>
     <org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
     <urlValidator>
@@ -919,7 +919,7 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
     FLAG=$(cat #{flag_vault_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins vault configuration ..."
-        cat <<EOT > #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
+        cat <<'EOT' > #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
     <?xml version='1.0' encoding='UTF-8'?>
     <com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration plugin="hashicorp-vault-plugin@2.1.0">
     <configuration>
