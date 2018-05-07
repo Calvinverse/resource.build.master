@@ -1,0 +1,734 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<style type="text/css">
+    /*base css*/
+    a
+    {
+        color:#4a72af
+    }
+
+    body,p
+    {
+        margin:0;
+        padding:0
+    }
+
+    img
+    {
+        display:block
+    }
+
+    h1,h2,h3,h4,h5,h6
+    {
+        margin:0 0 .1em 0
+    }
+
+    h3
+    {
+        font-size:28px;
+        color:#444!important;
+        font-family:Arial,Helvetica,sans-serif
+    }
+
+    h4
+    {
+        font-size:22px;
+        color:#4a72af!important;
+        font-family:Arial,Helvetica,sans-serif
+    }
+
+    h5
+    {
+        font-size:18px;
+        color:#444!important;
+        font-family:Arial,Helvetica,sans-serif
+    }
+
+    table
+    {
+        width: 100%;
+        text-align: left;
+    }
+
+    p
+    {
+        font-size:12px;
+        color:#444!important;
+        font-family:"Lucida Grande","Lucida Sans","Lucida Sans Unicode",sans-serif;
+        line-height:1.5
+    }
+
+    ol li img
+    {
+        display:inline;
+        height:20px
+    }
+
+    caption
+    {
+        display: table-caption;
+        text-align: left;
+        font-size:18px;
+        color:#444!important;
+        font-family:Arial,Helvetica,sans-serif
+    }
+
+    /*div styles*/
+    .content
+    {
+        margin:0 auto;
+    }
+
+    .status
+    {
+        background-color:<%=build.result.toString() == "SUCCESS" ? 'green' : 'red' %>;
+        font-size:28px;
+        font-weight:bold;
+        color:white;
+        height:52px;
+        margin-bottom:18px;
+        text-align:center;
+        vertical-align:middle;
+        border-collapse:collapse;
+        background-repeat:no-repeat
+    }
+
+    .status .info
+    {
+        color:white!important;
+        text-shadow:0 -1px 0 rgba(0,0,0,0.3);
+        font-size:32px;
+        line-height:36px;
+        padding:8px 0
+    }
+
+    .main
+    {
+        margin-bottom: 20px;
+    }
+
+    .main img
+    {
+        width:24px;
+        height:24px
+        margin-right:16px;
+    }
+
+    .main table
+    {
+        font-size:12px;
+    }
+
+    .moreinfo
+    {
+        list-style-type: none;
+        color:#aaa;
+        font-size:13px;
+    }
+
+    .console
+    {
+        font: normal normal 90% Courier New, monotype;
+        padding:0px;
+        margin:0px;
+    }
+
+    .bottom-message
+    {
+        cellpadding:5px;
+        cellspacing:0px
+    }
+
+    .bottom-message .message
+    {
+        font-size:13px;
+        color:#aaa;
+        line-height:18px;
+        text-align:center
+    }
+
+    .bottom-message .designed
+    {
+        font-size:13px;
+        color:#aaa;
+        line-height:18px;
+        font-style: italic;
+        text-align:right
+    }
+
+    img.cartoon
+    {
+        width: 36px;
+        display:inline
+    }
+</style>
+<body>
+    <div class="content">
+        <div class="status">
+            <p class="info">Build <%= build.result.toString().toLowerCase() %></p>
+        </div>
+
+        <!-- status -->
+        <div class="main">
+            <table>
+                <caption>Build</caption>
+                <tbody>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="75px" style="text-align:left;">Project:</th>
+                        <td>${project.name}</td>
+                    </tr>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="75px" style="text-align:left;">Build: </th>
+                        <td><a href="${rooturl}${build.url}">${build.displayName}</a></td>
+                    </tr>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="75px" style="text-align:left;">Built on:</th>
+                        <td>${it.timestampString}</td>
+                    </tr>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="75px" style="text-align:left;">Time taken:</th>
+                        <td>${build.durationString}</td>
+                    </tr>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="75px" style="text-align:left;">Started by:</th>
+                        <td>
+<%
+    build.causes.each()
+    {
+        cause ->
+%>
+                            ${cause.shortDescription}<br />
+<%
+    }
+%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="75px" style="text-align:left;">Build on:</th>
+                        <td>
+<%
+    if (build.builtOnStr != '')
+    {
+%>
+                            ${build.builtOnStr}
+<%
+    }
+    else
+    {
+%>
+                            master
+<%
+    }
+%>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+<%
+    def healthIconSize = "16x16"
+    def healthReports = project.buildHealthReports
+    if (healthReports != null)
+    {
+%>
+        <div class="main">
+            <table>
+                <caption>Health report</caption>
+                <tbody>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="75px" style="text-align:left;"> Stability</th>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="75px" style="text-align:left;">Score</th>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th style="text-align:left;">Description</th>
+                    </tr>
+<%
+        for (hudson.model.HealthReport healthReport : healthReports)
+        {
+            __url = healthReport.getIconUrl(healthIconSize)
+%>
+                    <tr>
+                        <td>
+                            <img src="${rooturl}${__url}" />
+                        </td>
+                        <td>${healthReport.score}</td>
+                        <td>${healthReport.description}</td>
+                    </tr>
+<%
+        }
+%>
+                </tbody>
+            </table>
+        </div>
+<%
+    }
+%>
+
+        <!-- For debugging purposes -->
+        <!--
+<%
+    name = it.getClass().getName()
+%>
+    it: ${name} <br />
+<%
+
+    build.getActions().each()
+    {
+        action ->
+%>
+        <%=action.getClass().getName()%><br />
+<%
+    }
+%>
+        -->
+
+        <!-- main -->
+        <!-- parameters -->
+<%
+    def parametersAction = build.getAction(ParametersAction.class)
+    if (parametersAction != null)
+    {
+%>
+        <div class="main">
+            <table>
+                <tbody>
+                    <caption>Build parameters</caption>
+<%
+        parametersAction.parameters.each()
+        {
+            p ->
+%>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th style="text-align:left;">${p.name}</th>
+                        <td>${p.value}</td>
+                    </tr>
+<%
+        }
+%>
+                </tbody>
+            </table>
+        </div>
+<%
+    }
+%>
+
+        <!-- change sets -->
+        <div class="main">
+            <h5>Changes in detail:</h5>
+<%
+    def changeSet = build.changeSet
+    if(changeSet != null && !changeSet.isEmptySet())
+    {
+        def count = 0
+%>
+            <ol>
+<%
+        changeSet.each()
+        {
+            cs ->
+                hadChanges = true
+                def aUser = cs.author
+%>
+                <li>${cs.msgAnnotated} (${aUser.displayName})(<a href="${rooturl}${build.url}changes#detail${count}">detail</a>)</li>
+<%
+                count ++
+        }
+%>
+            </ol>
+<%
+    }
+    else
+    {
+%>
+            <p>No changes relative to the previous build were found in the version control system.</p>
+<%
+    }
+%>
+        </div>
+
+        <!-- artifacts -->
+<%
+    def artifacts = build.artifacts
+    if(artifacts != null && artifacts.size() > 0)
+    {
+%>
+        <div class="main">
+            <h5>Build Artifacts:</h5>
+            <ul>
+<%
+        artifacts.each()
+        {
+            f ->
+%>
+                <li><a href="${rooturl}${build.url}artifact/${f}">${f}</a></li>
+<%
+        }
+%>
+            </ul>
+        </div>
+<%
+    }
+%>
+
+        <!-- Identified problems -->
+        <div class="main">
+<%
+    def failureCauseObj = it.getAction('com.sonyericsson.jenkins.plugins.bfa.model.FailureCauseBuildAction')
+    def hasFailureCauses = false
+    if (failureCauseObj != null)
+    {
+        def failureCauses = failureCauseObj.getFoundFailureCauses()
+        if (failureCauses != null)
+        {
+%>
+
+<%
+            if (failureCauses.size() > 0)
+            {
+                hasFailureCauses = true
+%>
+            <table>
+                <caption>Probable failure causes</caption>
+                <tbody>
+<%
+                failureCauses.each()
+                {
+                    cause ->
+%>
+                    <tr>
+                        <!--
+                            Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                            See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                        -->
+                        <th width="30%" style="text-align:left;">${cause.name}</th>
+                        <td>${cause.description}</td>
+                    </tr>
+<%
+                }
+%>
+                </tbody>
+            </table>
+<%
+            }
+        }
+    }
+
+    if (!hasFailureCauses && (build.result.toString() != "SUCCESS"))
+    {
+%>
+            <h5>Probable failure causes</h5>
+            <p>
+                The cause of the build failure could not be determined. If you know why this build failed you can
+                <a href="${rooturl}${project.url}/failure-cause-management">add a suitable failure cause</a> for it.
+            </p>
+<%
+    }
+%>
+        </div>
+
+
+        <!-- unit tests -->
+<%
+    def unitTests = it.JUnitTestResult
+    if(unitTests != null && unitTests.size() > 0)
+    {
+%>
+        <div class="main">
+            <h5>Unit tests:</h5>
+            <table width="100%">
+                <caption>Test modules</caption>
+<%
+        unitTests.each()
+        {
+            junitResult ->
+            junitResult.getChildren().each()
+            {
+                packageResult ->
+%>
+                <tr>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th  style="text-align:left;">
+                        ${packageResult.getName()}
+                    </th>
+                    <td class="bg2" colspan="2">
+                        Failed: ${packageResult.getFailCount()} test(s), Passed: ${packageResult.getPassCount()} test(s), Skipped: ${packageResult.getSkipCount()} test(s), Total: ${packageResult.getPassCount()+packageResult.getFailCount()+packageResult.getSkipCount()} test(s)
+                    </td>
+                </tr>
+<%
+                packageResult.getFailedTests().each()
+                {
+                        failed_test ->
+%>
+                <tr>
+                    <td colspan="2">
+                        <li>Failed: ${failed_test.getFullName()} </li>
+                    </td>
+                </tr>
+<%
+                }
+            }
+        }
+%>
+            </table>
+            <ul class="moreinfo">
+                <li>The <a href="${rooturl}${build.url}testReport">test report</a> has more specific information about the unit tests.</li>
+            </ul>
+        </div>
+<%
+    }
+%>
+
+        <!-- Coverage -->
+<%
+    def coverage = it.coberturaAction
+    if(coverage != null)
+    {
+        def coverageResult = coverage.result
+        if (coverageResult != null)
+        {
+%>
+        <div class="main">
+            <table>
+                <caption>Test coverage</caption>
+                <tr>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;">Name</th>
+<%
+            coverageResult.metrics.each()
+            {
+                metric ->
+%>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;">${metric.name}</th>
+<%
+            }
+%>
+                </tr>
+                <tr>
+                    <td>${coverageResult.name}</td>
+<%
+            coverageResult.metrics.each()
+            {
+                metric ->
+%>
+                    <td data="${coverageResult.getCoverage(metric).percentageFloat}">
+                        ${coverageResult.getCoverage(metric).percentage}%(${coverageResult.getCoverage(metric)})
+                    </td>
+<%
+            }
+%>
+                </tr>
+            </table>
+            <table>
+<%
+            coverageResult.children.each()
+            {
+                childName ->
+                    child = coverageResult.getChild(childName)
+%>
+                <tr>
+                    <td>${child.name}</td>
+<%
+                    child.metrics.each()
+                    {
+                        metric ->
+%>
+                    <td data="${child.getCoverage(metric).percentageFloat}">
+                        ${child.getCoverage(metric).percentage}%(${child.getCoverage(metric)})
+                    </td>
+<%
+                    }
+%>
+                </tr>
+<%
+            }
+%>
+            </table>
+        </div>
+<%
+        }
+    }
+%>
+
+        <!-- Static analysis -->
+<%
+    def staticAnalysis = it.staticAnalysisActions
+    if ((staticAnalysis != null) && !staticAnalysis.isEmpty())
+    {
+%>
+        <div class="main">
+            <table>
+                <caption>Static Analysis</caption>
+                <tr>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;"></th>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;">Name</th>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;">Result</th>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;">Total</th>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;">High</th>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;">Normal</th>
+                    <!--
+                        Force left alignment on all of these because Outlook is not very clever when it comes to HTML.
+                        See: http://blog.mailermailer.com/email-design/ultimate-field-guide-to-common-bugs-in-html-email
+                    -->
+                    <th style="text-align:left;">Low</th>
+                </tr>
+<%
+        staticAnalysis.each()
+        {
+            analysis ->
+%>
+                <tr>
+                    <td><img src="${rooturl}${analysis.smallImageName}" /></td>
+                    </td>
+                    <td>
+                        <a href="${rooturl}${build.url}/${analysis.urlName}">${analysis.displayName}</a>
+                    </td>
+                    <td>
+<%
+                if (analysis.result.pluginResult == 'SUCCESS')
+                {
+%>
+                        <img src="${rooturl}static/e59dfe28/images/16x16/blue.gif" />
+<%
+                }
+                else
+                {
+                    if (analysis.result.pluginResult == 'FAILURE')
+                    {
+%>
+                        <img src="${rooturl}static/e59dfe28/images/16x16/red.gif" />
+<%
+                    }
+                    else
+                    {
+%>
+                        <img src="${rooturl}static/e59dfe28/images/16x16/yellow.gif" />
+<%
+                    }
+                }
+%>
+                    </td>
+                    <td>${analysis.result.numberOfAnnotations} </td>
+                    <td>${analysis.result.getNumberOfAnnotations('HIGH')} </td>
+                    <td>${analysis.result.getNumberOfAnnotations('NORMAL')} </td>
+                    <td>${analysis.result.getNumberOfAnnotations('LOW')} </td>
+                </tr>
+<%
+        }
+%>
+            </table>
+        </div>
+<%
+    }
+%>
+
+        <!-- console output -->
+<%
+    if(build.result == hudson.model.Result.FAILURE)
+    {
+%>
+        <div class="main">
+            <table width="100%" cellpadding="0" cellspacing="0">
+                <caption>Console output</caption>
+<%
+        build.getLog(100).each()
+        {
+            line ->
+%>
+                <tr>
+                    <td class="console">
+                        ${org.apache.commons.lang.StringEscapeUtils.escapeHtml(line)}
+                    </td>
+                </tr>
+<%
+        }
+%>
+            </table>
+        </div>
+<%
+    }
+%>
+    </div>
+
+    <table class="bottom-message" align="center">
+        <tr>
+            <td class="message">
+                You are receiving this email because either one of your commits was part of this build or you requested it<br />
+                <p>
+                    <a href="${rooturl}">Jenkins server</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>

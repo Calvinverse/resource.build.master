@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<com.sonyericsson.jenkins.plugins.bfa.PluginImpl plugin="build-failure-analyzer@1.19.0">
+  <noCausesMessage>No problems were identified. If you know why this problem occurred, please add a suitable Cause for it.</noCausesMessage>
+  <globalEnabled>true</globalEnabled>
+  <doNotAnalyzeAbortedJob>false</doNotAnalyzeAbortedJob>
+  <gerritTriggerEnabled>false</gerritTriggerEnabled>
+  <knowledgeBase class="com.sonyericsson.jenkins.plugins.bfa.db.LocalFileKnowledgeBase">
+    <causes>
+      <entry>
+        <string>977b52f4-98fa-4403-aa39-2b85d9e5ad36</string>
+        <com.sonyericsson.jenkins.plugins.bfa.model.FailureCause>
+          <id>977b52f4-98fa-4403-aa39-2b85d9e5ad36</id>
+          <name>New Failure cause</name>
+          <description>This is the description of the problem</description>
+          <comment>And a comment</comment>
+          <categories class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>category_A</string>
+              <string>category_B</string>
+            </a>
+          </categories>
+          <indications>
+            <com.sonyericsson.jenkins.plugins.bfa.model.indication.BuildLogIndication>
+              <pattern>stuff</pattern>
+            </com.sonyericsson.jenkins.plugins.bfa.model.indication.BuildLogIndication>
+          </indications>
+          <modifications class="linked-list">
+            <com.sonyericsson.jenkins.plugins.bfa.model.FailureCauseModification>
+              <user>admin</user>
+              <time>2017-06-02 11:32:21.684 UTC</time>
+            </com.sonyericsson.jenkins.plugins.bfa.model.FailureCauseModification>
+          </modifications>
+        </com.sonyericsson.jenkins.plugins.bfa.model.FailureCause>
+      </entry>
+    </causes>
+  </knowledgeBase>
+  <nrOfScanThreads>3</nrOfScanThreads>
+  <maxLogSize>0</maxLogSize>
+  <graphsEnabled>false</graphsEnabled>
+  <testResultParsingEnabled>false</testResultParsingEnabled>
+  <testResultCategories></testResultCategories>
+  <sodVariables>
+    <minimumSodWorkerThreads>1</minimumSodWorkerThreads>
+    <maximumSodWorkerThreads>1</maximumSodWorkerThreads>
+    <sodThreadKeepAliveTime>15</sodThreadKeepAliveTime>
+    <sodWaitForJobShutdownTimeout>30</sodWaitForJobShutdownTimeout>
+    <sodCorePoolNumberOfThreads>5</sodCorePoolNumberOfThreads>
+  </sodVariables>
+</com.sonyericsson.jenkins.plugins.bfa.PluginImpl>

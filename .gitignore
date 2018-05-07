@@ -1,0 +1,5 @@
+packages/
+build/
+berks/
+src/cookbooks/resource_build_master/.bundle/
+src/cookbooks/resource_build_master/Gemfile.lock
