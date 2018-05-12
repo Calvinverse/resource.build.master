@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'resource_build_master::jenkins_metrics' do
-  context 'adds the consul-template files for the groovy AD script' do
+  context 'installs jolokia' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
     it 'creates the jolokia install directory' do
