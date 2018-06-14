@@ -120,7 +120,7 @@ file '/etc/consul/conf.d/jenkins-http.json' do
             "interval": "15s"
           }
         ],
-        "enableTagOverride": true,
+        "enable_tag_override": false,
         "id": "jenkins",
         "name": "#{consul_service_name}",
         "port": #{jenkins_http_port},

@@ -91,7 +91,7 @@ describe 'resource_build_master::jenkins' do
               "interval": "15s"
             }
           ],
-          "enableTagOverride": true,
+          "enable_tag_override": false,
           "id": "jenkins",
           "name": "builds",
           "port": 8080,

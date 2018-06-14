@@ -24,19 +24,19 @@ Describe 'The consul-template application' {
         }
 
         $expectedContent = @'
+[Service]
+ExecStart=/usr/local/bin/run_consul-template.sh
+Restart=on-failure
+EnvironmentFile=/etc/environment
+
 [Unit]
 Description=Consul Template
+Documentation=https://github.com/hashicorp/consul-template
 Requires=multi-user.target
 After=multi-user.target
-Documentation=https://github.com/hashicorp/consul-template
 
 [Install]
 WantedBy=multi-user.target
-
-[Service]
-ExecStart=/usr/local/bin/run_consul-template.sh
-EnvironmentFile=/etc/environment
-Restart=on-failure
 
 '@
         $serviceFileContent = Get-Content $serviceConfigurationPath | Out-String
