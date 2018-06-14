@@ -93,7 +93,7 @@ describe 'resource_build_master::jenkins' do
           ],
           "enable_tag_override": false,
           "id": "jenkins",
-          "name": "builds",
+          "name": "build",
           "port": 8080,
           "tags": [
             "inactive",

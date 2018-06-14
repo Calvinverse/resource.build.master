@@ -33,7 +33,7 @@ default['jenkins']['path']['home'] = '/var/jenkins'
 default['jenkins']['path']['war'] = '/usr/local/jenkins'
 default['jenkins']['path']['war_file'] = "#{node['jenkins']['path']['war']}/jenkins.war"
 
-default['jenkins']['consul']['service_name'] = 'builds'
+default['jenkins']['consul']['service_name'] = 'build'
 default['jenkins']['proxy_path'] = 'builds'
 
 default['jenkins']['port']['http'] = 8080
