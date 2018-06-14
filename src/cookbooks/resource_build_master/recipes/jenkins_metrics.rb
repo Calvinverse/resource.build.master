@@ -55,8 +55,9 @@ file "#{consul_template_template_path}/#{telegraf_jolokia_inputs_template_file}"
     [[inputs.jolokia2_agent]]
     urls = ["http://#{jolokia_agent_host}:#{jolokia_agent_port}/#{jolokia_agent_context}"]
       [inputs.jolokia2_agent.tags]
-        influxdb_database = "{{ keyOrDefault "config/services/metrics/databases/services" "services" }}"
+        influxdb_database = "services"
         service = "jenkins"
+        build = "master"
 
       # JVM metrics
       # Runtime

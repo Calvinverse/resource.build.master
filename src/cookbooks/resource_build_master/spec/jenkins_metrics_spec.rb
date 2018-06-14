@@ -31,8 +31,9 @@ describe 'resource_build_master::jenkins_metrics' do
       [[inputs.jolokia2_agent]]
       urls = ["http://127.0.0.1:8090/jolokia"]
         [inputs.jolokia2_agent.tags]
-          influxdb_database = "{{ keyOrDefault "config/services/metrics/databases/services" "services" }}"
+          influxdb_database = "services"
           service = "jenkins"
+          build = "master"
 
         # JVM metrics
         # Runtime
