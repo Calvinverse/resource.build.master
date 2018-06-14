@@ -28,15 +28,14 @@ jenkins_slave_agent_port = node['jenkins']['port']['slave']
 
 # From here: https://jenkins.io/blog/2016/11/21/gc-tuning/
 java_server_args = '-server -XX:+AlwaysPreTouch'
-java_g1_gc_args =
-  '-XX:+UseG1GC' \
+java_gc_args =
+  '-XX:+UseConcMarkSweepGC' \
   ' -XX:+ExplicitGCInvokesConcurrent' \
   ' -XX:+ParallelRefProcEnabled' \
   ' -XX:+UseStringDeduplication' \
-  ' -XX:+UnlockExperimentalVMOptions' \
-  ' -XX:G1NewSizePercent=20' \
-  ' -XX:+UnlockDiagnosticVMOptions' \
-  ' -XX:G1SummarizeRSetStatsPeriod=1'
+  ' -XX:+CMSParallelRemarkEnabled' \
+  ' -XX:+CMSIncrementalMode' \
+  ' -XX:CMSInitiatingOccupancyFraction=75'
 
 java_awt_args = '-Djava.awt.headless=true'
 
@@ -57,6 +56,22 @@ jenkins_java_args =
   ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' \
   ' -Djenkins.CLI.disabled=true' \
   ' -Djenkins.install.runSetupWizard=false'
+
+# Turn on GC logging
+java_diagnostics =
+  '-Xloggc:\var\log\jenkins_gc-%t.log' \
+  ' -XX:NumberOfGCLogFiles=10' \
+  ' -XX:+UseGCLogFileRotation' \
+  ' -XX:GCLogFileSize=25m' \
+  ' -XX:+PrintGC' \
+  ' -XX:+PrintGCDateStamps' \
+  ' -XX:+PrintGCDetails' \
+  ' -XX:+PrintHeapAtGC' \
+  ' -XX:+PrintGCCause' \
+  ' -XX:+PrintTenuringDistribution' \
+  ' -XX:+PrintReferenceGC' \
+  ' -XX:+PrintAdaptiveSizePolicy' \
+  ' -XX:+HeapDumpOnOutOfMemoryError'
 
 # Set the Jolokia jar as an agent so that we can export the JMX metrics to influx
 # For the settings see here: https://jolokia.org/reference/html/agents.html#agents-jvm
@@ -114,18 +129,16 @@ file run_jenkins_script do
         ratio=70
 
         mx=$(echo "(${max_mem} * ${ratio} / 100 + 0.5)" | bc | awk '{printf("%d\\n",$1 + 0.5)}')
-        java_max_memory="-Xmx${mx}m"
+        java_max_memory="-Xmx${mx}m -Xms${mx}m"
 
         echo "Maximum memory for VM set to ${max_mem}. Setting max memory for java to ${mx} Mb"
       fi
 
-      java_diagnostics="-XX:NativeMemoryTracking=summary -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UnlockDiagnosticVMOptions"
-
-      user_java_opts="#{java_server_args} #{java_g1_gc_args} #{java_awt_args} #{java_ipv4_args} #{jenkins_java_args}"
+      user_java_opts="#{java_server_args} #{java_gc_args} #{java_awt_args} #{java_ipv4_args} #{jenkins_java_args}"
       user_java_jar_opts="#{jenkins_args}"
 
-      echo exec java ${user_java_opts} ${java_max_memory} ${java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
-      exec java ${user_java_opts} ${java_max_memory} ${java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
+      echo exec java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
+      exec java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
     }
 
     # =============================================================================
@@ -139,19 +152,21 @@ jenkins_service_name = node['jenkins']['service_name']
 jenkins_environment_file = node['jenkins']['path']['environment_file']
 systemd_service jenkins_service_name do
   action :create
-  after %w[network-online.target]
-  description 'Jenkins CI system'
-  documentation 'https://jenkins.io'
   install do
     wanted_by %w[multi-user.target]
   end
-  requires %w[network-online.target]
   service do
     environment_file jenkins_environment_file
     exec_reload "/usr/bin/curl http://localhost:#{jenkins_http_port}/#{proxy_path}/reload"
     exec_start run_jenkins_script
     exec_stop "/usr/bin/curl http://localhost:#{jenkins_http_port}/#{proxy_path}/safeExit"
     restart 'on-failure'
+    user jenkins_user
   end
-  user jenkins_user
+  unit do
+    after %w[network-online.target]
+    description 'Jenkins CI system'
+    documentation 'https://jenkins.io'
+    requires %w[network-online.target]
+  end
 end
