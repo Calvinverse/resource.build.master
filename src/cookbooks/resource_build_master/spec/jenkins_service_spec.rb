@@ -114,7 +114,7 @@ describe 'resource_build_master::jenkins_service' do
         action: [:create],
         unit_after: %w[network-online.target],
         unit_description: 'Jenkins CI system',
-        unit_wanted_by: %w[multi-user.target],
+        install_wanted_by: %w[multi-user.target],
         service_exec_reload: '/usr/bin/curl http://localhost:8080/builds/reload',
         service_exec_start: '/usr/local/jenkins/run_jenkins.sh',
         service_exec_stop: '/usr/bin/curl http://localhost:8080/builds/safeExit',

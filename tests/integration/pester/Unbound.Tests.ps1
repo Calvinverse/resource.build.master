@@ -24,17 +24,17 @@ Describe 'The unbound application' {
 
         $expectedContent = @'
 [Service]
-ExecStart=/usr/sbin/unbound -d -c /etc/unbound/unbound.conf
-Restart=on-failure
+ExecStart = /usr/sbin/unbound -d -c /etc/unbound/unbound.conf
+Restart = on-failure
 
 [Unit]
-Description=Unbound DNS proxy
-Documentation=http://www.unbound.net
-Requires=multi-user.target
-After=multi-user.target
+Description = Unbound DNS proxy
+Documentation = http://www.unbound.net
+Requires = multi-user.target
+After = multi-user.target
 
 [Install]
-WantedBy=multi-user.target
+WantedBy = multi-user.target
 
 '@
         $serviceFileContent = Get-Content $serviceConfigurationPath | Out-String
@@ -72,6 +72,12 @@ WantedBy=multi-user.target
 
         It 'should resolve consul addresses' {
             $result = & dig +short consul.service.integrationtest
+            $result | Should Not Be $null
+            $result | Should Be $localIpAddress
+        }
+
+        It 'should resolve the hostname' {
+            $result = & dig +short +search $(hostname)
             $result | Should Not Be $null
             $result | Should Be $localIpAddress
         }
