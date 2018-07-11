@@ -3,12 +3,12 @@
   <installations>
     <hudson.plugins.msbuild.MsBuildInstallation>
       <name>x64</name>
-      <home>C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\amd64\MSBuild.exe</home>
+      <home>C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\amd64\MSBuild.exe</home>
       <properties/>
     </hudson.plugins.msbuild.MsBuildInstallation>
     <hudson.plugins.msbuild.MsBuildInstallation>
       <name>x86</name>
-      <home>C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe</home>
+      <home>C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe</home>
       <properties/>
     </hudson.plugins.msbuild.MsBuildInstallation>
   </installations>

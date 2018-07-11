@@ -1,0 +1,7 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<jenkins.plugins.logstash.LogstashConfiguration plugin="logstash@2.1.0">
+  <enabled>false</enabled>
+  <dataMigrated>false</dataMigrated>
+  <enableGlobally>false</enableGlobally>
+  <milliSecondTimestamps>true</milliSecondTimestamps>
+</jenkins.plugins.logstash.LogstashConfiguration>
