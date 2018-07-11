@@ -8,6 +8,7 @@ describe 'resource_build_master::jenkins' do
 
     jenkins_environment_content = <<~TXT
       JENKINS_HOME=/var/jenkins
+      CASC_JENKINS_CONFIG=/etc/jenkins.d/casc
     TXT
     it 'creates the /etc/jenkins_environment file' do
       expect(chef_run).to create_file('/etc/jenkins_environment')

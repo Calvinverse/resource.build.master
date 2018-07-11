@@ -28,6 +28,7 @@ default['firewall']['ipv6_enabled'] = false
 #
 
 default['jenkins']['path']['build_data'] = '/var/builds'
+default['jenkins']['path']['casc'] = '/etc/jenkins.d/casc'
 default['jenkins']['path']['environment_file'] = '/etc/jenkins_environment'
 default['jenkins']['path']['home'] = '/var/jenkins'
 default['jenkins']['path']['war'] = '/usr/local/jenkins'
@@ -46,6 +47,9 @@ default['jenkins']['service_group'] = 'jenkins'
 
 default['jenkins']['consul_template']['config_script_file'] = 'jenkins_configuration.ctmpl'
 default['jenkins']['consul_template']['config_file'] = '/tmp/jenkins_configuration.sh'
+
+default['jenkins']['consul_template']['credentials_config_script_file'] = 'jenkins_casc_credentials.ctmpl'
+default['jenkins']['consul_template']['credentials_file'] = '/tmp/jenkins_casc_credentials.sh'
 
 default['jenkins']['consul_template']['groovy_ad_script_file'] = 'jenkins_groovy_ad.ctmpl'
 default['jenkins']['consul_template']['groovy_ad_file'] = '/tmp/jenkins_groovy_ad.sh'

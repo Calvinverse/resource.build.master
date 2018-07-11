@@ -27,6 +27,14 @@ file flag_config do
   TXT
 end
 
+flag_credentials_config = '/var/log/jenkins_casc_credentials.log'
+file flag_credentials_config do
+  action :create
+  content <<~TXT
+    NotInitialized
+  TXT
+end
+
 flag_location_config = '/var/log/jenkins_location_config.log'
 file flag_location_config do
   action :create
@@ -37,14 +45,6 @@ end
 
 flag_mailer_config = '/var/log/jenkins_mailer_config.log'
 file flag_mailer_config do
-  action :create
-  content <<~TXT
-    NotInitialized
-  TXT
-end
-
-flag_rabbitmq_config = '/var/log/jenkins_rabbitmq_config.log'
-file flag_rabbitmq_config do
   action :create
   content <<~TXT
     NotInitialized
@@ -166,6 +166,10 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
     instance.setSecurityRealm(securityRealm)
     instance.save()
     EOT
+
+        chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
+        chmod 755 #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
+
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
         fi
@@ -326,6 +330,14 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
               <sid>{{ key "config/environment/directory/query/groups/builds/administrators" }}</sid>
             </assignedSIDs>
           </role>
+          <role name="global.agent" pattern=".*">
+            <permissions>
+              <permission>hudson.model.Computer.Create</permission>
+            </permissions>
+            <assignedSIDs>
+              <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
+            </assignedSIDs>
+          </role>
           <role name="global.anonymous" pattern=".*">
             <permissions>
               <permission>hudson.model.Item.Discover</permission>
@@ -349,13 +361,17 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
               <permission>hudson.model.Computer.Connect</permission>
               <permission>hudson.model.Computer.Disconnect</permission>
             </permissions>
-            <assignedSIDs/>
+            <assignedSIDs>
+              <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
+            </assignedSIDS>
           </role>
           <role name="agent.build" pattern=".*">
             <permissions>
               <permission>hudson.model.Computer.Build</permission>
             </permissions>
-            <assignedSIDs/>
+            <assignedSIDs>
+              <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
+            </assignedSIDS>
           </role>
         </roleMap>
       </authorizationStrategy>
@@ -450,6 +466,9 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
       </clouds>
     </hudson>
     EOT
+
+        chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/config.xml
+        chmod 755 #{jenkins_home}/config.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -553,7 +572,7 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
     {{ if keyExists "config/services/builds/url/proxy" }}
     FLAG=$(cat #{flag_location_config})
     if [ "$FLAG" = "NotInitialized" ]; then
-        echo "Write the jenkins vault configuration ..."
+        echo "Write the jenkins location configuration ..."
         cat <<'EOT' > #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
     <?xml version='1.0' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
@@ -561,6 +580,9 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
       <jenkinsUrl>{{ key "config/services/builds/url/proxy" }}</jenkinsUrl>
     </jenkins.model.JenkinsLocationConfiguration>
     EOT
+
+        chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
+        chmod 755 #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -665,7 +687,7 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
     {{ if keyExists "config/services/builds/url/proxy" }}
     FLAG=$(cat #{flag_mailer_config})
     if [ "$FLAG" = "NotInitialized" ]; then
-        echo "Write the jenkins vault configuration ..."
+        echo "Write the jenkins mailer configuration ..."
         cat <<'EOT' > #{jenkins_home}/hudson.tasks.Mailer.xml
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@1.19">
@@ -676,6 +698,9 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
       <charset>UTF-8</charset>
     </hudson.tasks.Mailer_-DescriptorImpl>
     EOT
+
+        chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/hudson.tasks.Mailer.xml
+        chmod 755 #{jenkins_home}/hudson.tasks.Mailer.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -769,142 +794,6 @@ file "#{consul_template_config_path}/jenkins_mailer_configuration.hcl" do
 end
 
 #
-# RABBITMQ CONFIGURATION
-#
-
-jenkins_rabbitmq_config_script_template_file = node['jenkins']['consul_template']['rabbitmq_config_script_file']
-file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template_file}" do
-  action :create
-  content <<~CONF
-    #!/bin/sh
-
-    {{ if keyExists "config/services/consul/datacenter" }}
-    {{ if keyExists "config/services/consul/domain" }}
-    {{ if keyExists "config/services/queue/protocols/amqp/host" }}
-    FLAG=$(cat #{flag_rabbitmq_config})
-    if [ "$FLAG" = "NotInitialized" ]; then
-        echo "Write the jenkins rabbitmq configuration ..."
-        cat <<'EOT' > #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
-    <?xml version='1.0' encoding='UTF-8'?>
-    <org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
-    <urlValidator>
-        <options>8</options>
-        <allowedSchemes>
-        <string>amqps</string>
-        <string>amqp</string>
-        </allowedSchemes>
-    </urlValidator>
-    <enableConsumer>true</enableConsumer>
-    <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/builds</serviceUri>
-    {{ with secret "rabbitmq/creds/read.vhost.builds" }}
-    {{ if .Data.password }}
-        <userName>{{ .Data.username }}</userName>
-        <userPassword>{{ .Data.password }}</userPassword>
-    {{ end }}
-    {{ end }}
-    <watchdogPeriod>60000</watchdogPeriod>
-    <consumeItems>
-        <org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem>
-        <appId>remote-build</appId>
-        <queueName>builds</queueName>
-        </org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem>
-    </consumeItems>
-    <enableDebug>false</enableDebug>
-    </org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration>
-    EOT
-
-        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl reload #{jenkins_service_name}
-        fi
-
-        echo "Initialized" > #{flag_rabbitmq_config}
-    fi
-
-    {{ else }}
-    echo "Not all Consul K-V values are available. Will not start Jenkins."
-    {{ end }}
-    {{ else }}
-    echo "Not all Consul K-V values are available. Will not start Jenkins."
-    {{ end }}
-    {{ else }}
-    echo "Not all Consul K-V values are available. Will not start Jenkins."
-    {{ end }}
-  CONF
-  mode '755'
-end
-
-jenkins_rabbitmq_config_script_file = node['jenkins']['consul_template']['rabbitmq_config_file']
-file "#{consul_template_config_path}/jenkins_rabbitmq_configuration.hcl" do
-  action :create
-  content <<~HCL
-    # This block defines the configuration for a template. Unlike other blocks,
-    # this block may be specified multiple times to configure multiple templates.
-    # It is also possible to configure templates via the CLI directly.
-    template {
-      # This is the source file on disk to use as the input template. This is often
-      # called the "Consul Template template". This option is required if not using
-      # the `contents` option.
-      source = "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template_file}"
-
-      # This is the destination path on disk where the source template will render.
-      # If the parent directories do not exist, Consul Template will attempt to
-      # create them, unless create_dest_dirs is false.
-      destination = "#{jenkins_rabbitmq_config_script_file}"
-
-      # This options tells Consul Template to create the parent directories of the
-      # destination path if they do not exist. The default value is true.
-      create_dest_dirs = false
-
-      # This is the optional command to run when the template is rendered. The
-      # command will only run if the resulting template changes. The command must
-      # return within 30s (configurable), and it must have a successful exit code.
-      # Consul Template is not a replacement for a process monitor or init system.
-      command = "sh #{jenkins_rabbitmq_config_script_file}"
-
-      # This is the maximum amount of time to wait for the optional command to
-      # return. Default is 30s.
-      command_timeout = "60s"
-
-      # Exit with an error when accessing a struct or map field/key that does not
-      # exist. The default behavior will print "<no value>" when accessing a field
-      # that does not exist. It is highly recommended you set this to "true" when
-      # retrieving secrets from Vault.
-      error_on_missing_key = false
-
-      # This is the permission to render the file. If this option is left
-      # unspecified, Consul Template will attempt to match the permissions of the
-      # file that already exists at the destination path. If no file exists at that
-      # path, the permissions are 0644.
-      perms = 0755
-
-      # This option backs up the previously rendered template at the destination
-      # path before writing a new one. It keeps exactly one backup. This option is
-      # useful for preventing accidental changes to the data without having a
-      # rollback strategy.
-      backup = true
-
-      # These are the delimiters to use in the template. The default is "{{" and
-      # "}}", but for some templates, it may be easier to use a different delimiter
-      # that does not conflict with the output file itself.
-      left_delimiter  = "{{"
-      right_delimiter = "}}"
-
-      # This is the `minimum(:maximum)` to wait before rendering a new template to
-      # disk and triggering a command, separated by a colon (`:`). If the optional
-      # maximum value is omitted, it is assumed to be 4x the required minimum value.
-      # This is a numeric time with a unit suffix ("5s"). There is no default value.
-      # The wait value for a template takes precedence over any globally-configured
-      # wait.
-      wait {
-        min = "2s"
-        max = "10s"
-      }
-    }
-  HCL
-  mode '755'
-end
-
-#
 # VAULT CONFIGURATION
 #
 
@@ -914,8 +803,9 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
   content <<~CONF
     #!/bin/sh
 
-    {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
+    {{ if keyExists "config/services/secrets/protocols/http/host" }}
+    {{ if keyExists "config/services/secrets/protocols/http/port" }}
     FLAG=$(cat #{flag_vault_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins vault configuration ..."
@@ -923,11 +813,14 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
     <?xml version='1.0' encoding='UTF-8'?>
     <com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration plugin="hashicorp-vault-plugin@2.1.0">
     <configuration>
-        <vaultUrl>http://secrets.service.{{ key "config/services/consul/domain" }}</vaultUrl>
+        <vaultUrl>http://{{ key "config/services/secrets/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/secrets/protocols/http/port" }}</vaultUrl>
         <vaultCredentialId>global.vault.approle</vaultCredentialId>
     </configuration>
     </com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration>
     EOT
+
+        chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
+        chmod 755 #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -936,6 +829,9 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
         echo "Initialized" > #{flag_vault_config}
     fi
 
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
     {{ else }}
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
@@ -1018,6 +914,135 @@ file "#{consul_template_config_path}/jenkins_vault_configuration.hcl" do
 end
 
 #
+# CREDENTIALS CONFIGURATION
+#
+
+jenkins_casc_path = node['jenkins']['path']['casc']
+jenkins_credentials_config_script_template_file = node['jenkins']['consul_template']['credentials_config_script_file']
+file "#{consul_template_template_path}/#{jenkins_credentials_config_script_template_file}" do
+  action :create
+  content <<~CONF
+    #!/bin/sh
+
+    {{ if keyExists "config/services/consul/domain" }}
+    {{ if keyExists "config/services/tfs/protocols/http/host" }}
+    {{ if keyExists "config/services/tfs/protocols/http/port" }}
+    FLAG=$(cat #{flag_credentials_config})
+    if [ "$FLAG" = "NotInitialized" ]; then
+        echo "Write the jenkins vault configuration ..."
+        cat <<'EOT' > #{jenkins_casc_path}/credentials.yaml
+    credentials:
+      system:
+        domainCredentials:
+          - domain :
+            credentials:
+            {{ range $collection, $collectionPairs := tree "config/projects" | byKey }}
+            {{ range $project, $projectPairs := tree (printf "config/projects/%s" $collection) | byKey }}
+              - usernamePassword:
+                  scope: GLOBAL
+                  id: {{ $collection }}-{{ $project }}
+                  description: "Tfs credentials to access the {{ $collection }}/{{ $project }} project"
+                  username: {{ key (printf "config/projects/%s/%s/tfs/user" $collection $project) }}
+                  password: {{ with secret (printf "secret/projects/%s/%s/tfs/user" $collection $project ) }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }}
+            {{ end }}
+            {{ end }}
+    EOT
+
+        chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_casc_path}/credentials.yaml
+        chmod 755 #{jenkins_casc_path}/credentials.yaml
+
+        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+            systemctl reload #{jenkins_service_name}
+        fi
+
+        echo "Initialized" > #{flag_credentials_config}
+    fi
+
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+  CONF
+  mode '755'
+end
+
+jenkins_credentials_config_script_file = node['jenkins']['consul_template']['credentials_file']
+file "#{consul_template_config_path}/jenkins_credentials_configuration.hcl" do
+  action :create
+  content <<~HCL
+    # This block defines the configuration for a template. Unlike other blocks,
+    # this block may be specified multiple times to configure multiple templates.
+    # It is also possible to configure templates via the CLI directly.
+    template {
+      # This is the source file on disk to use as the input template. This is often
+      # called the "Consul Template template". This option is required if not using
+      # the `contents` option.
+      source = "#{consul_template_template_path}/#{jenkins_credentials_config_script_template_file}"
+
+      # This is the destination path on disk where the source template will render.
+      # If the parent directories do not exist, Consul Template will attempt to
+      # create them, unless create_dest_dirs is false.
+      destination = "#{jenkins_credentials_config_script_file}"
+
+      # This options tells Consul Template to create the parent directories of the
+      # destination path if they do not exist. The default value is true.
+      create_dest_dirs = false
+
+      # This is the optional command to run when the template is rendered. The
+      # command will only run if the resulting template changes. The command must
+      # return within 30s (configurable), and it must have a successful exit code.
+      # Consul Template is not a replacement for a process monitor or init system.
+      command = "sh #{jenkins_credentials_config_script_file}"
+
+      # This is the maximum amount of time to wait for the optional command to
+      # return. Default is 30s.
+      command_timeout = "60s"
+
+      # Exit with an error when accessing a struct or map field/key that does not
+      # exist. The default behavior will print "<no value>" when accessing a field
+      # that does not exist. It is highly recommended you set this to "true" when
+      # retrieving secrets from Vault.
+      error_on_missing_key = false
+
+      # This is the permission to render the file. If this option is left
+      # unspecified, Consul Template will attempt to match the permissions of the
+      # file that already exists at the destination path. If no file exists at that
+      # path, the permissions are 0644.
+      perms = 0755
+
+      # This option backs up the previously rendered template at the destination
+      # path before writing a new one. It keeps exactly one backup. This option is
+      # useful for preventing accidental changes to the data without having a
+      # rollback strategy.
+      backup = true
+
+      # These are the delimiters to use in the template. The default is "{{" and
+      # "}}", but for some templates, it may be easier to use a different delimiter
+      # that does not conflict with the output file itself.
+      left_delimiter  = "{{"
+      right_delimiter = "}}"
+
+      # This is the `minimum(:maximum)` to wait before rendering a new template to
+      # disk and triggering a command, separated by a colon (`:`). If the optional
+      # maximum value is omitted, it is assumed to be 4x the required minimum value.
+      # This is a numeric time with a unit suffix ("5s"). There is no default value.
+      # The wait value for a template takes precedence over any globally-configured
+      # wait.
+      wait {
+        min = "2s"
+        max = "10s"
+      }
+    }
+  HCL
+  mode '755'
+end
+
+#
 # START SCRIPT
 #
 
@@ -1033,15 +1058,15 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
     # {{ file "#{flag_config}" }}
     # {{ file "#{flag_location_config}" }}
     # {{ file "#{flag_mailer_config}" }}
-    # {{ file "#{flag_rabbitmq_config}" }}
     # {{ file "#{flag_vault_config}" }}
+    # {{ file "#{flag_credentials_config}" }}
 
     if [ "$(cat #{flag_groovy_ad})" = "Initialized" ]; then
       if [ "$(cat #{flag_config})" = "Initialized" ]; then
         if [ "$(cat #{flag_location_config})" = "Initialized" ]; then
           if [ "$(cat #{flag_mailer_config})" = "Initialized" ]; then
-            if [ "$(cat #{flag_rabbitmq_config})" = "Initialized" ]; then
-              if [ "$(cat #{flag_vault_config})" = "Initialized" ]; then
+            if [ "$(cat #{flag_vault_config})" = "Initialized" ]; then
+              if [ "$(cat #{flag_credentials_config})" = "Initialized" ]; then
                 if ( ! $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
                   systemctl enable #{jenkins_service_name}
 

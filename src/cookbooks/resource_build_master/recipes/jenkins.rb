@@ -19,10 +19,12 @@ end
 
 jenkins_home = node['jenkins']['path']['home']
 jenkins_environment_file = node['jenkins']['path']['environment_file']
+jenkins_casc_path = node['jenkins']['path']['casc']
 file jenkins_environment_file do
   action :create
   content <<~TXT
     JENKINS_HOME=#{jenkins_home}
+    CASC_JENKINS_CONFIG=#{jenkins_casc_path}
   TXT
 end
 
@@ -78,6 +80,18 @@ file "#{jenkins_home}/jenkins.metrics.api.MetricsAccessKey.xml" do
       </accessKeys>
     </jenkins.metrics.api.MetricsAccessKey_-DescriptorImpl>
   XML
+end
+
+remote_directory jenkins_casc_path do
+  action :create
+  files_group jenkins_group
+  files_mode '0755'
+  files_owner jenkins_user
+  group jenkins_group
+  owner jenkins_user
+  mode '0755'
+  recursive true
+  source 'casc'
 end
 
 #
