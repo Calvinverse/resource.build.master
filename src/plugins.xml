@@ -1,61 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugins>
-    <plugin>active-directory</plugin>
-    <plugin>analysis-core</plugin>
-    <plugin>antisamy-markup-formatter</plugin>
-    <plugin>apache-httpcomponents-client-4-api</plugin>
-    <plugin>build-failure-analyzer</plugin>
-    <plugin>build-name-setter</plugin>
-    <plugin>build-timeout</plugin>
-    <plugin>build-user-vars-plugin</plugin>
-    <plugin>cloudbees-folder</plugin>
-    <plugin>cobertura</plugin>
-    <plugin>credentials</plugin>
-    <plugin>display-url-api</plugin>
-    <plugin>durable-task</plugin>
-    <plugin>email-ext</plugin>
-    <plugin>embeddable-build-status</plugin>
-    <plugin>git-client</plugin>
-    <plugin>git</plugin>
-    <plugin>gravatar</plugin>
-    <plugin>greenballs</plugin>
-    <plugin>hashicorp-vault-plugin</plugin>
-    <plugin>icon-shim</plugin>
-    <plugin>jackson2-api</plugin>
-    <plugin>javadoc</plugin>
-    <plugin>job-dsl</plugin>
-    <plugin>junit</plugin>
-    <plugin>jsch</plugin>
-    <plugin>mailer</plugin>
-    <plugin>matrix-auth</plugin>
-    <plugin>matrix-project</plugin>
-    <plugin>maven-plugin</plugin>
-    <plugin>metrics</plugin>
-    <plugin>msbuild</plugin>
-    <plugin>nomad</plugin>
-    <plugin>nunit</plugin>
-    <plugin>powershell</plugin>
-    <plugin>PrioritySorter</plugin>
-    <plugin>rabbitmq-build-trigger</plugin>
-    <plugin>rabbitmq-consumer</plugin>
-    <plugin>rebuild</plugin>
-    <plugin>resource-disposer</plugin>
-    <plugin>role-strategy</plugin>
-    <plugin>scm-api</plugin>
-    <plugin>script-security</plugin>
-    <plugin>short-workspace-path</plugin>
-    <plugin>ssh-credentials</plugin>
-    <plugin>statistics-gatherer</plugin>
-    <plugin>structs</plugin>
-    <plugin>swarm</plugin>
-    <plugin>token-macro</plugin>
-    <plugin>violations</plugin>
-    <plugin>warnings</plugin>
-    <plugin>workflow-api</plugin>,
-    <plugin>workflow-durable-task-step</plugin>
-    <plugin>workflow-job</plugin>
-    <plugin>workflow-scm-step</plugin>
-    <plugin>workflow-step-api</plugin>
-    <plugin>workflow-support</plugin>
-    <plugin>ws-cleanup</plugin>
+    <plugin id="ace-editor" />
+    <plugin id="active-directory" />
+    <plugin id="analysis-core" />
+    <plugin id="antisamy-markup-formatter" />
+    <plugin id="apache-httpcomponents-client-4-api" />
+    <plugin id="branch-api" />
+    <plugin id="build-failure-analyzer" />
+    <plugin id="build-name-setter" />
+    <plugin id="build-timeout" />
+    <plugin id="build-user-vars-plugin" />
+    <plugin id="buildtriggerbadge" />
+    <plugin id="categorized-view" version="1.8" />
+    <plugin id="claim" />
+    <plugin id="cloudbees-folder" />
+    <plugin id="cobertura" />
+    <plugin id="conditional-buildstep" />
+    <plugin id="credentials" />
+    <plugin id="display-url-api" />
+    <plugin id="durable-task" />
+    <plugin id="email-ext" />
+    <plugin id="embeddable-build-status" />
+    <plugin id="git-client" />
+    <plugin id="git" />
+    <plugin id="gravatar" />
+    <plugin id="greenballs" />
+    <plugin id="hashicorp-vault-plugin" />
+    <plugin id="icon-shim" />
+    <plugin id="jackson2-api" />
+    <plugin id="javadoc" />
+    <plugin id="job-dsl" />
+    <plugin id="jquery-detached" />
+    <plugin id="jsch" />
+    <plugin id="junit" />
+    <plugin id="logstash" />
+    <plugin id="mailer" />
+    <plugin id="matrix-auth" />
+    <plugin id="matrix-project" />
+    <plugin id="maven-plugin" />
+    <plugin id="metrics" />
+    <plugin id="msbuild" />
+    <plugin id="multiple-scms" />
+    <plugin id="nomad" />
+    <plugin id="nunit" />
+    <plugin id="parameterized-trigger" />
+    <plugin id="powershell" />
+    <plugin id="PrioritySorter" />
+    <plugin id="rebuild" />
+    <plugin id="resource-disposer" />
+    <plugin id="role-strategy" />
+    <plugin id="run-condition" />
+    <plugin id="scm-api" />
+    <plugin id="script-security" />
+    <plugin id="short-workspace-path" />
+    <plugin id="ssh-credentials" />
+    <plugin id="statistics-gatherer" />
+    <plugin id="structs" />
+    <plugin id="swarm" />
+    <plugin id="timestamper" />
+    <plugin id="token-macro" />
+    <plugin id="variant" />
+    <plugin id="violations" />
+    <plugin id="warnings" />
+    <plugin id="workflow-api" />
+    <plugin id="workflow-cps" />
+    <plugin id="workflow-durable-task-step" />
+    <plugin id="workflow-job" />
+    <plugin id="workflow-multibranch" />
+    <plugin id="workflow-scm-step" />
+    <plugin id="workflow-step-api" />
+    <plugin id="workflow-support" />
+    <plugin id="ws-cleanup" />
+    <plugin id="xunit" version="1.104" />
 </plugins>
+<!--
+    We also need to install the xunit-plugin version 1.x.
+    Plugin version 2.0.x breaks our builds as of 2.0.3
+-->
