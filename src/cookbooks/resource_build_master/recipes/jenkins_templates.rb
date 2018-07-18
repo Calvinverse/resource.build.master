@@ -258,14 +258,19 @@ end
 # JENKINS CONFIGURATION
 #
 
+proxy_path = node['jenkins']['proxy_path']
+
 jenkins_config_script_template_file = node['jenkins']['consul_template']['config_script_file']
 file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" do
   action :create
   content <<~CONF
     #!/bin/sh
 
-    {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
+    {{ if keyExists "config/environment/directory/query/groups/builds/administrators" }}
+    {{ if keyExists "config/environment/directory/query/groups/builds/agent" }}
+    {{ if keyExists "config/services/jobs/protocols/http/host" }}
+    {{ if keyExists "config/services/jobs/protocols/http/port" }}
     FLAG=$(cat #{flag_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins configuration ..."
@@ -456,8 +461,8 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
           </templates>
           <name defined-in="org.jenkinsci.plugins.nomad.NomadCloud">Nomad</name>
           <nomadUrl>http://{{ key "config/services/jobs/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/jobs/protocols/http/port" }}</nomadUrl>
-          <jenkinsUrl>http://active.#{consul_service_name}.service.{{ key "config/services/consul/domain" }}:#{jenkins_http_port}/builds</jenkinsUrl>
-          <slaveUrl>http://active.#{consul_service_name}.service.{{ key "config/services/consul/domain" }}:#{jenkins_http_port}/builds/jnlpJars/slave.jar</slaveUrl>
+          <jenkinsUrl>http://active.#{consul_service_name}.service.{{ key "config/services/consul/domain" }}:#{jenkins_http_port}/#{proxy_path}</jenkinsUrl>
+          <slaveUrl>http://active.#{consul_service_name}.service.{{ key "config/services/consul/domain" }}:#{jenkins_http_port}/#{proxy_path}/jnlpJars/slave.jar</slaveUrl>
           <nomad>
             <nomadApi>http://{{ key "config/services/jobs/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/jobs/protocols/http/port" }}</nomadApi>
           </nomad>
@@ -477,6 +482,15 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
         echo "Initialized" > #{flag_config}
     fi
 
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
     {{ else }}
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}

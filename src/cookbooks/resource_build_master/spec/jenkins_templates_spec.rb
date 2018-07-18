@@ -190,8 +190,11 @@ describe 'resource_build_master::jenkins_templates' do
     jenkins_configuration_script_template_content = <<~CONF
       #!/bin/sh
 
-      {{ if keyExists "config/services/consul/datacenter" }}
       {{ if keyExists "config/services/consul/domain" }}
+      {{ if keyExists "config/environment/directory/query/groups/builds/administrators" }}
+      {{ if keyExists "config/environment/directory/query/groups/builds/agent" }}
+      {{ if keyExists "config/services/jobs/protocols/http/host" }}
+      {{ if keyExists "config/services/jobs/protocols/http/port" }}
       FLAG=$(cat /var/log/jenkins_config.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins configuration ..."
@@ -403,6 +406,15 @@ describe 'resource_build_master::jenkins_templates' do
           echo "Initialized" > /var/log/jenkins_config.log
       fi
 
+      {{ else }}
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
+      {{ end }}
+      {{ else }}
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
+      {{ end }}
+      {{ else }}
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
+      {{ end }}
       {{ else }}
       echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
