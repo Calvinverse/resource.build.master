@@ -51,6 +51,14 @@ file flag_mailer_config do
   TXT
 end
 
+flag_rabbitmq_config = '/var/log/jenkins_rabbitmq_config.log'
+file flag_rabbitmq_config do
+  action :create
+  content <<~TXT
+    NotInitialized
+  TXT
+end
+
 flag_vault_config = '/var/log/jenkins_vault_config.log'
 file flag_vault_config do
   action :create
@@ -928,6 +936,145 @@ file "#{consul_template_config_path}/jenkins_vault_configuration.hcl" do
 end
 
 #
+# RABBITMQ CONFIGURATION
+#
+
+jenkins_rabbitmq_config_script_template_file = node['jenkins']['consul_template']['rabbitmq_config_script_file']
+file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template_file}" do
+  action :create
+  content <<~CONF
+    #!/bin/sh
+
+    {{ if keyExists "config/services/consul/datacenter" }}
+    {{ if keyExists "config/services/consul/domain" }}
+    {{ if keyExists "config/services/queue/protocols/amqp/host" }}
+    FLAG=$(cat #{flag_rabbitmq_config})
+    if [ "$FLAG" = "NotInitialized" ]; then
+        echo "Write the jenkins rabbitmq configuration ..."
+        cat <<'EOT' > #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
+    <?xml version='1.0' encoding='UTF-8'?>
+    <org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
+    <urlValidator>
+        <options>8</options>
+        <allowedSchemes>
+        <string>amqps</string>
+        <string>amqp</string>
+        </allowedSchemes>
+    </urlValidator>
+    <enableConsumer>true</enableConsumer>
+    <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/builds</serviceUri>
+    {{ with secret "rabbitmq/creds/read.vhost.builds" }}
+    {{ if .Data.password }}
+        <userName>{{ .Data.username }}</userName>
+        <userPassword>{{ .Data.password }}</userPassword>
+    {{ end }}
+    {{ end }}
+    <watchdogPeriod>60000</watchdogPeriod>
+    <consumeItems>
+        <org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem>
+        <appId>remote-build</appId>
+        <queueName>builds</queueName>
+        </org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem>
+    </consumeItems>
+    <enableDebug>false</enableDebug>
+    </org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration>
+    EOT
+
+        chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
+        chmod 755 #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
+
+        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+            systemctl reload #{jenkins_service_name}
+        fi
+
+        echo "Initialized" > #{flag_rabbitmq_config}
+    fi
+
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
+  CONF
+  mode '755'
+end
+
+jenkins_rabbitmq_config_script_file = node['jenkins']['consul_template']['rabbitmq_config_file']
+file "#{consul_template_config_path}/jenkins_rabbitmq_configuration.hcl" do
+  action :create
+  content <<~HCL
+    # This block defines the configuration for a template. Unlike other blocks,
+    # this block may be specified multiple times to configure multiple templates.
+    # It is also possible to configure templates via the CLI directly.
+    template {
+      # This is the source file on disk to use as the input template. This is often
+      # called the "Consul Template template". This option is required if not using
+      # the `contents` option.
+      source = "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template_file}"
+
+      # This is the destination path on disk where the source template will render.
+      # If the parent directories do not exist, Consul Template will attempt to
+      # create them, unless create_dest_dirs is false.
+      destination = "#{jenkins_rabbitmq_config_script_file}"
+
+      # This options tells Consul Template to create the parent directories of the
+      # destination path if they do not exist. The default value is true.
+      create_dest_dirs = false
+
+      # This is the optional command to run when the template is rendered. The
+      # command will only run if the resulting template changes. The command must
+      # return within 30s (configurable), and it must have a successful exit code.
+      # Consul Template is not a replacement for a process monitor or init system.
+      command = "sh #{jenkins_rabbitmq_config_script_file}"
+
+      # This is the maximum amount of time to wait for the optional command to
+      # return. Default is 30s.
+      command_timeout = "60s"
+
+      # Exit with an error when accessing a struct or map field/key that does not
+      # exist. The default behavior will print "<no value>" when accessing a field
+      # that does not exist. It is highly recommended you set this to "true" when
+      # retrieving secrets from Vault.
+      error_on_missing_key = false
+
+      # This is the permission to render the file. If this option is left
+      # unspecified, Consul Template will attempt to match the permissions of the
+      # file that already exists at the destination path. If no file exists at that
+      # path, the permissions are 0644.
+      perms = 0755
+
+      # This option backs up the previously rendered template at the destination
+      # path before writing a new one. It keeps exactly one backup. This option is
+      # useful for preventing accidental changes to the data without having a
+      # rollback strategy.
+      backup = true
+
+      # These are the delimiters to use in the template. The default is "{{" and
+      # "}}", but for some templates, it may be easier to use a different delimiter
+      # that does not conflict with the output file itself.
+      left_delimiter  = "{{"
+      right_delimiter = "}}"
+
+      # This is the `minimum(:maximum)` to wait before rendering a new template to
+      # disk and triggering a command, separated by a colon (`:`). If the optional
+      # maximum value is omitted, it is assumed to be 4x the required minimum value.
+      # This is a numeric time with a unit suffix ("5s"). There is no default value.
+      # The wait value for a template takes precedence over any globally-configured
+      # wait.
+      wait {
+        min = "2s"
+        max = "10s"
+      }
+    }
+  HCL
+  mode '755'
+end
+
+#
 # CREDENTIALS CONFIGURATION
 #
 
@@ -1073,6 +1220,7 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
     # {{ file "#{flag_location_config}" }}
     # {{ file "#{flag_mailer_config}" }}
     # {{ file "#{flag_vault_config}" }}
+    # {{ file "#{flag_rabbitmq_config}" }}
     # {{ file "#{flag_credentials_config}" }}
 
     if [ "$(cat #{flag_groovy_ad})" = "Initialized" ]; then
@@ -1080,31 +1228,33 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
         if [ "$(cat #{flag_location_config})" = "Initialized" ]; then
           if [ "$(cat #{flag_mailer_config})" = "Initialized" ]; then
             if [ "$(cat #{flag_vault_config})" = "Initialized" ]; then
-              if [ "$(cat #{flag_credentials_config})" = "Initialized" ]; then
-                if ( ! $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
-                  systemctl enable #{jenkins_service_name}
+              if [ "$(cat #{flag_rabbitmq_config})" = "Initialized" ]; then
+                if [ "$(cat #{flag_credentials_config})" = "Initialized" ]; then
+                  if ( ! $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+                    systemctl enable #{jenkins_service_name}
 
-                  while true; do
-                    if ( (systemctl is-enabled --quiet #{jenkins_service_name}) ); then
-                        break
-                    fi
+                    while true; do
+                      if ( (systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+                          break
+                      fi
 
-                    sleep 1
-                  done
-                fi
+                      sleep 1
+                    done
+                  fi
 
-                if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-                  systemctl start #{jenkins_service_name}
+                  if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+                    systemctl start #{jenkins_service_name}
 
-                  while true; do
-                    if ( (systemctl is-active --quiet #{jenkins_service_name}) ); then
-                        break
-                    fi
+                    while true; do
+                      if ( (systemctl is-active --quiet #{jenkins_service_name}) ); then
+                          break
+                      fi
 
-                    sleep 1
-                  done
-                else
-                  systemctl reload #{jenkins_service_name}
+                      sleep 1
+                    done
+                  else
+                    systemctl reload #{jenkins_service_name}
+                  fi
                 fi
               fi
             fi
