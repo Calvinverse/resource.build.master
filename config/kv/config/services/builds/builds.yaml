@@ -5,5 +5,8 @@ config:
   - key: config/services/builds/protocols/http/port
     value: 8080
 
+  - key: config/services/builds/protocols/http/virtualdirectory
+    value: builds
+
   - key: config/services/builds/url/proxy
     value: http://infrastructure.calvinverse.net/builds
