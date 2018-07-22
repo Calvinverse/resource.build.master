@@ -46,6 +46,8 @@
     <plugin id="parameterized-trigger" />
     <plugin id="powershell" />
     <plugin id="PrioritySorter" />
+    <plugin id="rabbitmq-build-trigger" />
+    <plugin id="rabbitmq-consumer" />
     <plugin id="rebuild" />
     <plugin id="resource-disposer" />
     <plugin id="role-strategy" />
