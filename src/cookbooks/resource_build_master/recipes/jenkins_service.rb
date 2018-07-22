@@ -123,7 +123,7 @@ file run_jenkins_script do
       java_max_memory=""
 
       # Check for the 'real memory size' and calculate mx from a ratio
-      # given (default is 75%)
+      # given (default is 70%)
       max_mem="$(max_memory)"
       if [ "x${max_mem}" != "x0" ]; then
         ratio=70
