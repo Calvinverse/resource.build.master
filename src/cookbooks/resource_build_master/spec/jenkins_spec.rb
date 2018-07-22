@@ -56,6 +56,10 @@ describe 'resource_build_master::jenkins' do
       expect(chef_run).to create_file('/var/jenkins/jenkins.metrics.api.MetricsAccessKey.xml')
         .with_content(jenkins_metrics_config_content)
     end
+
+    it 'creates the jenkins configuration-as-code directory' do
+      expect(chef_run).to create_remote_directory('/etc/jenkins.d/casc')
+    end
   end
 
   context 'configures the firewall for jenkins' do
