@@ -22,10 +22,6 @@ end
 jenkins_http_port = node['jenkins']['port']['http']
 jenkins_slave_agent_port = node['jenkins']['port']['slave']
 
-# Create the systemd service for nomad. Set it to depend on the network being up
-# so that it won't start unless the network stack is initialized and has an
-# IP address
-
 # From here: https://jenkins.io/blog/2016/11/21/gc-tuning/
 java_server_args = '-server -XX:+AlwaysPreTouch'
 java_gc_args =
