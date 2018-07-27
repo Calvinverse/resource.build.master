@@ -189,6 +189,9 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 jenkins_groovy_ad_script_file = node['jenkins']['consul_template']['groovy_ad_file']
@@ -233,7 +236,7 @@ file "#{consul_template_config_path}/jenkins_groovy_ad.hcl" do
       # unspecified, Consul Template will attempt to match the permissions of the
       # file that already exists at the destination path. If no file exists at that
       # path, the permissions are 0644.
-      perms = 0755
+      perms = 0550
 
       # This option backs up the previously rendered template at the destination
       # path before writing a new one. It keeps exactly one backup. This option is
@@ -259,7 +262,9 @@ file "#{consul_template_config_path}/jenkins_groovy_ad.hcl" do
       }
     }
   HCL
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 #
@@ -506,7 +511,9 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 jenkins_config_script_file = node['jenkins']['consul_template']['config_file']
@@ -551,7 +558,7 @@ file "#{consul_template_config_path}/jenkins_configuration.hcl" do
       # unspecified, Consul Template will attempt to match the permissions of the
       # file that already exists at the destination path. If no file exists at that
       # path, the permissions are 0644.
-      perms = 0755
+      perms = 0550
 
       # This option backs up the previously rendered template at the destination
       # path before writing a new one. It keeps exactly one backup. This option is
@@ -577,7 +584,9 @@ file "#{consul_template_config_path}/jenkins_configuration.hcl" do
       }
     }
   HCL
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 #
@@ -620,7 +629,9 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 jenkins_location_config_script_file = node['jenkins']['consul_template']['location_config_file']
@@ -665,7 +676,7 @@ file "#{consul_template_config_path}/jenkins_location_configuration.hcl" do
       # unspecified, Consul Template will attempt to match the permissions of the
       # file that already exists at the destination path. If no file exists at that
       # path, the permissions are 0644.
-      perms = 0755
+      perms = 0550
 
       # This option backs up the previously rendered template at the destination
       # path before writing a new one. It keeps exactly one backup. This option is
@@ -691,7 +702,9 @@ file "#{consul_template_config_path}/jenkins_location_configuration.hcl" do
       }
     }
   HCL
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 #
@@ -741,7 +754,9 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 jenkins_mailer_config_script_file = node['jenkins']['consul_template']['mailer_config_file']
@@ -786,7 +801,7 @@ file "#{consul_template_config_path}/jenkins_mailer_configuration.hcl" do
       # unspecified, Consul Template will attempt to match the permissions of the
       # file that already exists at the destination path. If no file exists at that
       # path, the permissions are 0644.
-      perms = 0755
+      perms = 0550
 
       # This option backs up the previously rendered template at the destination
       # path before writing a new one. It keeps exactly one backup. This option is
@@ -812,7 +827,9 @@ file "#{consul_template_config_path}/jenkins_mailer_configuration.hcl" do
       }
     }
   HCL
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 #
@@ -861,7 +878,9 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 jenkins_vault_config_script_file = node['jenkins']['consul_template']['vault_config_file']
@@ -906,7 +925,7 @@ file "#{consul_template_config_path}/jenkins_vault_configuration.hcl" do
       # unspecified, Consul Template will attempt to match the permissions of the
       # file that already exists at the destination path. If no file exists at that
       # path, the permissions are 0644.
-      perms = 0755
+      perms = 0550
 
       # This option backs up the previously rendered template at the destination
       # path before writing a new one. It keeps exactly one backup. This option is
@@ -932,7 +951,9 @@ file "#{consul_template_config_path}/jenkins_vault_configuration.hcl" do
       }
     }
   HCL
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 #
@@ -1000,7 +1021,9 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 jenkins_rabbitmq_config_script_file = node['jenkins']['consul_template']['rabbitmq_config_file']
@@ -1045,7 +1068,7 @@ file "#{consul_template_config_path}/jenkins_rabbitmq_configuration.hcl" do
       # unspecified, Consul Template will attempt to match the permissions of the
       # file that already exists at the destination path. If no file exists at that
       # path, the permissions are 0644.
-      perms = 0755
+      perms = 0550
 
       # This option backs up the previously rendered template at the destination
       # path before writing a new one. It keeps exactly one backup. This option is
@@ -1071,7 +1094,9 @@ file "#{consul_template_config_path}/jenkins_rabbitmq_configuration.hcl" do
       }
     }
   HCL
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 #
@@ -1129,7 +1154,9 @@ file "#{consul_template_template_path}/#{jenkins_credentials_config_script_templ
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
   CONF
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 jenkins_credentials_config_script_file = node['jenkins']['consul_template']['credentials_file']
@@ -1174,7 +1201,7 @@ file "#{consul_template_config_path}/jenkins_credentials_configuration.hcl" do
       # unspecified, Consul Template will attempt to match the permissions of the
       # file that already exists at the destination path. If no file exists at that
       # path, the permissions are 0644.
-      perms = 0755
+      perms = 0550
 
       # This option backs up the previously rendered template at the destination
       # path before writing a new one. It keeps exactly one backup. This option is
@@ -1200,7 +1227,9 @@ file "#{consul_template_config_path}/jenkins_credentials_configuration.hcl" do
       }
     }
   HCL
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 #
@@ -1263,7 +1292,9 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
       fi
     fi
   CONF
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end
 
 jenkins_start_script_file = node['jenkins']['consul_template']['start_file']
@@ -1308,7 +1339,7 @@ file "#{consul_template_config_path}/jenkins_start_script.hcl" do
       # unspecified, Consul Template will attempt to match the permissions of the
       # file that already exists at the destination path. If no file exists at that
       # path, the permissions are 0644.
-      perms = 0755
+      perms = 0550
 
       # This option backs up the previously rendered template at the destination
       # path before writing a new one. It keeps exactly one backup. This option is
@@ -1334,5 +1365,7 @@ file "#{consul_template_config_path}/jenkins_start_script.hcl" do
       }
     }
   HCL
-  mode '755'
+  group 'root'
+  mode '0550'
+  owner 'root'
 end

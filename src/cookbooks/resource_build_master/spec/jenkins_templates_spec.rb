@@ -106,6 +106,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins groovy Active Directory script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_groovy_ad.ctmpl')
         .with_content(jenkins_groovy_ad_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
 
     consul_template_jenkins_groovy_ad_configuration_content = <<~CONF
@@ -147,7 +152,7 @@ describe 'resource_build_master::jenkins_templates' do
         # unspecified, Consul Template will attempt to match the permissions of the
         # file that already exists at the destination path. If no file exists at that
         # path, the permissions are 0644.
-        perms = 0755
+        perms = 0550
 
         # This option backs up the previously rendered template at the destination
         # path before writing a new one. It keeps exactly one backup. This option is
@@ -176,6 +181,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins_configuration.hcl in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_groovy_ad.hcl')
         .with_content(consul_template_jenkins_groovy_ad_configuration_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
   end
 
@@ -425,6 +435,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins configuration script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_configuration.ctmpl')
         .with_content(jenkins_configuration_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
 
     consul_template_jenkins_configuration_content = <<~CONF
@@ -466,7 +481,7 @@ describe 'resource_build_master::jenkins_templates' do
         # unspecified, Consul Template will attempt to match the permissions of the
         # file that already exists at the destination path. If no file exists at that
         # path, the permissions are 0644.
-        perms = 0755
+        perms = 0550
 
         # This option backs up the previously rendered template at the destination
         # path before writing a new one. It keeps exactly one backup. This option is
@@ -495,6 +510,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins_configuration.hcl in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_configuration.hcl')
         .with_content(consul_template_jenkins_configuration_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
   end
 
@@ -542,6 +562,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins location configuration script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_location_configuration.ctmpl')
         .with_content(jenkins_location_configuration_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
 
     consul_template_jenkins_location_configuration_content = <<~CONF
@@ -583,7 +608,7 @@ describe 'resource_build_master::jenkins_templates' do
         # unspecified, Consul Template will attempt to match the permissions of the
         # file that already exists at the destination path. If no file exists at that
         # path, the permissions are 0644.
-        perms = 0755
+        perms = 0550
 
         # This option backs up the previously rendered template at the destination
         # path before writing a new one. It keeps exactly one backup. This option is
@@ -612,6 +637,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins_location_configuration.hcl in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_location_configuration.hcl')
         .with_content(consul_template_jenkins_location_configuration_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
   end
 
@@ -666,6 +696,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins mailer configuration script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_mailer_configuration.ctmpl')
         .with_content(jenkins_mailer_configuration_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
 
     consul_template_jenkins_mailer_configuration_content = <<~CONF
@@ -707,7 +742,7 @@ describe 'resource_build_master::jenkins_templates' do
         # unspecified, Consul Template will attempt to match the permissions of the
         # file that already exists at the destination path. If no file exists at that
         # path, the permissions are 0644.
-        perms = 0755
+        perms = 0550
 
         # This option backs up the previously rendered template at the destination
         # path before writing a new one. It keeps exactly one backup. This option is
@@ -736,6 +771,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins_mailer_configuration.hcl in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_mailer_configuration.hcl')
         .with_content(consul_template_jenkins_mailer_configuration_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
   end
 
@@ -789,6 +829,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins vault configuration script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_vault_configuration.ctmpl')
         .with_content(jenkins_vault_configuration_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
 
     consul_template_jenkins_vault_configuration_content = <<~CONF
@@ -830,7 +875,7 @@ describe 'resource_build_master::jenkins_templates' do
         # unspecified, Consul Template will attempt to match the permissions of the
         # file that already exists at the destination path. If no file exists at that
         # path, the permissions are 0644.
-        perms = 0755
+        perms = 0550
 
         # This option backs up the previously rendered template at the destination
         # path before writing a new one. It keeps exactly one backup. This option is
@@ -859,6 +904,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins_vault_configuration.hcl in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_vault_configuration.hcl')
         .with_content(consul_template_jenkins_vault_configuration_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
   end
 
@@ -931,6 +981,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins rabbitmq configuration script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_rabbitmq_configuration.ctmpl')
         .with_content(jenkins_rabbitmq_configuration_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
 
     consul_template_jenkins_rabbitmq_configuration_content = <<~CONF
@@ -972,7 +1027,7 @@ describe 'resource_build_master::jenkins_templates' do
         # unspecified, Consul Template will attempt to match the permissions of the
         # file that already exists at the destination path. If no file exists at that
         # path, the permissions are 0644.
-        perms = 0755
+        perms = 0550
 
         # This option backs up the previously rendered template at the destination
         # path before writing a new one. It keeps exactly one backup. This option is
@@ -1001,6 +1056,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins_rabbitmq_configuration.hcl in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_rabbitmq_configuration.hcl')
         .with_content(consul_template_jenkins_rabbitmq_configuration_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
   end
 
@@ -1062,6 +1122,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins vault configuration script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_casc_credentials.ctmpl')
         .with_content(jenkins_credentials_configuration_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
 
     consul_template_jenkins_credentials_configuration_content = <<~CONF
@@ -1103,7 +1168,7 @@ describe 'resource_build_master::jenkins_templates' do
         # unspecified, Consul Template will attempt to match the permissions of the
         # file that already exists at the destination path. If no file exists at that
         # path, the permissions are 0644.
-        perms = 0755
+        perms = 0550
 
         # This option backs up the previously rendered template at the destination
         # path before writing a new one. It keeps exactly one backup. This option is
@@ -1132,6 +1197,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins_credentials_configuration.hcl in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_credentials_configuration.hcl')
         .with_content(consul_template_jenkins_credentials_configuration_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
   end
 
@@ -1194,6 +1264,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins start script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_start_script.ctmpl')
         .with_content(jenkins_start_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
 
     consul_template_jenkins_start_script_content = <<~CONF
@@ -1235,7 +1310,7 @@ describe 'resource_build_master::jenkins_templates' do
         # unspecified, Consul Template will attempt to match the permissions of the
         # file that already exists at the destination path. If no file exists at that
         # path, the permissions are 0644.
-        perms = 0755
+        perms = 0550
 
         # This option backs up the previously rendered template at the destination
         # path before writing a new one. It keeps exactly one backup. This option is
@@ -1264,6 +1339,11 @@ describe 'resource_build_master::jenkins_templates' do
     it 'creates jenkins_start_script.hcl in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_start_script.hcl')
         .with_content(consul_template_jenkins_start_script_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
     end
   end
 end
