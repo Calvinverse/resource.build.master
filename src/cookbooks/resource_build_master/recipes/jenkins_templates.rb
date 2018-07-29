@@ -17,6 +17,9 @@ file flag_groovy_ad do
   content <<~TXT
     NotInitialized
   TXT
+  group 'root'
+  mode '0770'
+  owner 'root'
 end
 
 flag_config = '/var/log/jenkins_config.log'
@@ -25,6 +28,9 @@ file flag_config do
   content <<~TXT
     NotInitialized
   TXT
+  group 'root'
+  mode '0770'
+  owner 'root'
 end
 
 flag_credentials_config = '/var/log/jenkins_casc_credentials.log'
@@ -33,6 +39,9 @@ file flag_credentials_config do
   content <<~TXT
     NotInitialized
   TXT
+  group 'root'
+  mode '0770'
+  owner 'root'
 end
 
 flag_location_config = '/var/log/jenkins_location_config.log'
@@ -41,6 +50,9 @@ file flag_location_config do
   content <<~TXT
     NotInitialized
   TXT
+  group 'root'
+  mode '0770'
+  owner 'root'
 end
 
 flag_mailer_config = '/var/log/jenkins_mailer_config.log'
@@ -49,6 +61,9 @@ file flag_mailer_config do
   content <<~TXT
     NotInitialized
   TXT
+  group 'root'
+  mode '0770'
+  owner 'root'
 end
 
 flag_rabbitmq_config = '/var/log/jenkins_rabbitmq_config.log'
@@ -57,6 +72,9 @@ file flag_rabbitmq_config do
   content <<~TXT
     NotInitialized
   TXT
+  group 'root'
+  mode '0770'
+  owner 'root'
 end
 
 flag_vault_config = '/var/log/jenkins_vault_config.log'
@@ -65,6 +83,9 @@ file flag_vault_config do
   content <<~TXT
     NotInitialized
   TXT
+  group 'root'
+  mode '0770'
+  owner 'root'
 end
 
 #
@@ -75,7 +96,7 @@ jenkins_build_data_path = node['jenkins']['path']['build_data']
 directory jenkins_build_data_path do
   action :create
   group node['jenkins']['service_group']
-  mode '0775'
+  mode '0770'
   owner node['jenkins']['service_user']
 end
 
@@ -176,7 +197,7 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
     EOT
 
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
-        chmod 755 #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
+        chmod 550 #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -486,7 +507,7 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
     EOT
 
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/config.xml
-        chmod 755 #{jenkins_home}/config.xml
+        chmod 550 #{jenkins_home}/config.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -613,7 +634,7 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
     EOT
 
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
-        chmod 755 #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
+        chmod 550 #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -735,7 +756,7 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
     EOT
 
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/hudson.tasks.Mailer.xml
-        chmod 755 #{jenkins_home}/hudson.tasks.Mailer.xml
+        chmod 550 #{jenkins_home}/hudson.tasks.Mailer.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -859,7 +880,7 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
     EOT
 
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
-        chmod 755 #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
+        chmod 550 #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -1002,7 +1023,7 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
     EOT
 
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
-        chmod 755 #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
+        chmod 550 #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}
@@ -1135,7 +1156,7 @@ file "#{consul_template_template_path}/#{jenkins_credentials_config_script_templ
     EOT
 
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_casc_path}/credentials.yaml
-        chmod 755 #{jenkins_casc_path}/credentials.yaml
+        chmod 550 #{jenkins_casc_path}/credentials.yaml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl reload #{jenkins_service_name}

@@ -141,7 +141,9 @@ file run_jenkins_script do
     # Fire up
     startup
   SH
-  mode '755'
+  group node['jenkins']['service_group']
+  mode '0550'
+  owner node['jenkins']['service_user']
 end
 
 jenkins_service_name = node['jenkins']['service_name']

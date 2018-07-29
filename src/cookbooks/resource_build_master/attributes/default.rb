@@ -95,4 +95,6 @@ default['jolokia']['url']['jar'] = "http://search.maven.org/remotecontent?filepa
 # TELEGRAF
 #
 
+default['telegraf']['service_user'] = 'telegraf'
+default['telegraf']['service_group'] = 'telegraf'
 default['telegraf']['config_directory'] = '/etc/telegraf/telegraf.d'

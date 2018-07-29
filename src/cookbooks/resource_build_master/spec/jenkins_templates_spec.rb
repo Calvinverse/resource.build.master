@@ -90,7 +90,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/init.groovy.d/p050.activedirectory.groovy
-          chmod 755 /var/jenkins/init.groovy.d/p050.activedirectory.groovy
+          chmod 550 /var/jenkins/init.groovy.d/p050.activedirectory.groovy
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
@@ -407,7 +407,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/config.xml
-          chmod 755 /var/jenkins/config.xml
+          chmod 550 /var/jenkins/config.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
@@ -543,7 +543,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
-          chmod 755 /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+          chmod 550 /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
@@ -674,7 +674,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/hudson.tasks.Mailer.xml
-          chmod 755 /var/jenkins/hudson.tasks.Mailer.xml
+          chmod 550 /var/jenkins/hudson.tasks.Mailer.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
@@ -807,7 +807,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
-          chmod 755 /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
+          chmod 550 /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
@@ -959,7 +959,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
-          chmod 755 /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
+          chmod 550 /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins
@@ -1100,7 +1100,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /etc/jenkins.d/casc/credentials.yaml
-          chmod 755 /etc/jenkins.d/casc/credentials.yaml
+          chmod 550 /etc/jenkins.d/casc/credentials.yaml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl reload jenkins

@@ -82,7 +82,7 @@ describe 'resource_build_master::jenkins_service' do
         java_max_memory=""
 
         # Check for the 'real memory size' and calculate mx from a ratio
-        # given (default is 75%)
+        # given (default is 70%)
         max_mem="$(max_memory)"
         if [ "x${max_mem}" != "x0" ]; then
           ratio=70
@@ -107,6 +107,11 @@ describe 'resource_build_master::jenkins_service' do
     it 'creates the /usr/local/jenkins/run_jenkins.sh file' do
       expect(chef_run).to create_file('/usr/local/jenkins/run_jenkins.sh')
         .with_content(jenkins_run_script_content)
+        .with(
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0550'
+        )
     end
 
     it 'creates the jenkins systemd service' do

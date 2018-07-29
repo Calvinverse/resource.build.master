@@ -35,11 +35,11 @@ end
 remote_directory jenkins_home do
   action :create
   files_group jenkins_group
-  files_mode '0755'
+  files_mode '0750'
   files_owner jenkins_user
   group jenkins_group
   owner jenkins_user
-  mode '0755'
+  mode '0750'
   recursive true
   source 'jenkins'
 end
@@ -48,7 +48,7 @@ jenkins_install_path = node['jenkins']['path']['war']
 directory jenkins_install_path do
   action :create
   group node['jenkins']['service_group']
-  mode '0775'
+  mode '0770'
   owner node['jenkins']['service_user']
 end
 
@@ -57,7 +57,7 @@ remote_file jenkins_war_path do
   action :create
   checksum node['jenkins']['checksum']
   group 'root'
-  mode '0755'
+  mode '0750'
   owner 'root'
   source node['jenkins']['url']['war']
 end
@@ -80,16 +80,19 @@ file "#{jenkins_home}/jenkins.metrics.api.MetricsAccessKey.xml" do
       </accessKeys>
     </jenkins.metrics.api.MetricsAccessKey_-DescriptorImpl>
   XML
+  group node['jenkins']['service_group']
+  mode '0750'
+  owner node['jenkins']['service_user']
 end
 
 remote_directory jenkins_casc_path do
   action :create
   files_group jenkins_group
-  files_mode '0755'
+  files_mode '0750'
   files_owner jenkins_user
   group jenkins_group
   owner jenkins_user
-  mode '0755'
+  mode '0750'
   recursive true
   source 'casc'
 end

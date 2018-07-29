@@ -14,18 +14,18 @@
 jolokia_install_path = node['jolokia']['path']['jar']
 directory jolokia_install_path do
   action :create
-  group node['jolokia']['service_group']
-  mode '0775'
-  owner node['jolokia']['service_user']
+  group node['jenkins']['service_group']
+  mode '0770'
+  owner node['jenkins']['service_user']
 end
 
 jolokia_jar_path = node['jolokia']['path']['jar_file']
 remote_file jolokia_jar_path do
   action :create
   checksum node['jolokia']['checksum']
-  group node['jolokia']['service_group']
-  mode '0755'
-  owner node['jolokia']['service_user']
+  group node['jenkins']['service_group']
+  mode '0550'
+  owner node['jenkins']['service_user']
   source node['jolokia']['url']['jar']
 end
 
@@ -226,7 +226,7 @@ file "#{consul_template_config_path}/telegraf_jolokia_inputs.hcl" do
       # command will only run if the resulting template changes. The command must
       # return within 30s (configurable), and it must have a successful exit code.
       # Consul Template is not a replacement for a process monitor or init system.
-      command = "systemctl reload #{telegraf_service}"
+      command = "chown #{node['telegraf']['service_user']}:#{node['telegraf']['service_group']} #{telegraf_config_directory}/inputs_jolokia.conf && systemctl reload #{telegraf_service}"
 
       # This is the maximum amount of time to wait for the optional command to
       # return. Default is 30s.

@@ -11,7 +11,7 @@ jenkins_plugins_path = "#{node['jenkins']['path']['home']}/plugins"
 directory jenkins_plugins_path do
   action :create
   group node['jenkins']['service_group']
-  mode '0775'
+  mode '0750'
   owner node['jenkins']['service_user']
 end
 
@@ -20,7 +20,7 @@ plugins.each do |name, version|
   remote_file "#{jenkins_plugins_path}/#{name}.hpi" do
     action :create
     group node['jenkins']['service_group']
-    mode '0755'
+    mode '0750'
     owner node['jenkins']['service_user']
     source "#{node['jenkins']['url']['plugins']}/#{name}/#{version}/#{name}.hpi"
   end
@@ -36,4 +36,7 @@ file "#{node['jenkins']['path']['home']}/org.jenkinsci.plugins.workflow.flow.Glo
       <durabilityHint>PERFORMANCE_OPTIMIZED</durabilityHint>
     </org.jenkinsci.plugins.workflow.flow.GlobalDefaultFlowDurabilityLevel_-DescriptorImpl>
   XML
+  group node['jenkins']['service_group']
+  mode '0750'
+  owner node['jenkins']['service_user']
 end
