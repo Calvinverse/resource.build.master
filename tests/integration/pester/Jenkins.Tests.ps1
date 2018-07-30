@@ -21,12 +21,11 @@ Describe 'The jenkins application' {
 
         $expectedContent = @'
 [Service]
-ExecStart = /opt/consul/1.0.6/consul agent -config-file=/etc/consul/consul.json -config-dir=/etc/consul/conf.d
-ExecReload = /bin/kill -HUP $MAINPID
-KillSignal = TERM
+ExecStart = /usr/local/jenkins/run_jenkins.sh'
+ExecReload = /usr/bin/curl http://localhost:8080/builds/reload
+ExecStop = /usr/bin/curl http://localhost:8080/builds/safeExit
 User = jenkins
-Environment = "GOMAXPROCS=2" "PATH=/usr/local/bin:/usr/bin:/bin"
-WorkingDirectory = /var/lib/consul
+EnvironmentFile = /etc/jenkins_environment
 
 [Unit]
 Description = Jenkins CI system
