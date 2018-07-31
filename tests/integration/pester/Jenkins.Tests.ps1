@@ -21,17 +21,18 @@ Describe 'The jenkins application' {
 
         $expectedContent = @'
 [Service]
-ExecStart = /usr/local/jenkins/run_jenkins.sh'
+ExecStart = /usr/local/jenkins/run_jenkins.sh
 ExecReload = /usr/bin/curl http://localhost:8080/builds/reload
 ExecStop = /usr/bin/curl http://localhost:8080/builds/safeExit
+Restart = on-failure
 User = jenkins
 EnvironmentFile = /etc/jenkins_environment
 
 [Unit]
 Description = Jenkins CI system
 Documentation = https://jenkins.io
-Wants = network.target
-After = network.target
+Requires = network-online.target
+After = network-online.target
 
 [Install]
 WantedBy = multi-user.target
@@ -48,22 +49,13 @@ WantedBy = multi-user.target
             $systemctlOutput[0] | Should Match 'jenkins.service - jenkins'
         }
 
-        It 'that is enabled' {
+        It 'that is not enabled' {
             $systemctlOutput[1] | Should Match 'Loaded:\sloaded\s\(.*;\senabled;.*\)'
 
         }
 
-        It 'and is running' {
+        It 'and is not running' {
             $systemctlOutput[2] | Should Match 'Active:\sactive\s\(running\).*'
-        }
-    }
-
-    Context 'can be contacted' {
-        $response = Invoke-WebRequest -Uri http://localhost:8080/builds -UseBasicParsing
-        $agentInformation = ConvertFrom-Json $response.Content
-        It 'responds to HTTP calls' {
-            $response.StatusCode | Should Be 200
-            $agentInformation | Should Not Be $null
         }
     }
 }
