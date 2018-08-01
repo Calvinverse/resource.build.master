@@ -96,8 +96,9 @@ describe 'resource_build_master::jenkins_service' do
         user_java_opts="#{java_server_args} #{java_gc_args} #{java_awt_args} #{java_ipv4_args} #{jenkins_java_args}"
         user_java_jar_opts="#{jenkins_args}"
 
-        echo exec java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
-        exec java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
+        echo nohup java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
+        nohup java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts} 2>&1 &
+        echo "$!" >"/usr/local/jenkins/jenkins_pid"
       }
 
       # =============================================================================
@@ -123,7 +124,9 @@ describe 'resource_build_master::jenkins_service' do
         service_exec_reload: '/usr/bin/curl http://localhost:8080/builds/reload',
         service_exec_start: '/usr/local/jenkins/run_jenkins.sh',
         service_exec_stop: '/usr/bin/curl http://localhost:8080/builds/safeExit',
+        service_pid_file: '/usr/local/jenkins/jenkins_pid',
         service_restart: 'on-failure',
+        service_type: 'forking',
         service_user: 'jenkins'
       )
     end

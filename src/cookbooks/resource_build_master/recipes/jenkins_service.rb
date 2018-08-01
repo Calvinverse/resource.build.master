@@ -89,6 +89,8 @@ jenkins_args =
 
 jenkins_user = node['jenkins']['service_user']
 jenkins_war_path = node['jenkins']['path']['war_file']
+jenkins_pid_file = node['jenkins']['path']['pid_file']
+
 run_jenkins_script = '/usr/local/jenkins/run_jenkins.sh'
 file run_jenkins_script do
   action :create
@@ -133,8 +135,9 @@ file run_jenkins_script do
       user_java_opts="#{java_server_args} #{java_gc_args} #{java_awt_args} #{java_ipv4_args} #{jenkins_java_args}"
       user_java_jar_opts="#{jenkins_args}"
 
-      echo exec java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
-      exec java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
+      echo nohup java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts}
+      nohup java ${user_java_opts} ${java_max_memory} #{java_diagnostics} #{jenkins_metrics_args} -jar #{jenkins_war_path} ${user_java_jar_opts} 2>&1 &
+      echo "$!" >"#{jenkins_pid_file}"
     }
 
     # =============================================================================
@@ -158,7 +161,9 @@ systemd_service jenkins_service_name do
     exec_reload "/usr/bin/curl http://localhost:#{jenkins_http_port}/#{proxy_path}/reload"
     exec_start run_jenkins_script
     exec_stop "/usr/bin/curl http://localhost:#{jenkins_http_port}/#{proxy_path}/safeExit"
+    pid_file jenkins_pid_file
     restart 'on-failure'
+    type 'forking'
     user jenkins_user
   end
   unit do

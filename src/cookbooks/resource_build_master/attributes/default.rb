@@ -33,6 +33,7 @@ default['jenkins']['path']['environment_file'] = '/etc/jenkins_environment'
 default['jenkins']['path']['home'] = '/var/jenkins'
 default['jenkins']['path']['war'] = '/usr/local/jenkins'
 default['jenkins']['path']['war_file'] = "#{node['jenkins']['path']['war']}/jenkins.war"
+default['jenkins']['path']['pid_file'] = "#{node['jenkins']['path']['war']}/jenkins_pid"
 
 default['jenkins']['consul']['service_name'] = 'builds'
 default['jenkins']['proxy_path'] = 'builds'
