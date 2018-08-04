@@ -93,7 +93,7 @@ describe 'resource_build_master::jenkins_templates' do
           chmod 550 /var/jenkins/init.groovy.d/p050.activedirectory.groovy
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl reload jenkins
+              systemctl restart jenkins
           fi
 
           echo "Initialized" > /var/log/jenkins_groovy_ad.log
@@ -410,7 +410,7 @@ describe 'resource_build_master::jenkins_templates' do
           chmod 550 /var/jenkins/config.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl reload jenkins
+              systemctl restart jenkins
           fi
 
           echo "Initialized" > /var/log/jenkins_config.log
@@ -546,7 +546,7 @@ describe 'resource_build_master::jenkins_templates' do
           chmod 550 /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl reload jenkins
+              systemctl restart jenkins
           fi
 
           echo "Initialized" > /var/log/jenkins_location_config.log
@@ -677,7 +677,7 @@ describe 'resource_build_master::jenkins_templates' do
           chmod 550 /var/jenkins/hudson.tasks.Mailer.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl reload jenkins
+              systemctl restart jenkins
           fi
 
           echo "Initialized" > /var/log/jenkins_mailer_config.log
@@ -810,7 +810,7 @@ describe 'resource_build_master::jenkins_templates' do
           chmod 550 /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl reload jenkins
+              systemctl restart jenkins
           fi
 
           echo "Initialized" > /var/log/jenkins_vault_config.log
@@ -926,6 +926,7 @@ describe 'resource_build_master::jenkins_templates' do
       {{ if keyExists "config/services/consul/datacenter" }}
       {{ if keyExists "config/services/consul/domain" }}
       {{ if keyExists "config/services/queue/protocols/amqp/host" }}
+      {{ if keyExists "config/services/queue/builds/vhost" }}
       FLAG=$(cat /var/log/jenkins_rabbitmq_config.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins rabbitmq configuration ..."
@@ -940,7 +941,7 @@ describe 'resource_build_master::jenkins_templates' do
           </allowedSchemes>
       </urlValidator>
       <enableConsumer>true</enableConsumer>
-      <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/builds</serviceUri>
+      <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/{{ key "config/services/queue/builds/vhost" }}</serviceUri>
       {{ with secret "rabbitmq/creds/read.vhost.builds" }}
       {{ if .Data.password }}
           <userName>{{ .Data.username }}</userName>
@@ -962,12 +963,15 @@ describe 'resource_build_master::jenkins_templates' do
           chmod 550 /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl reload jenkins
+              systemctl restart jenkins
           fi
 
           echo "Initialized" > /var/log/jenkins_rabbitmq_config.log
       fi
 
+      {{ else }}
+      echo "Not all Consul K-V values are available. Will not start Jenkins."
+      {{ end }}
       {{ else }}
       echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
@@ -1103,7 +1107,7 @@ describe 'resource_build_master::jenkins_templates' do
           chmod 550 /etc/jenkins.d/casc/credentials.yaml
 
           if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl reload jenkins
+              systemctl restart jenkins
           fi
 
           echo "Initialized" > /var/log/jenkins_casc_credentials.log
@@ -1227,32 +1231,30 @@ describe 'resource_build_master::jenkins_templates' do
             if [ "$(cat /var/log/jenkins_mailer_config.log)" = "Initialized" ]; then
               if [ "$(cat /var/log/jenkins_vault_config.log)" = "Initialized" ]; then
                 if [ "$(cat /var/log/jenkins_rabbitmq_config.log)" = "Initialized" ]; then
-                  if [ "$(cat /var/log/jenkins_casc_credentials.log)" = "Initialized" ]; then
-                    if ( ! $(systemctl is-enabled --quiet jenkins) ); then
-                      systemctl enable jenkins
+                  if ( ! $(systemctl is-enabled --quiet jenkins) ); then
+                    systemctl enable jenkins
 
-                      while true; do
-                        if ( (systemctl is-enabled --quiet jenkins) ); then
-                            break
-                        fi
+                    while true; do
+                      if ( (systemctl is-enabled --quiet jenkins) ); then
+                          break
+                      fi
 
-                        sleep 1
-                      done
-                    fi
+                      sleep 1
+                    done
+                  fi
 
-                    if ( ! (systemctl is-active --quiet jenkins) ); then
-                      systemctl start jenkins
+                  if ( ! (systemctl is-active --quiet jenkins) ); then
+                    systemctl start jenkins
 
-                      while true; do
-                        if ( (systemctl is-active --quiet jenkins) ); then
-                            break
-                        fi
+                    while true; do
+                      if ( (systemctl is-active --quiet jenkins) ); then
+                          break
+                      fi
 
-                        sleep 1
-                      done
-                    else
-                      systemctl reload jenkins
-                    fi
+                      sleep 1
+                    done
+                  else
+                    systemctl restart jenkins
                   fi
                 fi
               fi

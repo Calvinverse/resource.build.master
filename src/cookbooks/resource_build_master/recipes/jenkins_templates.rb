@@ -200,7 +200,7 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
         chmod 550 #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl reload #{jenkins_service_name}
+            systemctl restart #{jenkins_service_name}
         fi
 
         echo "Initialized" > #{flag_groovy_ad}
@@ -510,7 +510,7 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
         chmod 550 #{jenkins_home}/config.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl reload #{jenkins_service_name}
+            systemctl restart #{jenkins_service_name}
         fi
 
         echo "Initialized" > #{flag_config}
@@ -637,7 +637,7 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
         chmod 550 #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl reload #{jenkins_service_name}
+            systemctl restart #{jenkins_service_name}
         fi
 
         echo "Initialized" > #{flag_location_config}
@@ -759,7 +759,7 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
         chmod 550 #{jenkins_home}/hudson.tasks.Mailer.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl reload #{jenkins_service_name}
+            systemctl restart #{jenkins_service_name}
         fi
 
         echo "Initialized" > #{flag_mailer_config}
@@ -883,7 +883,7 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
         chmod 550 #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl reload #{jenkins_service_name}
+            systemctl restart #{jenkins_service_name}
         fi
 
         echo "Initialized" > #{flag_vault_config}
@@ -990,6 +990,7 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
     {{ if keyExists "config/services/consul/datacenter" }}
     {{ if keyExists "config/services/consul/domain" }}
     {{ if keyExists "config/services/queue/protocols/amqp/host" }}
+    {{ if keyExists "config/services/queue/builds/vhost" }}
     FLAG=$(cat #{flag_rabbitmq_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins rabbitmq configuration ..."
@@ -1004,7 +1005,7 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
         </allowedSchemes>
     </urlValidator>
     <enableConsumer>true</enableConsumer>
-    <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/builds</serviceUri>
+    <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/{{ key "config/services/queue/builds/vhost" }}</serviceUri>
     {{ with secret "rabbitmq/creds/read.vhost.builds" }}
     {{ if .Data.password }}
         <userName>{{ .Data.username }}</userName>
@@ -1026,12 +1027,15 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
         chmod 550 #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl reload #{jenkins_service_name}
+            systemctl restart #{jenkins_service_name}
         fi
 
         echo "Initialized" > #{flag_rabbitmq_config}
     fi
 
+    {{ else }}
+    echo "Not all Consul K-V values are available. Will not start Jenkins."
+    {{ end }}
     {{ else }}
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
@@ -1159,7 +1163,7 @@ file "#{consul_template_template_path}/#{jenkins_credentials_config_script_templ
         chmod 550 #{jenkins_casc_path}/credentials.yaml
 
         if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl reload #{jenkins_service_name}
+            systemctl restart #{jenkins_service_name}
         fi
 
         echo "Initialized" > #{flag_credentials_config}
@@ -1279,32 +1283,30 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
           if [ "$(cat #{flag_mailer_config})" = "Initialized" ]; then
             if [ "$(cat #{flag_vault_config})" = "Initialized" ]; then
               if [ "$(cat #{flag_rabbitmq_config})" = "Initialized" ]; then
-                if [ "$(cat #{flag_credentials_config})" = "Initialized" ]; then
-                  if ( ! $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
-                    systemctl enable #{jenkins_service_name}
+                if ( ! $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+                  systemctl enable #{jenkins_service_name}
 
-                    while true; do
-                      if ( (systemctl is-enabled --quiet #{jenkins_service_name}) ); then
-                          break
-                      fi
+                  while true; do
+                    if ( (systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+                        break
+                    fi
 
-                      sleep 1
-                    done
-                  fi
+                    sleep 1
+                  done
+                fi
 
-                  if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-                    systemctl start #{jenkins_service_name}
+                if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+                  systemctl start #{jenkins_service_name}
 
-                    while true; do
-                      if ( (systemctl is-active --quiet #{jenkins_service_name}) ); then
-                          break
-                      fi
+                  while true; do
+                    if ( (systemctl is-active --quiet #{jenkins_service_name}) ); then
+                        break
+                    fi
 
-                      sleep 1
-                    done
-                  else
-                    systemctl reload #{jenkins_service_name}
-                  fi
+                    sleep 1
+                  done
+                else
+                  systemctl restart #{jenkins_service_name}
                 fi
               fi
             fi
