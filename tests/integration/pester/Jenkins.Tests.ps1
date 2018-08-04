@@ -6,7 +6,6 @@ Describe 'The jenkins application' {
 
         It 'with configuration in /var/jenkins' {
             '/var/jenkins' | Should Exist
-            '/var/jenkins/config.xml' | Should Exist
         }
     }
 
@@ -21,6 +20,8 @@ Describe 'The jenkins application' {
 
         $expectedContent = @'
 [Service]
+Type = forking
+PIDFile = /usr/local/jenkins/jenkins_pid
 ExecStart = /usr/local/jenkins/run_jenkins.sh
 ExecReload = /usr/bin/curl http://localhost:8080/builds/reload
 ExecStop = /usr/bin/curl http://localhost:8080/builds/safeExit
@@ -50,12 +51,12 @@ WantedBy = multi-user.target
         }
 
         It 'that is not enabled' {
-            $systemctlOutput[1] | Should Match 'Loaded:\sloaded\s\(.*;\senabled;.*\)'
+            $systemctlOutput[1] | Should Match 'Loaded:\sloaded\s\(.*;\sdisabled;.*\)'
 
         }
 
         It 'and is not running' {
-            $systemctlOutput[2] | Should Match 'Active:\sactive\s\(running\).*'
+            $systemctlOutput[2] | Should Match 'Active:\sinactive\s\(dead\).*'
         }
     }
 }
