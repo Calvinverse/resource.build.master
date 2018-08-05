@@ -402,7 +402,7 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
             </permissions>
             <assignedSIDs>
               <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
-            </assignedSIDS>
+            </assignedSIDs>
           </role>
           <role name="agent.build" pattern=".*">
             <permissions>
@@ -410,7 +410,7 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
             </permissions>
             <assignedSIDs>
               <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
-            </assignedSIDS>
+            </assignedSIDs>
           </role>
         </roleMap>
       </authorizationStrategy>

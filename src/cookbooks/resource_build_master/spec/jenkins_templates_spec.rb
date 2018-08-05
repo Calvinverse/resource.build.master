@@ -302,7 +302,7 @@ describe 'resource_build_master::jenkins_templates' do
               </permissions>
               <assignedSIDs>
                 <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
-              </assignedSIDS>
+              </assignedSIDs>
             </role>
             <role name="agent.build" pattern=".*">
               <permissions>
@@ -310,7 +310,7 @@ describe 'resource_build_master::jenkins_templates' do
               </permissions>
               <assignedSIDs>
                 <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
-              </assignedSIDS>
+              </assignedSIDs>
             </role>
           </roleMap>
         </authorizationStrategy>
