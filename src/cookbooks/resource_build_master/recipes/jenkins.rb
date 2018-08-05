@@ -56,9 +56,9 @@ jenkins_war_path = node['jenkins']['path']['war_file']
 remote_file jenkins_war_path do
   action :create
   checksum node['jenkins']['checksum']
-  group 'root'
-  mode '0750'
-  owner 'root'
+  group node['jenkins']['service_group']
+  mode '0550'
+  owner node['jenkins']['service_user']
   source node['jenkins']['url']['war']
 end
 
