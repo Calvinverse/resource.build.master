@@ -391,7 +391,9 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
               <permission>hudson.model.Hudson.Read</permission>
               <permission>hudson.model.Item.Build</permission>
             </permissions>
-            <assignedSIDs/>
+            <assignedSIDs>
+              <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
+            </assignedSIDs>
           </role>
         </roleMap>
         <roleMap type="slaveRoles">

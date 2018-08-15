@@ -291,7 +291,9 @@ describe 'resource_build_master::jenkins_templates' do
                 <permission>hudson.model.Hudson.Read</permission>
                 <permission>hudson.model.Item.Build</permission>
               </permissions>
-              <assignedSIDs/>
+              <assignedSIDs>
+                <sid>{{ key "config/environment/directory/query/groups/builds/agent" }}</sid>
+              </assignedSIDs>
             </role>
           </roleMap>
           <roleMap type="slaveRoles">
