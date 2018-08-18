@@ -119,7 +119,7 @@ describe 'resource_build_master::jenkins' do
           "name": "builds",
           "port": 8080,
           "tags": [
-            "inactive",
+            "active",
             "edgeproxyprefix-/builds"
           ]
         }

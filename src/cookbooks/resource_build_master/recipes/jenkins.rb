@@ -142,7 +142,7 @@ file '/etc/consul/conf.d/jenkins-http.json' do
         "name": "#{consul_service_name}",
         "port": #{jenkins_http_port},
         "tags": [
-          "inactive",
+          "active",
           "edgeproxyprefix-/#{proxy_path}"
         ]
       }
