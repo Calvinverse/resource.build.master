@@ -33,7 +33,7 @@ describe 'resource_build_master::jenkins_metrics' do
         [inputs.jolokia2_agent.tags]
           influxdb_database = "services"
           service = "jenkins"
-          build = "master"
+          build = "build.controller"
 
         # JVM metrics
         # Runtime
