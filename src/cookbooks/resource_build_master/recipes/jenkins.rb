@@ -26,6 +26,9 @@ file jenkins_environment_file do
     JENKINS_HOME=#{jenkins_home}
     CASC_JENKINS_CONFIG=#{jenkins_casc_path}
   TXT
+  group node['jenkins']['service_group']
+  mode '0550'
+  owner node['jenkins']['service_user']
 end
 
 #

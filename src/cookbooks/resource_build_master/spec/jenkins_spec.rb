@@ -14,8 +14,8 @@ describe 'resource_build_master::jenkins' do
       expect(chef_run).to create_file('/etc/jenkins_environment')
         .with_content(jenkins_environment_content)
         .with(
-          group: 'root',
-          owner: 'root',
+          group: 'jenkins',
+          owner: 'jenkins',
           mode: '0550'
         )
     end
