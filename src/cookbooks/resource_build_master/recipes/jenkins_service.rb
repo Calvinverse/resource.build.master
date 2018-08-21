@@ -173,3 +173,7 @@ systemd_service jenkins_service_name do
     requires %w[network-online.target]
   end
 end
+
+service jenkins_service_name do
+  action :disable
+end

@@ -130,5 +130,9 @@ describe 'resource_build_master::jenkins_service' do
         service_user: 'jenkins'
       )
     end
+
+    it 'disables the service' do
+      expect(chef_run).to disable_service('jenkins')
+    end
   end
 end
