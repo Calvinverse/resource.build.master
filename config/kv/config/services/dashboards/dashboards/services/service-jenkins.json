@@ -17,7 +17,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 47,
   "iteration": 1534720730004,
   "links": [],
   "panels": [
@@ -26,7 +25,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 12,
@@ -309,7 +308,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.System",
+      "datasource": "InfluxDb.System",
       "fill": 1,
       "gridPos": {
         "h": 6,
@@ -449,7 +448,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.System",
+      "datasource": "InfluxDb.System",
       "decimals": 0,
       "fill": 1,
       "gridPos": {
@@ -631,7 +630,7 @@
       "targets": [
         {
           "alias": "$tag_host",
-          "datasource": "Influx.Services",
+          "datasource": "InfluxDb.Services",
           "groupBy": [
             {
               "params": [
@@ -742,7 +741,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 6,
@@ -879,7 +878,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -1152,7 +1151,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -1280,7 +1279,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -1540,7 +1539,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -1983,7 +1982,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -2187,7 +2186,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -2386,7 +2385,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -2685,7 +2684,7 @@
             "vista-production-01"
           ]
         },
-        "datasource": "Influx.Services",
+        "datasource": "InfluxDb.Services",
         "hide": 0,
         "includeAll": true,
         "label": "Environment",
@@ -2708,7 +2707,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "Influx.Services",
+        "datasource": "InfluxDb.Services",
         "hide": 0,
         "includeAll": true,
         "label": "Host",
@@ -2731,7 +2730,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "Influx.Services",
+        "datasource": "InfluxDb.Services",
         "hide": 0,
         "includeAll": true,
         "label": "Role",
