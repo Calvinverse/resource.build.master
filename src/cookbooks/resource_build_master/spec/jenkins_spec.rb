@@ -33,17 +33,17 @@ describe 'resource_build_master::jenkins' do
 
     it 'creates the jenkins install directory' do
       expect(chef_run).to create_directory('/usr/local/jenkins')
-      .with(
-        group: 'jenkins',
-        owner: 'jenkins',
-        mode: '0770'
-      )
+        .with(
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0770'
+        )
     end
 
     it 'installs the jenkins war file' do
       expect(chef_run).to create_remote_file('/usr/local/jenkins/jenkins.war')
         .with(
-          source: 'https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.121.1/jenkins-war-2.121.1.war'
+          source: 'https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.121.1/jenkins-war-2.121.1.war',
           group: 'jenkins',
           owner: 'jenkins',
           mode: '0550'
