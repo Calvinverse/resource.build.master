@@ -47,6 +47,7 @@ java_ipv4_args = '-Djava.net.preferIPv4Stack=true'
 # -jenkins.install.runSetupWizard -> Skip the install wizzard
 jenkins_java_args =
   '-Dhudson.model.UpdateCenter.never=true' \
+  ' -Dfile.encoding=UTF8' \
   ' -Dhudson.model.DownloadService.never=true' \
   " -Djenkins.model.Jenkins.slaveAgentPort=#{jenkins_slave_agent_port}" \
   ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' \

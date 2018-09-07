@@ -36,6 +36,7 @@ describe 'resource_build_master::jenkins_service' do
 
     jenkins_java_args =
       '-Dhudson.model.UpdateCenter.never=true' \
+      ' -Dfile.encoding=UTF8' \
       ' -Dhudson.model.DownloadService.never=true' \
       ' -Djenkins.model.Jenkins.slaveAgentPort=5000' \
       ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' \
