@@ -21,6 +21,8 @@
     <plugin id="durable-task" />
     <plugin id="email-ext" />
     <plugin id="embeddable-build-status" />
+    <plugin id="envinject" />
+    <plugin id="envinject-api" />
     <plugin id="git-client" />
     <plugin id="git" />
     <plugin id="gravatar" />
