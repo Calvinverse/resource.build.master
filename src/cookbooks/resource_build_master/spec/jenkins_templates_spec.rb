@@ -92,8 +92,10 @@ describe 'resource_build_master::jenkins_templates' do
           chown jenkins:jenkins /var/jenkins/init.groovy.d/p050.activedirectory.groovy
           chmod 550 /var/jenkins/init.groovy.d/p050.activedirectory.groovy
 
-          if ( ! (systemctl is-active --quiet jenkins) ); then
+          if ( $(systemctl is-enabled --quiet jenkins) ); then
+            if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl restart jenkins
+            fi
           fi
 
           echo "Initialized" > /var/log/jenkins_groovy_ad.log
@@ -411,8 +413,10 @@ describe 'resource_build_master::jenkins_templates' do
           chown jenkins:jenkins /var/jenkins/config.xml
           chmod 550 /var/jenkins/config.xml
 
-          if ( ! (systemctl is-active --quiet jenkins) ); then
+          if ( $(systemctl is-enabled --quiet jenkins) ); then
+            if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl restart jenkins
+            fi
           fi
 
           echo "Initialized" > /var/log/jenkins_config.log
@@ -547,8 +551,10 @@ describe 'resource_build_master::jenkins_templates' do
           chown jenkins:jenkins /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
           chmod 550 /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
 
-          if ( ! (systemctl is-active --quiet jenkins) ); then
+          if ( $(systemctl is-enabled --quiet jenkins) ); then
+            if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl restart jenkins
+            fi
           fi
 
           echo "Initialized" > /var/log/jenkins_location_config.log
@@ -678,8 +684,10 @@ describe 'resource_build_master::jenkins_templates' do
           chown jenkins:jenkins /var/jenkins/hudson.tasks.Mailer.xml
           chmod 550 /var/jenkins/hudson.tasks.Mailer.xml
 
-          if ( ! (systemctl is-active --quiet jenkins) ); then
+          if ( $(systemctl is-enabled --quiet jenkins) ); then
+            if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl restart jenkins
+            fi
           fi
 
           echo "Initialized" > /var/log/jenkins_mailer_config.log
@@ -811,8 +819,10 @@ describe 'resource_build_master::jenkins_templates' do
           chown jenkins:jenkins /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
           chmod 550 /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
 
-          if ( ! (systemctl is-active --quiet jenkins) ); then
+          if ( $(systemctl is-enabled --quiet jenkins) ); then
+            if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl restart jenkins
+            fi
           fi
 
           echo "Initialized" > /var/log/jenkins_vault_config.log
@@ -964,8 +974,10 @@ describe 'resource_build_master::jenkins_templates' do
           chown jenkins:jenkins /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
           chmod 550 /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
 
-          if ( ! (systemctl is-active --quiet jenkins) ); then
+          if ( $(systemctl is-enabled --quiet jenkins) ); then
+            if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl restart jenkins
+            fi
           fi
 
           echo "Initialized" > /var/log/jenkins_rabbitmq_config.log
@@ -1108,8 +1120,10 @@ describe 'resource_build_master::jenkins_templates' do
           chown jenkins:jenkins /etc/jenkins.d/casc/credentials.yaml
           chmod 550 /etc/jenkins.d/casc/credentials.yaml
 
-          if ( ! (systemctl is-active --quiet jenkins) ); then
+          if ( $(systemctl is-enabled --quiet jenkins) ); then
+            if ( ! (systemctl is-active --quiet jenkins) ); then
               systemctl restart jenkins
+            fi
           fi
 
           echo "Initialized" > /var/log/jenkins_casc_credentials.log

@@ -199,8 +199,10 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
         chmod 550 #{jenkins_home}/init.groovy.d/p050.activedirectory.groovy
 
-        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+          if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl restart #{jenkins_service_name}
+          fi
         fi
 
         echo "Initialized" > #{flag_groovy_ad}
@@ -511,8 +513,10 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/config.xml
         chmod 550 #{jenkins_home}/config.xml
 
-        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+          if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl restart #{jenkins_service_name}
+          fi
         fi
 
         echo "Initialized" > #{flag_config}
@@ -638,8 +642,10 @@ file "#{consul_template_template_path}/#{jenkins_location_config_script_template
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
         chmod 550 #{jenkins_home}/jenkins.model.JenkinsLocationConfiguration.xml
 
-        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+          if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl restart #{jenkins_service_name}
+          fi
         fi
 
         echo "Initialized" > #{flag_location_config}
@@ -760,8 +766,10 @@ file "#{consul_template_template_path}/#{jenkins_mailer_config_script_template_f
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/hudson.tasks.Mailer.xml
         chmod 550 #{jenkins_home}/hudson.tasks.Mailer.xml
 
-        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+          if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl restart #{jenkins_service_name}
+          fi
         fi
 
         echo "Initialized" > #{flag_mailer_config}
@@ -884,8 +892,10 @@ file "#{consul_template_template_path}/#{jenkins_vault_config_script_template_fi
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
         chmod 550 #{jenkins_home}/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
 
-        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+          if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl restart #{jenkins_service_name}
+          fi
         fi
 
         echo "Initialized" > #{flag_vault_config}
@@ -1028,8 +1038,10 @@ file "#{consul_template_template_path}/#{jenkins_rabbitmq_config_script_template
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
         chmod 550 #{jenkins_home}/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
 
-        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+          if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl restart #{jenkins_service_name}
+          fi
         fi
 
         echo "Initialized" > #{flag_rabbitmq_config}
@@ -1164,8 +1176,10 @@ file "#{consul_template_template_path}/#{jenkins_credentials_config_script_templ
         chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_casc_path}/credentials.yaml
         chmod 550 #{jenkins_casc_path}/credentials.yaml
 
-        if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+        if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+          if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
             systemctl restart #{jenkins_service_name}
+          fi
         fi
 
         echo "Initialized" > #{flag_credentials_config}
