@@ -56,7 +56,7 @@ jenkins_java_args =
 
 # Turn on GC logging
 java_diagnostics =
-  '-Xloggc:\var\log\jenkins_gc-%t.log' \
+  '-Xloggc:/var/log/jenkins_gc-%t.log' \
   ' -XX:NumberOfGCLogFiles=10' \
   ' -XX:+UseGCLogFileRotation' \
   ' -XX:GCLogFileSize=25m' \

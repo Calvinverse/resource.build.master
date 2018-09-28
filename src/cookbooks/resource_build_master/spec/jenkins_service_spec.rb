@@ -20,7 +20,7 @@ describe 'resource_build_master::jenkins_service' do
     java_ipv4_args = '-Djava.net.preferIPv4Stack=true'
 
     java_diagnostics =
-      '-Xloggc:\var\log\jenkins_gc-%t.log' \
+      '-Xloggc:/var/log/jenkins_gc-%t.log' \
       ' -XX:NumberOfGCLogFiles=10' \
       ' -XX:+UseGCLogFileRotation' \
       ' -XX:GCLogFileSize=25m' \
