@@ -1,8 +1,5 @@
-# Resource.Container.Host.Linux
+# Resource.Build.Master
 
 This [environment](http://blog.vialstudios.com/the-environment-cookbook-pattern/#theenvironmentcookbook) cookbook configures
-a physical machine or VM as a [nomad](https://www.nomadproject.io/) node.
+a physical machine or VM as a [Jenkins](https://jenkins.io/) node.
 
-## Machine configuration
-
-* Two network interfaces. One will be used for the host and one for the containers

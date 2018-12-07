@@ -19,11 +19,16 @@ end
 
 jenkins_home = node['jenkins']['path']['home']
 jenkins_environment_file = node['jenkins']['path']['environment_file']
+jenkins_casc_path = node['jenkins']['path']['casc']
 file jenkins_environment_file do
   action :create
   content <<~TXT
     JENKINS_HOME=#{jenkins_home}
+    CASC_JENKINS_CONFIG=#{jenkins_casc_path}
   TXT
+  group node['jenkins']['service_group']
+  mode '0550'
+  owner node['jenkins']['service_user']
 end
 
 #
@@ -33,11 +38,11 @@ end
 remote_directory jenkins_home do
   action :create
   files_group jenkins_group
-  files_mode '0755'
+  files_mode '0750'
   files_owner jenkins_user
   group jenkins_group
   owner jenkins_user
-  mode '0755'
+  mode '0750'
   recursive true
   source 'jenkins'
 end
@@ -46,7 +51,7 @@ jenkins_install_path = node['jenkins']['path']['war']
 directory jenkins_install_path do
   action :create
   group node['jenkins']['service_group']
-  mode '0775'
+  mode '0770'
   owner node['jenkins']['service_user']
 end
 
@@ -54,9 +59,9 @@ jenkins_war_path = node['jenkins']['path']['war_file']
 remote_file jenkins_war_path do
   action :create
   checksum node['jenkins']['checksum']
-  group 'root'
-  mode '0755'
-  owner 'root'
+  group node['jenkins']['service_group']
+  mode '0550'
+  owner node['jenkins']['service_user']
   source node['jenkins']['url']['war']
 end
 
@@ -78,6 +83,21 @@ file "#{jenkins_home}/jenkins.metrics.api.MetricsAccessKey.xml" do
       </accessKeys>
     </jenkins.metrics.api.MetricsAccessKey_-DescriptorImpl>
   XML
+  group node['jenkins']['service_group']
+  mode '0750'
+  owner node['jenkins']['service_user']
+end
+
+remote_directory jenkins_casc_path do
+  action :create
+  files_group jenkins_group
+  files_mode '0750'
+  files_owner jenkins_user
+  group jenkins_group
+  owner jenkins_user
+  mode '0750'
+  recursive true
+  source 'casc'
 end
 
 #
@@ -120,12 +140,12 @@ file '/etc/consul/conf.d/jenkins-http.json' do
             "interval": "15s"
           }
         ],
-        "enableTagOverride": true,
+        "enable_tag_override": false,
         "id": "jenkins",
         "name": "#{consul_service_name}",
         "port": #{jenkins_http_port},
         "tags": [
-          "inactive",
+          "active",
           "edgeproxyprefix-/#{proxy_path}"
         ]
       }

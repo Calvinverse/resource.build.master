@@ -3,12 +3,11 @@
         "admin_username": "admin",
         "admin_password": "admin",
 
-        "cookbook_name": "not_realy_a_cookbook_name",
+        "cookbook_name": "not_really_a_cookbook_name",
 
         "dir_cookbooks_src": "src/cookbooks",
         "dir_cookbooks_vendors": "packages/vendor/cookbooks",
         "dir_http_user": null,
-        "dir_log": null,
         "dir_src_provisioning": "src/provisioning",
         "dir_temp": null,
         "dir_vm_import": null,
@@ -16,7 +15,8 @@
         "vm_import_directory": null,
         "vm_name": "not_really_a_vm_name",
         "vm_ram_size_in_mb": "1024",
-        "vm_switch_name": "this_switch_does_not_exist"
+        "vm_switch_name": "this_switch_does_not_exist",
+        "vm_switch_vlan": ""
     },
     "builders": [
         {
@@ -26,15 +26,17 @@
             "communicator": "ssh",
             "enable_dynamic_memory": false,
             "enable_mac_spoofing": false,
-            "enable_secure_boot": false,
+            "enable_secure_boot": true,
             "enable_virtualization_extensions": false,
             "generation": 2,
             "guest_additions_mode": "disable",
+            "headless": true,
             "http_directory": "{{ user `dir_http_user` }}",
             "http_port_min": 8150,
             "http_port_max": 8160,
             "output_directory": "{{ user `dir_temp` }}/{{ user `vm_name` }}",
             "ram_size": "{{ user `vm_ram_size_in_mb` }}",
+            "secure_boot_template": "MicrosoftUEFICertificateAuthority",
             "shutdown_command": "echo '{{user `admin_password`}}' | sudo -S -E shutdown -P now",
             "shutdown_timeout": "5m",
             "skip_compaction": false,
@@ -73,6 +75,69 @@
             ],
             "type": "shell"
         },
+
+        {
+            "expect_disconnect": false,
+            "inline": [
+                "sudo -S -E apt-get install --assume-yes scsitools"
+            ],
+            "type": "shell"
+        },
+        {
+            "expect_disconnect": false,
+            "inline": [
+                "sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL",
+                "sudo fdisk -l",
+                "sudo blkid -s UUID -o value /dev/sda"
+            ],
+            "type": "shell"
+        },
+        {
+            "env_var_format": "$env:%s=\"%s\"; ",
+            "execute_command": ["powershell.exe", "{{.Vars}} {{.Script}}"],
+            "inline": [
+                "New-VHD -Path '{{ user `dir_temp` }}/{{ build_name }}/Virtual Hard Disks/data.vhdx' -SizeBytes 50GB -BlockSizeBytes 1MB",
+                "Add-VmHardDiskDrive -VMName {{ user `vm_name` }} -Path '{{ user `dir_temp` }}/{{build_name}}/Virtual Hard Disks/data.vhdx'"
+            ],
+            "tempfile_extension": ".ps1",
+            "type": "shell-local"
+        },
+        {
+            "expect_disconnect": false,
+            "inline": [
+                "sudo rescan-scsi-bus.sh --remove --issue-lip",
+                "sudo mkdir -p /var/builds",
+                "sudo mkfs.ext4 /dev/sdb",
+                "echo \"UUID=$(sudo blkid -s UUID -o value /dev/sdb) /var/builds ext4 defaults 0 0 \" | sudo tee -a /etc/fstab"
+            ],
+            "pause_before" : "15s",
+            "type": "shell"
+        },
+        {
+            "expect_disconnect": true,
+            "inline": [
+                "sudo shutdown -r now"
+            ],
+            "type": "shell"
+        },
+        {
+            "expect_disconnect": false,
+            "inline": [
+                "echo \"System should have rebooted ...\""
+            ],
+            "pause_before" : "15s",
+            "type": "shell"
+        },
+        {
+            "expect_disconnect": false,
+            "inline": [
+                "sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL",
+                "sudo fdisk -l",
+                "sudo blkid -s UUID -o value /dev/sda"
+            ],
+            "type": "shell"
+        },
+
         {
             "cookbook_paths": [
                 "{{ user `dir_cookbooks_vendors` }}"

@@ -1,0 +1,12 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<hudson.plugins.claim.ClaimConfig plugin="claim@2.15">
+  <sendEmails>false</sendEmails>
+  <stickyByDefault>true</stickyByDefault>
+  <propagateToFollowingBuildsByDefault>false</propagateToFollowingBuildsByDefault>
+  <sortUsersByFullName>false</sortUsersByFullName>
+  <groovyTrigger plugin="script-security@1.44">
+    <script></script>
+    <sandbox>true</sandbox>
+  </groovyTrigger>
+  <blockAutoRefreshWhileClaiming>false</blockAutoRefreshWhileClaiming>
+</hudson.plugins.claim.ClaimConfig>
