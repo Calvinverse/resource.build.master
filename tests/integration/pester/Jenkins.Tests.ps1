@@ -6,7 +6,6 @@ Describe 'The jenkins application' {
 
         It 'with configuration in /var/jenkins' {
             '/var/jenkins' | Should Exist
-            '/var/jenkins/config.xml' | Should Exist
         }
     }
 
@@ -20,21 +19,24 @@ Describe 'The jenkins application' {
         }
 
         $expectedContent = @'
-[Unit]
-Description=consul
-Wants=network.target
-After=network.target
-
 [Service]
-Environment="GOMAXPROCS=2" "PATH=/usr/local/bin:/usr/bin:/bin"
-ExecStart=/opt/consul/1.0.6/consul agent -config-file=/etc/consul/consul.json -config-dir=/etc/consul/conf.d
-ExecReload=/bin/kill -HUP $MAINPID
-KillSignal=TERM
-User=consul
-WorkingDirectory=/var/lib/consul
+Type = forking
+PIDFile = /usr/local/jenkins/jenkins_pid
+ExecStart = /usr/local/jenkins/run_jenkins.sh
+ExecReload = /usr/bin/curl http://localhost:8080/builds/reload
+ExecStop = /usr/bin/curl http://localhost:8080/builds/safeExit
+Restart = on-failure
+User = jenkins
+EnvironmentFile = /etc/jenkins_environment
+
+[Unit]
+Description = Jenkins CI system
+Documentation = https://jenkins.io
+Requires = network-online.target
+After = network-online.target
 
 [Install]
-WantedBy=multi-user.target
+WantedBy = multi-user.target
 
 '@
         $serviceFileContent = Get-Content $serviceConfigurationPath | Out-String
@@ -48,22 +50,13 @@ WantedBy=multi-user.target
             $systemctlOutput[0] | Should Match 'jenkins.service - jenkins'
         }
 
-        It 'that is enabled' {
-            $systemctlOutput[1] | Should Match 'Loaded:\sloaded\s\(.*;\senabled;.*\)'
+        It 'that is not enabled' {
+            $systemctlOutput[1] | Should Match 'Loaded:\sloaded\s\(.*;\sdisabled;.*\)'
 
         }
 
-        It 'and is running' {
-            $systemctlOutput[2] | Should Match 'Active:\sactive\s\(running\).*'
-        }
-    }
-
-    Context 'can be contacted' {
-        $response = Invoke-WebRequest -Uri http://localhost:8080/builds -UseBasicParsing
-        $agentInformation = ConvertFrom-Json $response.Content
-        It 'responds to HTTP calls' {
-            $response.StatusCode | Should Be 200
-            $agentInformation | Should Not Be $null
+        It 'and is not running' {
+            $systemctlOutput[2] | Should Match 'Active:\sinactive\s\(dead\).*'
         }
     }
 }

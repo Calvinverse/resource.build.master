@@ -1,0 +1,7 @@
+tool:
+  git:
+    installations:
+      - name: git (linux)
+        home: /usr/local/bin/git
+      - name: git (windows)
+        home: c:/Program Files/Git/cmd/git.exe

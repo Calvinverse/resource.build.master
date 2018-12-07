@@ -2,7 +2,7 @@
   "annotations": {
     "list": [
       {
-        "$$hashKey": "object:18774",
+        "$$hashKey": "object:617",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -17,8 +17,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 47,
-  "iteration": 1525488143788,
+  "iteration": 1534720730004,
   "links": [],
   "panels": [
     {
@@ -26,28 +25,30 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 7,
+        "h": 12,
+        "w": 8,
         "x": 0,
         "y": 0
       },
       "id": 6,
       "legend": {
         "alignAsTable": true,
-        "avg": false,
-        "current": false,
-        "max": false,
+        "avg": true,
+        "current": true,
+        "max": true,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
@@ -113,15 +114,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         },
@@ -174,15 +181,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         },
@@ -235,15 +248,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         }
@@ -251,7 +270,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "JVM Garbage collector",
+      "title": "Jenkins - Garbage Collections",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -289,28 +308,30 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.System",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 11,
-        "x": 7,
+        "h": 6,
+        "w": 8,
+        "x": 8,
         "y": 0
       },
-      "id": 8,
+      "id": 22,
       "legend": {
         "alignAsTable": true,
         "avg": true,
         "current": true,
         "max": true,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
         "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
@@ -323,7 +344,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Collection committed ($tag_host)",
+          "alias": "$tag_host",
           "groupBy": [
             {
               "params": [
@@ -344,16 +365,18 @@
               "type": "fill"
             }
           ],
-          "measurement": "jvm_memory_pool",
+          "measurement": "win_cpu",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT 100 - mean(\"Percent_Idle_Time\") FROM \"win_cpu\" WHERE (\"host\" =~ /^$_host$/ AND \"environment\" =~ /^$_environment$/ AND \"machinetype\" =~ /^$_role$/) AND $timeFilter GROUP BY time($_bucket), \"host\" fill(null)",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "CollectionUsage.committed"
+                  "Percent_Idle_Time"
                 ],
                 "type": "field"
               },
@@ -365,20 +388,111 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Host - Cpu",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": "% Utilization",
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
         },
         {
-          "alias": "Collection used ($tag_host)",
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
+        }
+      ]
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDb.System",
+      "decimals": 0,
+      "fill": 1,
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 25,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/Cpu/",
+          "fill": 0,
+          "linewidth": 2,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_host",
           "groupBy": [
             {
               "params": [
@@ -399,62 +513,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "jvm_memory_pool",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "CollectionUsage.used"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
-            },
-            {
-              "condition": "AND",
-              "key": "environment",
-              "operator": "=~",
-              "value": "/^$_environment$/"
-            }
-          ]
-        },
-        {
-          "alias": "Peak committed ($tag_host)",
-          "groupBy": [
-            {
-              "params": [
-                "$_bucket"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "host"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "jvm_memory_pool",
+          "measurement": "win_mem",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "C",
@@ -463,7 +522,7 @@
             [
               {
                 "params": [
-                  "PeakUsage.committed"
+                  "Available_Bytes"
                 ],
                 "type": "field"
               },
@@ -475,180 +534,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
-            }
-          ]
-        },
-        {
-          "alias": "Peak used ($tag_host)",
-          "groupBy": [
-            {
-              "params": [
-                "$_bucket"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "host"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "jvm_memory_pool",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "PeakUsage.used"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
             },
             {
               "condition": "AND",
-              "key": "environment",
+              "key": "machinetype",
               "operator": "=~",
-              "value": "/^$_environment$/"
-            }
-          ]
-        },
-        {
-          "alias": "Usage committed ($tag_host)",
-          "groupBy": [
-            {
-              "params": [
-                "$_bucket"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "host"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "jvm_memory_pool",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Usage.committed"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
-            },
-            {
-              "condition": "AND",
-              "key": "environment",
-              "operator": "=~",
-              "value": "/^$_environment$/"
-            }
-          ]
-        },
-        {
-          "alias": "Usage used ($tag_host)",
-          "groupBy": [
-            {
-              "params": [
-                "$_bucket"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "host"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "jvm_memory_pool",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "F",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Usage.used"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
-            },
-            {
-              "condition": "AND",
-              "key": "environment",
-              "operator": "=~",
-              "value": "/^$_environment$/"
+              "value": "/^$_role$/"
             }
           ]
         }
@@ -656,7 +556,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "JVM Memory Pool",
+      "title": "Host - Memory",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -673,18 +573,18 @@
       "yaxes": [
         {
           "format": "bytes",
-          "label": null,
+          "label": "Memory free",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
-          "format": "short",
+          "format": "percent",
           "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
+          "max": "100",
+          "min": "0",
           "show": true
         }
       ]
@@ -694,13 +594,160 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "-- Mixed --",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 18,
-        "y": 0
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 6
+      },
+      "id": 14,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": false,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_host",
+          "datasource": "InfluxDb.Services",
+          "groupBy": [
+            {
+              "params": [
+                "$_bucket"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "jenkins_vm_cpu",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"Value\") FROM \"jenkins_vm_cpu\" WHERE (\"host\" =~ /^$_host$/ AND \"environment\" =~ /^$_environment$/ AND \"machinetype\" =~ /^$_role$/) AND $timeFilter GROUP BY time($_bucket), \"host\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
+            },
+            {
+              "condition": "AND",
+              "key": "environment",
+              "operator": "=~",
+              "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Jenkins - Cpu",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": "Cpu Load",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "100",
+          "min": null,
+          "show": false
+        }
+      ]
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDb.Services",
+      "fill": 1,
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 6
       },
       "id": 10,
       "legend": {
@@ -710,11 +757,13 @@
         "max": true,
         "min": false,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
         "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
@@ -769,15 +818,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         }
@@ -785,7 +840,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Jenkins memory usage",
+      "title": "Jenkins -  Memory",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -802,10 +857,10 @@
       "yaxes": [
         {
           "format": "bytes",
-          "label": null,
+          "label": "Memory used",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -823,13 +878,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 13,
+        "h": 8,
+        "w": 12,
         "x": 0,
-        "y": 9
+        "y": 12
       },
       "id": 2,
       "legend": {
@@ -838,20 +893,35 @@
         "current": true,
         "max": true,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
         "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "/Max/",
+          "fill": 0
+        },
+        {
+          "alias": "/Committed/",
+          "fill": 1
+        },
+        {
+          "alias": "/Used/",
+          "fill": 3
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -899,15 +969,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         },
@@ -954,15 +1030,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         },
@@ -1009,15 +1091,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         }
@@ -1025,7 +1113,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "JVM Heap memory",
+      "title": "Jenkins - Heap",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1063,13 +1151,141 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 11,
-        "x": 13,
-        "y": 9
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "id": 24,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": false,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_host",
+          "groupBy": [
+            {
+              "params": [
+                "1m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "jvm_memory",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT MAX( \"utilization\") FROM ( SELECT \"HeapMemoryUsage.used\" / \"HeapMemoryUsage.max\" AS \"utilization\" FROM \"jvm_memory\" WHERE (\"host\" =~ /^$_host$/ AND \"environment\" =~ /^$_environment$/ AND \"machinetype\" =~ /^$_role$/) AND $timeFilter) GROUP BY time($_bucket), \"host\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "HeapMemoryUsage.max"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "HeapMemoryUsage.used"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Jenkins - % Heap used",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": "Heap Utilization",
+          "logBase": 1,
+          "max": "1",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ]
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDb.Services",
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 20
       },
       "id": 4,
       "legend": {
@@ -1078,13 +1294,15 @@
         "current": true,
         "max": true,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
         "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
@@ -1139,15 +1357,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         },
@@ -1194,70 +1418,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
-            }
-          ]
-        },
-        {
-          "alias": "Max ($tag_host)",
-          "groupBy": [
-            {
-              "params": [
-                "$_bucket"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "host"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "jvm_memory",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "NonHeapMemoryUsage.max"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
             },
             {
               "condition": "AND",
-              "key": "environment",
+              "key": "machinetype",
               "operator": "=~",
-              "value": "/^$_environment$/"
+              "value": "/^$_role$/"
             }
           ]
         },
@@ -1304,15 +1479,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         }
@@ -1358,13 +1539,456 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 9,
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 20
+      },
+      "id": 8,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Collection committed ($tag_host)",
+          "groupBy": [
+            {
+              "params": [
+                "$_bucket"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "jvm_memory_pool",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "CollectionUsage.committed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
+            },
+            {
+              "condition": "AND",
+              "key": "environment",
+              "operator": "=~",
+              "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
+            }
+          ]
+        },
+        {
+          "alias": "Collection used ($tag_host)",
+          "groupBy": [
+            {
+              "params": [
+                "$_bucket"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "jvm_memory_pool",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "CollectionUsage.used"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
+            },
+            {
+              "condition": "AND",
+              "key": "environment",
+              "operator": "=~",
+              "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
+            }
+          ]
+        },
+        {
+          "alias": "Peak committed ($tag_host)",
+          "groupBy": [
+            {
+              "params": [
+                "$_bucket"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "jvm_memory_pool",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "PeakUsage.committed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
+            },
+            {
+              "condition": "AND",
+              "key": "environment",
+              "operator": "=~",
+              "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
+            }
+          ]
+        },
+        {
+          "alias": "Peak used ($tag_host)",
+          "groupBy": [
+            {
+              "params": [
+                "$_bucket"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "jvm_memory_pool",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "PeakUsage.used"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
+            },
+            {
+              "condition": "AND",
+              "key": "environment",
+              "operator": "=~",
+              "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
+            }
+          ]
+        },
+        {
+          "alias": "Usage committed ($tag_host)",
+          "groupBy": [
+            {
+              "params": [
+                "$_bucket"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "jvm_memory_pool",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Usage.committed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
+            },
+            {
+              "condition": "AND",
+              "key": "environment",
+              "operator": "=~",
+              "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
+            }
+          ]
+        },
+        {
+          "alias": "Usage used ($tag_host)",
+          "groupBy": [
+            {
+              "params": [
+                "$_bucket"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "jvm_memory_pool",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Usage.used"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
+            },
+            {
+              "condition": "AND",
+              "key": "environment",
+              "operator": "=~",
+              "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "JVM Memory Pool",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ]
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDb.Services",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
         "x": 0,
-        "y": 18
+        "y": 28
       },
       "id": 12,
       "legend": {
@@ -1373,13 +1997,15 @@
         "current": true,
         "max": true,
         "min": true,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
+        "sort": null,
+        "sortDesc": null,
         "total": false,
         "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
@@ -1439,15 +2065,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         },
@@ -1494,15 +2126,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         }
@@ -1548,26 +2186,30 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 7,
-        "x": 9,
-        "y": 18
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 28
       },
-      "id": 16,
+      "id": 18,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
         "min": false,
+        "rightSide": false,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
@@ -1580,7 +2222,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Threads ($tag_host)",
+          "alias": "Requests ($tag_host)",
           "groupBy": [
             {
               "params": [
@@ -1601,7 +2243,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "jenkins_vm_threads",
+          "measurement": "jenkins_web_requests",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -1610,27 +2252,94 @@
             [
               {
                 "params": [
-                  "Value.Value"
+                  "MeanRate"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
+            }
+          ]
+        },
+        {
+          "alias": "Response codes ($tag_host)",
+          "groupBy": [
+            {
+              "params": [
+                "$_bucket"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "jenkins_web_reponsecodes",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "MeanRate"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
+            },
+            {
+              "condition": "AND",
+              "key": "environment",
+              "operator": "=~",
+              "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         }
@@ -1638,7 +2347,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Jenkins - Threads",
+      "title": "Jenkins - Web",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1654,7 +2363,7 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "ops",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1676,141 +2385,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Influx.Services",
+      "datasource": "InfluxDb.Services",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 8,
-        "x": 16,
-        "y": 18
-      },
-      "id": 14,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_host",
-          "groupBy": [
-            {
-              "params": [
-                "$_bucket"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "host"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "jenkins_vm_cpu",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
-            },
-            {
-              "condition": "AND",
-              "key": "environment",
-              "operator": "=~",
-              "value": "/^$_environment$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Jenkins - Host CPU",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "percentunit",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ]
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Influx.Services",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 12,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "id": 20,
       "legend": {
@@ -1819,13 +2400,15 @@
         "current": true,
         "max": true,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
         "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
@@ -1884,15 +2467,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         },
@@ -1939,15 +2528,21 @@
           ],
           "tags": [
             {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$_host$/"
             },
             {
               "condition": "AND",
               "key": "environment",
               "operator": "=~",
               "value": "/^$_environment$/"
+            },
+            {
+              "condition": "AND",
+              "key": "machinetype",
+              "operator": "=~",
+              "value": "/^$_role$/"
             }
           ]
         }
@@ -1987,194 +2582,9 @@
           "show": true
         }
       ]
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Influx.Services",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 27
-      },
-      "id": 18,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "Requests ($tag_host)",
-          "groupBy": [
-            {
-              "params": [
-                "$_bucket"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "host"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "jenkins_web_requests",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "MeanRate"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
-            },
-            {
-              "condition": "AND",
-              "key": "environment",
-              "operator": "=~",
-              "value": "/^$_environment$/"
-            }
-          ]
-        },
-        {
-          "alias": "Response codes ($tag_host)",
-          "groupBy": [
-            {
-              "params": [
-                "$_bucket"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "host"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "jenkins_web_reponsecodes",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "MeanRate"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "service",
-              "operator": "=",
-              "value": "jenkins"
-            },
-            {
-              "condition": "AND",
-              "key": "environment",
-              "operator": "=~",
-              "value": "/^$_environment$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Jenkins - Web",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "ops",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ]
     }
   ],
-  "refresh": "1m",
+  "refresh": "30s",
   "schemaVersion": 16,
   "style": "dark",
   "tags": [
@@ -2188,22 +2598,22 @@
         "auto_count": 100,
         "auto_min": "10s",
         "current": {
-          "text": "15s",
-          "value": "15s"
+          "text": "auto",
+          "value": "$__auto_interval__bucket"
         },
         "hide": 0,
         "label": "Bucket",
         "name": "_bucket",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "auto",
             "value": "$__auto_interval__bucket"
           },
           {
-            "selected": true,
-            "text": "15s",
-            "value": "15s"
+            "selected": false,
+            "text": "10s",
+            "value": "10s"
           },
           {
             "selected": false,
@@ -2261,19 +2671,20 @@
             "value": "30d"
           }
         ],
-        "query": "15s,30s,1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+        "query": "10s,30s,1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
         "refresh": 2,
         "type": "interval"
       },
       {
         "allValue": null,
         "current": {
+          "tags": [],
           "text": "vista-production-01",
           "value": [
             "vista-production-01"
           ]
         },
-        "datasource": "Influx.Services",
+        "datasource": "InfluxDb.Services",
         "hide": 0,
         "includeAll": true,
         "label": "Environment",
@@ -2281,6 +2692,52 @@
         "name": "_environment",
         "options": [],
         "query": "SHOW TAG VALUES WITH KEY = \"environment\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "InfluxDb.Services",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Host",
+        "multi": true,
+        "name": "_host",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"jvm_memory\" WITH KEY = \"host\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "InfluxDb.Services",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Role",
+        "multi": true,
+        "name": "_role",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"jvm_memory\" WITH KEY = \"machinetype\"",
         "refresh": 1,
         "regex": "",
         "sort": 1,
@@ -2324,5 +2781,5 @@
   "timezone": "browser",
   "title": "Jenkins",
   "uid": "nKPM8AZmz",
-  "version": 17
+  "version": 51
 }

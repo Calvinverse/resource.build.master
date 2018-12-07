@@ -28,10 +28,12 @@ default['firewall']['ipv6_enabled'] = false
 #
 
 default['jenkins']['path']['build_data'] = '/var/builds'
+default['jenkins']['path']['casc'] = '/etc/jenkins.d/casc'
 default['jenkins']['path']['environment_file'] = '/etc/jenkins_environment'
 default['jenkins']['path']['home'] = '/var/jenkins'
 default['jenkins']['path']['war'] = '/usr/local/jenkins'
 default['jenkins']['path']['war_file'] = "#{node['jenkins']['path']['war']}/jenkins.war"
+default['jenkins']['path']['pid_file'] = "#{node['jenkins']['path']['war']}/jenkins_pid"
 
 default['jenkins']['consul']['service_name'] = 'builds'
 default['jenkins']['proxy_path'] = 'builds'
@@ -46,6 +48,9 @@ default['jenkins']['service_group'] = 'jenkins'
 
 default['jenkins']['consul_template']['config_script_file'] = 'jenkins_configuration.ctmpl'
 default['jenkins']['consul_template']['config_file'] = '/tmp/jenkins_configuration.sh'
+
+default['jenkins']['consul_template']['credentials_config_script_file'] = 'jenkins_casc_credentials.ctmpl'
+default['jenkins']['consul_template']['credentials_file'] = '/tmp/jenkins_casc_credentials.sh'
 
 default['jenkins']['consul_template']['groovy_ad_script_file'] = 'jenkins_groovy_ad.ctmpl'
 default['jenkins']['consul_template']['groovy_ad_file'] = '/tmp/jenkins_groovy_ad.sh'
@@ -65,8 +70,8 @@ default['jenkins']['consul_template']['start_file'] = '/tmp/jenkins_start_script
 default['jenkins']['consul_template']['vault_config_script_file'] = 'jenkins_vault_configuration.ctmpl'
 default['jenkins']['consul_template']['vault_config_file'] = '/tmp/jenkins_vault_configuration.sh'
 
-default['jenkins']['version'] = '2.107.1'
-default['jenkins']['checksum'] = 'CEC74C80190ED1F6CE55D705D2F649DDB2EAF8ABA3AE26796152921D46B31280'
+default['jenkins']['version'] = '2.138.1'
+default['jenkins']['checksum'] = '5BB075B81A3929CEADA4E960049E37DF5F15A1E3CFC9DC24D749858E70B48919'
 default['jenkins']['url']['war'] = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/#{node['jenkins']['version']}/jenkins-war-#{node['jenkins']['version']}.war"
 default['jenkins']['url']['plugins'] = 'https://updates.jenkins.io/download/plugins'
 
@@ -83,12 +88,14 @@ default['jolokia']['agent']['port'] = 8090
 
 default['jolokia']['telegraf']['consul_template_inputs_file'] = 'telegraf_jolokia_inputs.ctmpl'
 
-default['jolokia']['version'] = '1.5.0'
-default['jolokia']['checksum'] = 'CD7E20A2887E013873D7321CEA1E6BF6BD6FFCDD3CD3968D6950EDD8D79BBFB8'
+default['jolokia']['version'] = '1.6.0'
+default['jolokia']['checksum'] = '40123D4728CB62BF7D4FD3C8DE7CF3A0F955F89453A645837E611BA8E6924E02'
 default['jolokia']['url']['jar'] = "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/#{node['jolokia']['version']}/jolokia-jvm-#{node['jolokia']['version']}-agent.jar"
 
 #
 # TELEGRAF
 #
 
+default['telegraf']['service_user'] = 'telegraf'
+default['telegraf']['service_group'] = 'telegraf'
 default['telegraf']['config_directory'] = '/etc/telegraf/telegraf.d'

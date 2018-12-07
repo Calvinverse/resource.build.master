@@ -8,10 +8,16 @@ describe 'resource_build_master::jenkins' do
 
     jenkins_environment_content = <<~TXT
       JENKINS_HOME=/var/jenkins
+      CASC_JENKINS_CONFIG=/etc/jenkins.d/casc
     TXT
     it 'creates the /etc/jenkins_environment file' do
       expect(chef_run).to create_file('/etc/jenkins_environment')
         .with_content(jenkins_environment_content)
+        .with(
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0550'
+        )
     end
   end
 
@@ -27,12 +33,20 @@ describe 'resource_build_master::jenkins' do
 
     it 'creates the jenkins install directory' do
       expect(chef_run).to create_directory('/usr/local/jenkins')
+        .with(
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0770'
+        )
     end
 
     it 'installs the jenkins war file' do
       expect(chef_run).to create_remote_file('/usr/local/jenkins/jenkins.war')
         .with(
-          source: 'https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.107.1/jenkins-war-2.107.1.war'
+          source: 'https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.138.1/jenkins-war-2.138.1.war',
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0550'
         )
     end
 
@@ -54,6 +68,15 @@ describe 'resource_build_master::jenkins' do
       XML
       expect(chef_run).to create_file('/var/jenkins/jenkins.metrics.api.MetricsAccessKey.xml')
         .with_content(jenkins_metrics_config_content)
+        .with(
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0750'
+        )
+    end
+
+    it 'creates the jenkins configuration-as-code directory' do
+      expect(chef_run).to create_remote_directory('/etc/jenkins.d/casc')
     end
   end
 
@@ -91,12 +114,12 @@ describe 'resource_build_master::jenkins' do
               "interval": "15s"
             }
           ],
-          "enableTagOverride": true,
+          "enable_tag_override": false,
           "id": "jenkins",
           "name": "builds",
           "port": 8080,
           "tags": [
-            "inactive",
+            "active",
             "edgeproxyprefix-/builds"
           ]
         }
