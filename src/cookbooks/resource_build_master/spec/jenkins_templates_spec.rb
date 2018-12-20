@@ -77,7 +77,7 @@ describe 'resource_build_master::jenkins_templates' do
         null,
 
         // startTls
-        false,
+        true,
 
         // tlsConfiguration
         null,

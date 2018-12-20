@@ -184,7 +184,7 @@ file "#{consul_template_template_path}/#{jenkins_groovy_ad_script_template_file}
       null,
 
       // startTls
-      false,
+      true,
 
       // tlsConfiguration
       null,
