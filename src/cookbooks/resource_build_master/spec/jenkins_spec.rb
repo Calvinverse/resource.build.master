@@ -43,7 +43,7 @@ describe 'resource_build_master::jenkins' do
     it 'installs the jenkins war file' do
       expect(chef_run).to create_remote_file('/usr/local/jenkins/jenkins.war')
         .with(
-          source: 'https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.138.1/jenkins-war-2.138.1.war',
+          source: 'https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.138.2/jenkins-war-2.138.2.war',
           group: 'jenkins',
           owner: 'jenkins',
           mode: '0550'
