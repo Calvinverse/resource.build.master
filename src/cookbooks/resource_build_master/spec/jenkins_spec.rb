@@ -31,6 +31,15 @@ describe 'resource_build_master::jenkins' do
         )
     end
 
+    it 'updates the permissions on the job directory' do
+      expect(chef_run).to create_directory('/var/jenkins/jobs')
+        .with(
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0750'
+        )
+    end
+
     it 'creates the jenkins install directory' do
       expect(chef_run).to create_directory('/usr/local/jenkins')
         .with(
