@@ -1,5 +1,5 @@
 jenkins:
-  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code Plugin\n\n"
+  systemMessage: ""
   numExecutors: 0
   scmCheckoutRetryCount: 2
   mode: EXCLUSIVE
