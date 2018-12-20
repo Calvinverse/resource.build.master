@@ -26,10 +26,10 @@ function Initialize-Environment
         Write-Output "Waiting for 10 seconds for consul and vault to start ..."
         Start-Sleep -Seconds 10
 
-        Join-Cluster
-
         Set-VaultSecrets
         Set-ConsulKV
+
+        Join-Cluster
 
         Write-Output "Giving consul-template 30 seconds to process the data ..."
         Start-Sleep -Seconds 30
@@ -93,9 +93,16 @@ function Set-ConsulKV
 
     Write-Output "Setting consul key-values ..."
 
+    # Load config/environment/directory
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/environment/directory/name 'ad.example.com'
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/environment/directory/endpoints/hosts/host1 'host1.ad.example.com'
+
     # Load config/environment/mail
     & consul kv put -http-addr=http://127.0.0.1:8550 config/environment/mail/smtp/host 'smtp.example.com'
     & consul kv put -http-addr=http://127.0.0.1:8550 config/environment/mail/suffix 'example.com'
+
+    # Load config/projects
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/projects/vista/devinfrastructure/tfs/user 'user'
 
     # Load config/services/builds
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/builds/protocols/http/host 'active.builds'
@@ -107,6 +114,10 @@ function Set-ConsulKV
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/consul/domain 'integrationtest'
 
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/consul/statsd/rules '\"*.*.* measurement.measurement.field\",'
+
+    # Load config/services/jobs
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/jobs/protocols/http/host 'http.jobs'
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/jobs/protocols/http/port '4646'
 
     # Explicitly don't provide a metrics address because that means telegraf will just send the metrics to
     # a black hole
@@ -122,6 +133,10 @@ function Set-ConsulKV
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/queue/logs/syslog/username 'testuser'
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/queue/logs/syslog/vhost 'testlogs'
 
+    # load config/services/tfs
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/tfs/protocols/http/host 'apptier.tfs'
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/tfs/protocols/http/port '8080'
+
     # Load config/services/vault
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/secrets/protocols/http/host 'secrets'
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/secrets/protocols/http/port '8200'
@@ -133,9 +148,7 @@ function Set-VaultSecrets
 
     Write-Output 'Setting vault secrets ...'
 
-    # secret/services/queue/logs/syslog
-
-    # secret/services/jobs/encrypt
+    # rabbitmq/creds/read.vhost.builds
 
     # secret/services/jobs/token
 }
