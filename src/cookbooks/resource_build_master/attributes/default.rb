@@ -70,8 +70,8 @@ default['jenkins']['consul_template']['start_file'] = '/tmp/jenkins_start_script
 default['jenkins']['consul_template']['vault_config_script_file'] = 'jenkins_vault_configuration.ctmpl'
 default['jenkins']['consul_template']['vault_config_file'] = '/tmp/jenkins_vault_configuration.sh'
 
-default['jenkins']['version'] = '2.138.1'
-default['jenkins']['checksum'] = '5BB075B81A3929CEADA4E960049E37DF5F15A1E3CFC9DC24D749858E70B48919'
+default['jenkins']['version'] = '2.150.1'
+default['jenkins']['checksum'] = '7A38586D5A3A1A83498809A83715728BB2F01B58A7DD3A88366F076EFDAF6669'
 default['jenkins']['url']['war'] = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/#{node['jenkins']['version']}/jenkins-war-#{node['jenkins']['version']}.war"
 default['jenkins']['url']['plugins'] = 'https://updates.jenkins.io/download/plugins'
 

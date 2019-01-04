@@ -47,6 +47,15 @@ remote_directory jenkins_home do
   source 'jenkins'
 end
 
+# For some reason we don't get the right permissions on the jobs folder
+# so we overwrite the permissions here
+directory "#{jenkins_home}/jobs" do
+  action :create
+  group node['jenkins']['service_group']
+  mode '0750'
+  owner node['jenkins']['service_user']
+end
+
 jenkins_install_path = node['jenkins']['path']['war']
 directory jenkins_install_path do
   action :create
