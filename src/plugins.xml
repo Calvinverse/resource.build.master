@@ -21,8 +21,8 @@
     <plugin id="durable-task" />
     <plugin id="email-ext" />
     <plugin id="embeddable-build-status" />
-    <plugin id="envinject" />
     <plugin id="envinject-api" />
+    <plugin id="envinject" />
     <plugin id="git-client" />
     <plugin id="git" />
     <plugin id="gravatar" />
@@ -65,6 +65,7 @@
     <plugin id="token-macro" />
     <plugin id="variant" />
     <plugin id="violations" />
+    <plugin id="warnings-ng" />
     <plugin id="warnings" />
     <plugin id="workflow-api" />
     <plugin id="workflow-cps" />
