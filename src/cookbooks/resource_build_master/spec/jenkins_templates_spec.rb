@@ -205,8 +205,6 @@ describe 'resource_build_master::jenkins_templates' do
       {{ if keyExists "config/services/consul/domain" }}
       {{ if keyExists "config/environment/directory/query/groups/builds/administrators" }}
       {{ if keyExists "config/environment/directory/query/groups/builds/agent" }}
-      {{ if keyExists "config/services/jobs/protocols/http/host" }}
-      {{ if keyExists "config/services/jobs/protocols/http/port" }}
       FLAG=$(cat /var/log/jenkins_config.log)
       if [ "$FLAG" = "NotInitialized" ]; then
           echo "Write the jenkins configuration ..."
@@ -389,24 +387,6 @@ describe 'resource_build_master::jenkins_templates' do
         <primaryView>All</primaryView>
         <nodeProperties/>
         <globalNodeProperties/>
-
-        <!-- VM AND CONTAINER CLOUDS -->
-        <clouds>
-          <org.jenkinsci.plugins.nomad.NomadCloud plugin="nomad@0.4">
-            <name>Nomad</name>
-            <instanceCap>2147483647</instanceCap>
-            <templates>
-            </templates>
-            <name defined-in="org.jenkinsci.plugins.nomad.NomadCloud">Nomad</name>
-            <nomadUrl>http://{{ key "config/services/jobs/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/jobs/protocols/http/port" }}</nomadUrl>
-            <jenkinsUrl>http://active.builds.service.{{ key "config/services/consul/domain" }}:8080/builds</jenkinsUrl>
-            <slaveUrl>http://active.builds.service.{{ key "config/services/consul/domain" }}:8080/builds/jnlpJars/slave.jar</slaveUrl>
-            <nomad>
-              <nomadApi>http://{{ key "config/services/jobs/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/jobs/protocols/http/port" }}</nomadApi>
-            </nomad>
-            <pending>0</pending>
-          </org.jenkinsci.plugins.nomad.NomadCloud>
-        </clouds>
       </hudson>
       EOT
 
@@ -422,12 +402,6 @@ describe 'resource_build_master::jenkins_templates' do
           echo "Initialized" > /var/log/jenkins_config.log
       fi
 
-      {{ else }}
-      echo "Not all Consul K-V values are available. Will not start Jenkins."
-      {{ end }}
-      {{ else }}
-      echo "Not all Consul K-V values are available. Will not start Jenkins."
-      {{ end }}
       {{ else }}
       echo "Not all Consul K-V values are available. Will not start Jenkins."
       {{ end }}
@@ -1093,13 +1067,9 @@ describe 'resource_build_master::jenkins_templates' do
     jenkins_credentials_configuration_script_template_content = <<~CONF
       #!/bin/sh
 
-      {{ if keyExists "config/services/consul/domain" }}
-      {{ if keyExists "config/services/tfs/protocols/http/host" }}
-      {{ if keyExists "config/services/tfs/protocols/http/port" }}
       FLAG=$(cat /var/log/jenkins_casc_credentials.log)
-      if [ "$FLAG" = "NotInitialized" ]; then
-          echo "Write the jenkins vault configuration ..."
-          cat <<'EOT' > /etc/jenkins.d/casc/credentials.yaml
+      echo "Write the jenkins vault configuration ..."
+      cat <<'EOT' > /etc/jenkins.d/casc/credentials.yaml
       credentials:
         system:
           domainCredentials:
@@ -1110,34 +1080,23 @@ describe 'resource_build_master::jenkins_templates' do
                 - usernamePassword:
                     scope: GLOBAL
                     id: {{ $collection }}-{{ $project }}
-                    description: "Tfs credentials to access the {{ $collection }}/{{ $project }} project"
-                    username: {{ key (printf "config/projects/%s/%s/tfs/user" $collection $project) }}
-                    password: {{ with secret (printf "secret/projects/%s/%s/tfs/user" $collection $project ) }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }}
+                    description: "Credentials to access the {{ $collection }}/{{ $project }} project"
+                    username: {{ key (printf "config/projects/%s/%s/user" $collection $project) }}
+                    password: {{ with secret (printf "secret/projects/%s/%s/user" $collection $project ) }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }}
               {{ end }}
               {{ end }}
       EOT
 
-          chown jenkins:jenkins /etc/jenkins.d/casc/credentials.yaml
-          chmod 550 /etc/jenkins.d/casc/credentials.yaml
+      chown jenkins:jenkins /etc/jenkins.d/casc/credentials.yaml
+      chmod 550 /etc/jenkins.d/casc/credentials.yaml
 
-          if ( $(systemctl is-enabled --quiet jenkins) ); then
-            if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl restart jenkins
-            fi
-          fi
-
-          echo "Initialized" > /var/log/jenkins_casc_credentials.log
+      if ( $(systemctl is-enabled --quiet jenkins) ); then
+        if ( ! (systemctl is-active --quiet jenkins) ); then
+          systemctl restart jenkins
+        fi
       fi
 
-      {{ else }}
-      echo "Not all Consul K-V values are available. Will not start Jenkins."
-      {{ end }}
-      {{ else }}
-      echo "Not all Consul K-V values are available. Will not start Jenkins."
-      {{ end }}
-      {{ else }}
-      echo "Not all Consul K-V values are available. Will not start Jenkins."
-      {{ end }}
+      echo "Initialized" > /var/log/jenkins_casc_credentials.log
     CONF
     it 'creates jenkins vault configuration script template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_casc_credentials.ctmpl')
@@ -1233,13 +1192,13 @@ describe 'resource_build_master::jenkins_templates' do
 
       # Generate this file when one of the flag files changes. The files are all empty
       # but they only exist once one of the previous configurations has been executed
-      # {{ file "/var/log/jenkins_groovy_ad.log" }}
-      # {{ file "/var/log/jenkins_config.log" }}
-      # {{ file "/var/log/jenkins_location_config.log" }}
-      # {{ file "/var/log/jenkins_mailer_config.log" }}
-      # {{ file "/var/log/jenkins_vault_config.log" }}
-      # {{ file "/var/log/jenkins_rabbitmq_config.log" }}
-      # {{ file "/var/log/jenkins_casc_credentials.log" }}
+      # Active directory is: {{ file "/var/log/jenkins_groovy_ad.log" }}
+      # The configuration is: {{ file "/var/log/jenkins_config.log" }}
+      # The location configuration is: {{ file "/var/log/jenkins_location_config.log" }}
+      # The email configuration is: {{ file "/var/log/jenkins_mailer_config.log" }}
+      # The vault configuration is: {{ file "/var/log/jenkins_vault_config.log" }}
+      # The RabbitMQ configuration is: {{ file "/var/log/jenkins_rabbitmq_config.log" }}
+      # The credentials configuration is: {{ file "/var/log/jenkins_casc_credentials.log" }}
 
       if [ "$(cat /var/log/jenkins_groovy_ad.log)" = "Initialized" ]; then
         if [ "$(cat /var/log/jenkins_config.log)" = "Initialized" ]; then

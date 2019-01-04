@@ -110,9 +110,6 @@ consul_template_template_path = node['consul_template']['template_path']
 jenkins_home = node['jenkins']['path']['home']
 
 jenkins_service_name = node['jenkins']['service_name']
-consul_service_name = node['jenkins']['consul']['service_name']
-
-jenkins_http_port = node['jenkins']['port']['http']
 jenkins_slave_agent_port = node['jenkins']['port']['slave']
 
 #
@@ -294,8 +291,6 @@ end
 # JENKINS CONFIGURATION
 #
 
-proxy_path = node['jenkins']['proxy_path']
-
 jenkins_config_script_template_file = node['jenkins']['consul_template']['config_script_file']
 file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" do
   action :create
@@ -305,8 +300,6 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
     {{ if keyExists "config/services/consul/domain" }}
     {{ if keyExists "config/environment/directory/query/groups/builds/administrators" }}
     {{ if keyExists "config/environment/directory/query/groups/builds/agent" }}
-    {{ if keyExists "config/services/jobs/protocols/http/host" }}
-    {{ if keyExists "config/services/jobs/protocols/http/port" }}
     FLAG=$(cat #{flag_config})
     if [ "$FLAG" = "NotInitialized" ]; then
         echo "Write the jenkins configuration ..."
@@ -489,24 +482,6 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
       <primaryView>All</primaryView>
       <nodeProperties/>
       <globalNodeProperties/>
-
-      <!-- VM AND CONTAINER CLOUDS -->
-      <clouds>
-        <org.jenkinsci.plugins.nomad.NomadCloud plugin="nomad@0.4">
-          <name>Nomad</name>
-          <instanceCap>2147483647</instanceCap>
-          <templates>
-          </templates>
-          <name defined-in="org.jenkinsci.plugins.nomad.NomadCloud">Nomad</name>
-          <nomadUrl>http://{{ key "config/services/jobs/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/jobs/protocols/http/port" }}</nomadUrl>
-          <jenkinsUrl>http://active.#{consul_service_name}.service.{{ key "config/services/consul/domain" }}:#{jenkins_http_port}/#{proxy_path}</jenkinsUrl>
-          <slaveUrl>http://active.#{consul_service_name}.service.{{ key "config/services/consul/domain" }}:#{jenkins_http_port}/#{proxy_path}/jnlpJars/slave.jar</slaveUrl>
-          <nomad>
-            <nomadApi>http://{{ key "config/services/jobs/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/jobs/protocols/http/port" }}</nomadApi>
-          </nomad>
-          <pending>0</pending>
-        </org.jenkinsci.plugins.nomad.NomadCloud>
-      </clouds>
     </hudson>
     EOT
 
@@ -522,12 +497,6 @@ file "#{consul_template_template_path}/#{jenkins_config_script_template_file}" d
         echo "Initialized" > #{flag_config}
     fi
 
-    {{ else }}
-    echo "Not all Consul K-V values are available. Will not start Jenkins."
-    {{ end }}
-    {{ else }}
-    echo "Not all Consul K-V values are available. Will not start Jenkins."
-    {{ end }}
     {{ else }}
     echo "Not all Consul K-V values are available. Will not start Jenkins."
     {{ end }}
@@ -1149,13 +1118,9 @@ file "#{consul_template_template_path}/#{jenkins_credentials_config_script_templ
   content <<~CONF
     #!/bin/sh
 
-    {{ if keyExists "config/services/consul/domain" }}
-    {{ if keyExists "config/services/tfs/protocols/http/host" }}
-    {{ if keyExists "config/services/tfs/protocols/http/port" }}
     FLAG=$(cat #{flag_credentials_config})
-    if [ "$FLAG" = "NotInitialized" ]; then
-        echo "Write the jenkins vault configuration ..."
-        cat <<'EOT' > #{jenkins_casc_path}/credentials.yaml
+    echo "Write the jenkins vault configuration ..."
+    cat <<'EOT' > #{jenkins_casc_path}/credentials.yaml
     credentials:
       system:
         domainCredentials:
@@ -1166,34 +1131,23 @@ file "#{consul_template_template_path}/#{jenkins_credentials_config_script_templ
               - usernamePassword:
                   scope: GLOBAL
                   id: {{ $collection }}-{{ $project }}
-                  description: "Tfs credentials to access the {{ $collection }}/{{ $project }} project"
-                  username: {{ key (printf "config/projects/%s/%s/tfs/user" $collection $project) }}
-                  password: {{ with secret (printf "secret/projects/%s/%s/tfs/user" $collection $project ) }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }}
+                  description: "Credentials to access the {{ $collection }}/{{ $project }} project"
+                  username: {{ key (printf "config/projects/%s/%s/user" $collection $project) }}
+                  password: {{ with secret (printf "secret/projects/%s/%s/user" $collection $project ) }}{{ if .Data.password }}"{{ .Data.password }}"{{ end }}{{ end }}
             {{ end }}
             {{ end }}
     EOT
 
-        chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_casc_path}/credentials.yaml
-        chmod 550 #{jenkins_casc_path}/credentials.yaml
+    chown #{node['jenkins']['service_user']}:#{node['jenkins']['service_group']} #{jenkins_casc_path}/credentials.yaml
+    chmod 550 #{jenkins_casc_path}/credentials.yaml
 
-        if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
-          if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
-            systemctl restart #{jenkins_service_name}
-          fi
-        fi
-
-        echo "Initialized" > #{flag_credentials_config}
+    if ( $(systemctl is-enabled --quiet #{jenkins_service_name}) ); then
+      if ( ! (systemctl is-active --quiet #{jenkins_service_name}) ); then
+        systemctl restart #{jenkins_service_name}
+      fi
     fi
 
-    {{ else }}
-    echo "Not all Consul K-V values are available. Will not start Jenkins."
-    {{ end }}
-    {{ else }}
-    echo "Not all Consul K-V values are available. Will not start Jenkins."
-    {{ end }}
-    {{ else }}
-    echo "Not all Consul K-V values are available. Will not start Jenkins."
-    {{ end }}
+    echo "Initialized" > #{flag_credentials_config}
   CONF
   group 'root'
   mode '0550'
@@ -1285,13 +1239,13 @@ file "#{consul_template_template_path}/#{jenkins_start_script_template_file}" do
 
     # Generate this file when one of the flag files changes. The files are all empty
     # but they only exist once one of the previous configurations has been executed
-    # {{ file "#{flag_groovy_ad}" }}
-    # {{ file "#{flag_config}" }}
-    # {{ file "#{flag_location_config}" }}
-    # {{ file "#{flag_mailer_config}" }}
-    # {{ file "#{flag_vault_config}" }}
-    # {{ file "#{flag_rabbitmq_config}" }}
-    # {{ file "#{flag_credentials_config}" }}
+    # Active directory is: {{ file "#{flag_groovy_ad}" }}
+    # The configuration is: {{ file "#{flag_config}" }}
+    # The location configuration is: {{ file "#{flag_location_config}" }}
+    # The email configuration is: {{ file "#{flag_mailer_config}" }}
+    # The vault configuration is: {{ file "#{flag_vault_config}" }}
+    # The RabbitMQ configuration is: {{ file "#{flag_rabbitmq_config}" }}
+    # The credentials configuration is: {{ file "#{flag_credentials_config}" }}
 
     if [ "$(cat #{flag_groovy_ad})" = "Initialized" ]; then
       if [ "$(cat #{flag_config})" = "Initialized" ]; then
