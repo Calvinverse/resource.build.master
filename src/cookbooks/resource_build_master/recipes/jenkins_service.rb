@@ -52,7 +52,8 @@ jenkins_java_args =
   " -Djenkins.model.Jenkins.slaveAgentPort=#{jenkins_slave_agent_port}" \
   ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' \
   ' -Djenkins.CLI.disabled=true' \
-  ' -Djenkins.install.runSetupWizard=false'
+  ' -Djenkins.install.runSetupWizard=false' \
+  ' -Dorg.apache.commons.jelly.tags.fmt.timeZone=Pacific/Auckland'
 
 # Turn on GC logging
 java_diagnostics =

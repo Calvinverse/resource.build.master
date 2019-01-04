@@ -41,7 +41,8 @@ describe 'resource_build_master::jenkins_service' do
       ' -Djenkins.model.Jenkins.slaveAgentPort=5000' \
       ' -Djenkins.model.Jenkins.slaveAgentPortEnforce=true' \
       ' -Djenkins.CLI.disabled=true' \
-      ' -Djenkins.install.runSetupWizard=false'
+      ' -Djenkins.install.runSetupWizard=false' \
+      ' -Dorg.apache.commons.jelly.tags.fmt.timeZone=Pacific/Auckland'
 
     jenkins_metrics_args =
       '-javaagent:/usr/local/jolokia/jolokia.jar=' \

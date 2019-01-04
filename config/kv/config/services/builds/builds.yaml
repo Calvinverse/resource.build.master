@@ -9,7 +9,7 @@ config:
     value: builds
 
   - key: config/services/builds/url/proxy
-    value: http://infrastructure.calvinverse.net/builds
+    value: http://development.calvinverse.net/builds
 
   - key: config/services/queue/builds/vhost
     value: vhost.build.trigger
