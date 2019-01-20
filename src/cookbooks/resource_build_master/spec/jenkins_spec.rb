@@ -27,17 +27,31 @@ describe 'resource_build_master::jenkins' do
     it 'copies the configuration files from the cookbook' do
       expect(chef_run).to create_remote_directory('/var/jenkins')
         .with(
+          files_group: 'jenkins',
+          files_mode: '0770',
+          files_owner: 'jenkins',
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0770',
+          recursive: true,
           source: 'jenkins'
         )
     end
 
     it 'updates the permissions on the job directory' do
-      expect(chef_run).to create_directory('/var/jenkins/jobs')
-        .with(
-          group: 'jenkins',
-          owner: 'jenkins',
-          mode: '0750'
-        )
+      %w[
+        /var/jenkins/jobs
+        /var/jenkins/jobs/meta
+        /var/jenkins/jobs/meta/jobs
+        /var/jenkins/jobs/meta/jobs/bootstrap
+      ].each do |path|
+        expect(chef_run).to create_directory(path)
+          .with(
+            group: 'jenkins',
+            owner: 'jenkins',
+            mode: '0770'
+          )
+      end
     end
 
     it 'creates the jenkins install directory' do

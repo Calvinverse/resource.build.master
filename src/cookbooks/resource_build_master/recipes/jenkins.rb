@@ -38,22 +38,29 @@ end
 remote_directory jenkins_home do
   action :create
   files_group jenkins_group
-  files_mode '0750'
+  files_mode '0770'
   files_owner jenkins_user
   group jenkins_group
   owner jenkins_user
-  mode '0750'
+  mode '0770'
   recursive true
   source 'jenkins'
 end
 
 # For some reason we don't get the right permissions on the jobs folder
 # so we overwrite the permissions here
-directory "#{jenkins_home}/jobs" do
-  action :create
-  group node['jenkins']['service_group']
-  mode '0750'
-  owner node['jenkins']['service_user']
+%W[
+  #{jenkins_home}/jobs
+  #{jenkins_home}/jobs/meta
+  #{jenkins_home}/jobs/meta/jobs
+  #{jenkins_home}/jobs/meta/jobs/bootstrap
+].each do |path|
+  directory path do
+    action :create
+    group node['jenkins']['service_group']
+    mode '0770'
+    owner node['jenkins']['service_user']
+  end
 end
 
 jenkins_install_path = node['jenkins']['path']['war']
