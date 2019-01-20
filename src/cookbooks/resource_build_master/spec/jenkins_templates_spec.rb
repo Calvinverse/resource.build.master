@@ -919,13 +919,6 @@ describe 'resource_build_master::jenkins_templates' do
           cat <<'EOT' > /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
       <?xml version='1.0' encoding='UTF-8'?>
       <org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
-      <urlValidator>
-          <options>8</options>
-          <allowedSchemes>
-          <string>amqps</string>
-          <string>amqp</string>
-          </allowedSchemes>
-      </urlValidator>
       <enableConsumer>true</enableConsumer>
       <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/{{ key "config/services/queue/builds/vhost" }}</serviceUri>
       {{ with secret "rabbitmq/creds/readwrite.vhost.build.trigger" }}
