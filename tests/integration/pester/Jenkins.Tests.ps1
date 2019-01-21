@@ -7,6 +7,15 @@ Describe 'The jenkins application' {
         It 'with configuration in /var/jenkins' {
             '/var/jenkins' | Should Exist
         }
+
+        $jenkinsInstallPathDirectories = Get-ChildItem -Path '/var/jenkins' -Directory -Recurse
+        foreach($dir in $jenkinsInstallPathDirectories)
+        {
+            $output = & ls -la $dir.FullName
+            It "$($dir) should be read, write and execute for jenkins and the jenkins group" {
+                $output[1] | Should Match '^(drwxrwx---).*(jenkins)\s(jenkins)\s.*$'
+            }
+        }
     }
 
     Context 'has been daemonized' {

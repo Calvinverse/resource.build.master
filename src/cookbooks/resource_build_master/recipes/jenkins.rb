@@ -47,13 +47,14 @@ remote_directory jenkins_home do
   source 'jenkins'
 end
 
-# For some reason we don't get the right permissions on the jobs folder
+# For some reason we don't get the right permissions on some folders
 # so we overwrite the permissions here
 %W[
   #{jenkins_home}/jobs
   #{jenkins_home}/jobs/meta
   #{jenkins_home}/jobs/meta/jobs
   #{jenkins_home}/jobs/meta/jobs/bootstrap
+  #{jenkins_home}/plugins
 ].each do |path|
   directory path do
     action :create

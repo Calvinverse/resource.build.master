@@ -44,6 +44,7 @@ describe 'resource_build_master::jenkins' do
         /var/jenkins/jobs/meta
         /var/jenkins/jobs/meta/jobs
         /var/jenkins/jobs/meta/jobs/bootstrap
+        /var/jenkins/plugins
       ].each do |path|
         expect(chef_run).to create_directory(path)
           .with(
