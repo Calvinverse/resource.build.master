@@ -27,7 +27,7 @@ default['firewall']['ipv6_enabled'] = false
 # JENKINS
 #
 
-default['jenkins']['path']['build_data'] = '/var/builds'
+default['jenkins']['path']['build_data'] = '/srv/builds'
 default['jenkins']['path']['casc'] = '/etc/jenkins.d/casc'
 default['jenkins']['path']['environment_file'] = '/etc/jenkins_environment'
 default['jenkins']['path']['home'] = '/var/jenkins'

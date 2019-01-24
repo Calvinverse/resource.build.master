@@ -106,9 +106,9 @@
             "expect_disconnect": false,
             "inline": [
                 "sudo rescan-scsi-bus.sh --remove --issue-lip",
-                "sudo mkdir -p /var/builds",
+                "sudo mkdir -p /srv/builds",
                 "sudo mkfs.ext4 /dev/sdb",
-                "echo \"UUID=$(sudo blkid -s UUID -o value /dev/sdb) /var/builds ext4 defaults 0 0 \" | sudo tee -a /etc/fstab"
+                "echo \"UUID=$(sudo blkid -s UUID -o value /dev/sdb) /srv/builds ext4 defaults 0 0 \" | sudo tee -a /etc/fstab"
             ],
             "pause_before" : "15s",
             "type": "shell"

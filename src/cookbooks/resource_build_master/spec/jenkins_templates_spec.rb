@@ -345,7 +345,7 @@ describe 'resource_build_master::jenkins_templates' do
         <!--
               The global directory where the build data (logs etc.) will be kept.
           -->
-        <buildsDir>/var/builds/${ITEM_FULL_NAME}</buildsDir>
+        <buildsDir>/srv/builds/${ITEM_FULL_NAME}</buildsDir>
 
         <!-- MASTER EXECUTORS -->
         <!--
