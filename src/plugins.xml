@@ -16,6 +16,7 @@
     <plugin id="cloudbees-folder" />
     <plugin id="cobertura" />
     <plugin id="conditional-buildstep" />
+    <plugin id="configuration-as-code" />
     <plugin id="credentials" />
     <plugin id="display-url-api" />
     <plugin id="durable-task" />
@@ -76,9 +77,5 @@
     <plugin id="workflow-step-api" />
     <plugin id="workflow-support" />
     <plugin id="ws-cleanup" />
-    <plugin id="xunit" version="1.104" />
+    <plugin id="xunit" />
 </plugins>
-<!--
-    We also need to install the xunit-plugin version 1.x.
-    Plugin version 2.0.x breaks our builds as of 2.0.3
--->
