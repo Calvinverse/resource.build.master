@@ -58,11 +58,14 @@ default['jenkins']['consul_template']['groovy_ad_file'] = '/tmp/jenkins_groovy_a
 default['jenkins']['consul_template']['location_config_script_file'] = 'jenkins_location_configuration.ctmpl'
 default['jenkins']['consul_template']['location_config_file'] = '/tmp/jenkins_location_configuration.sh'
 
+default['jenkins']['consul_template']['logstash_config_script_file'] = 'jenkins_casc_logstash.ctmpl'
+default['jenkins']['consul_template']['logstash_file'] = '/tmp/jenkins_casc_logstash.sh'
+
 default['jenkins']['consul_template']['mailer_config_script_file'] = 'jenkins_mailer_configuration.ctmpl'
 default['jenkins']['consul_template']['mailer_config_file'] = '/tmp/jenkins_mailer_configuration.sh'
 
-default['jenkins']['consul_template']['rabbitmq_config_script_file'] = 'jenkins_rabbitmq_configuration.ctmpl'
-default['jenkins']['consul_template']['rabbitmq_config_file'] = '/tmp/jenkins_rabbitmq_configuration.sh'
+default['jenkins']['consul_template']['rabbitmq_config_script_file'] = 'jenkins_casc_rabbitmq.ctmpl'
+default['jenkins']['consul_template']['rabbitmq_config_file'] = '/tmp/jenkins_casc_rabbitmq.sh'
 
 default['jenkins']['consul_template']['start_script_file'] = 'jenkins_start_script.ctmpl'
 default['jenkins']['consul_template']['start_file'] = '/tmp/jenkins_start_script.sh'
