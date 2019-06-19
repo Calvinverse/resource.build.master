@@ -13,6 +13,15 @@ poise_service_user jenkins_user do
   group jenkins_group
 end
 
+# Create the user directory because the TFS plugin wants to write
+# data to there for some reason.
+directory "/home/#{node['jenkins']['service_user']}" do
+  action :create
+  group node['jenkins']['service_group']
+  mode '0770'
+  owner node['jenkins']['service_user']
+end
+
 #
 # SET JENKINS_HOME
 #
@@ -47,7 +56,7 @@ remote_directory jenkins_home do
   source 'jenkins'
 end
 
-# For some reason we don't get the right permissions on some folders
+# For some reason we don't get the right permissions on some of the folders
 # so we overwrite the permissions here
 %W[
   #{jenkins_home}/jobs

@@ -21,6 +21,19 @@ describe 'resource_build_master::jenkins' do
     end
   end
 
+  context 'creates the jenkins user' do
+    let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
+
+    it 'creates the user home directory' do
+      expect(chef_run).to create_directory('/home/jenkins')
+        .with(
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0770'
+        )
+    end
+  end
+
   context 'installs jenkins' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
