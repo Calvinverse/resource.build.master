@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string] $jenkinsVersion = '2.150'
+    [string] $jenkinsVersion = '2.176'
 )
 
 $ErrorActionPreference = 'Stop'

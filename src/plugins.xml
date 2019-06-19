@@ -3,8 +3,10 @@
     <plugin id="ace-editor" />
     <plugin id="active-directory" />
     <plugin id="analysis-core" />
+    <plugin id="analysis-model-api" />
     <plugin id="antisamy-markup-formatter" />
     <plugin id="apache-httpcomponents-client-4-api" />
+    <plugin id="audit-trail" />
     <plugin id="branch-api" />
     <plugin id="build-failure-analyzer" />
     <plugin id="build-name-setter" />
@@ -15,8 +17,9 @@
     <plugin id="claim" />
     <plugin id="cloudbees-folder" />
     <plugin id="cobertura" />
+    <plugin id="code-coverage-api" />
     <plugin id="conditional-buildstep" />
-    <plugin id="configuration-as-code" />
+    <plugin id="configuration-as-code" version="1.20" />
     <plugin id="credentials" />
     <plugin id="display-url-api" />
     <plugin id="durable-task" />
@@ -24,6 +27,7 @@
     <plugin id="embeddable-build-status" />
     <plugin id="envinject-api" />
     <plugin id="envinject" />
+    <plugin id="envinject-api" />
     <plugin id="git-client" />
     <plugin id="git" />
     <plugin id="gravatar" />
@@ -33,7 +37,9 @@
     <plugin id="jackson2-api" />
     <plugin id="javadoc" />
     <plugin id="job-dsl" />
+    <plugin id="jquery" />
     <plugin id="jquery-detached" />
+    <plugin id="jquery-ui" />
     <plugin id="jsch" />
     <plugin id="junit" />
     <plugin id="logstash" />
@@ -44,9 +50,9 @@
     <plugin id="metrics" />
     <plugin id="msbuild" />
     <plugin id="multiple-scms" />
-    <plugin id="nomad" />
     <plugin id="nunit" />
     <plugin id="parameterized-trigger" />
+    <plugin id="plain-credentials" />
     <plugin id="powershell" />
     <plugin id="PrioritySorter" />
     <plugin id="rabbitmq-build-trigger" />
@@ -58,6 +64,7 @@
     <plugin id="scm-api" />
     <plugin id="script-security" />
     <plugin id="short-workspace-path" />
+    <plugin id="sonar" />
     <plugin id="ssh-credentials" />
     <plugin id="statistics-gatherer" />
     <plugin id="structs" />
