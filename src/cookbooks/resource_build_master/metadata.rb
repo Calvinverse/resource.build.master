@@ -13,7 +13,7 @@ version '${VersionSemantic}'
 
 supports 'ubuntu', '>= 16.04'
 
-depends 'firewall', '= 2.6.3'
-depends 'java_se', '= 8.202.0'
+depends 'firewall', '= 2.7.0'
+depends 'java', '= 4.0.0'
 depends 'poise-service', '= 1.5.2'
-depends 'systemd', '= 3.2.3'
+depends 'systemd', '= 3.2.4'

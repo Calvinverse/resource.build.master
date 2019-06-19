@@ -7,7 +7,7 @@ describe 'resource_build_master::java' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
     it 'imports the java_se recipe' do
-      expect(chef_run).to include_recipe('java_se')
+      expect(chef_run).to include_recipe('java')
     end
   end
 end

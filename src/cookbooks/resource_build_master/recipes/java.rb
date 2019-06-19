@@ -11,4 +11,4 @@
 # INSTALL JAVA JDK
 #
 
-include_recipe 'java_se'
+include_recipe 'java'
