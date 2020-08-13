@@ -3,14 +3,3 @@ jenkins:
   numExecutors: 0
   scmCheckoutRetryCount: 2
   mode: EXCLUSIVE
-
-security:
-    remotingCLI:
-          enabled: false
-
-unclassified:
-  mailer:
-    adminAddress: admin@acme.org
-    replyToAddress: do-not-reply@acme.org
-    smtpHost: smtp.acme.org
-    smtpPort: 4441
