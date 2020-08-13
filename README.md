@@ -64,7 +64,7 @@ via the proxy.
 The Jenkins controller needs a number of credentials. These are:
 
 * Credentials to connect to RabbitMQ. These are obtained via Consul-Template from the
-  [Vault](https://vaultproject.io) on the `secret/services/queue/users/build` path. For this case
+  [Vault](https://vaultproject.io) on the `secret/services/queue/users/build/triggers` path. For this case
   currently we do not use the automatically generated RabbitMQ credentials from Vault because that
   requires updating the Jenkins configuration files which requires a restart.
 * The credentials which are used to connect to source control are obtained from the Consul K-V, for user
