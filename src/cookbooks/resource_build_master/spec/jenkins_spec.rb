@@ -21,23 +21,51 @@ describe 'resource_build_master::jenkins' do
     end
   end
 
+  context 'creates the jenkins user' do
+    let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
+
+    it 'creates the user home directory' do
+      expect(chef_run).to create_directory('/home/jenkins')
+        .with(
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0770'
+        )
+    end
+  end
+
   context 'installs jenkins' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
     it 'copies the configuration files from the cookbook' do
       expect(chef_run).to create_remote_directory('/var/jenkins')
         .with(
+          files_group: 'jenkins',
+          files_mode: '0770',
+          files_owner: 'jenkins',
+          group: 'jenkins',
+          owner: 'jenkins',
+          mode: '0770',
+          recursive: true,
           source: 'jenkins'
         )
     end
 
     it 'updates the permissions on the job directory' do
-      expect(chef_run).to create_directory('/var/jenkins/jobs')
-        .with(
-          group: 'jenkins',
-          owner: 'jenkins',
-          mode: '0750'
-        )
+      %w[
+        /var/jenkins/jobs
+        /var/jenkins/jobs/meta
+        /var/jenkins/jobs/meta/jobs
+        /var/jenkins/jobs/meta/jobs/bootstrap
+        /var/jenkins/plugins
+      ].each do |path|
+        expect(chef_run).to create_directory(path)
+          .with(
+            group: 'jenkins',
+            owner: 'jenkins',
+            mode: '0770'
+          )
+      end
     end
 
     it 'creates the jenkins install directory' do
@@ -52,7 +80,7 @@ describe 'resource_build_master::jenkins' do
     it 'installs the jenkins war file' do
       expect(chef_run).to create_remote_file('/usr/local/jenkins/jenkins.war')
         .with(
-          source: 'https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.150.1/jenkins-war-2.150.1.war',
+          source: 'https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.190.3/jenkins-war-2.190.3.war',
           group: 'jenkins',
           owner: 'jenkins',
           mode: '0550'

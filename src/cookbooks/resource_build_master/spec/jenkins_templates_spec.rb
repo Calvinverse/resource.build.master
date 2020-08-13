@@ -345,7 +345,7 @@ describe 'resource_build_master::jenkins_templates' do
         <!--
               The global directory where the build data (logs etc.) will be kept.
           -->
-        <buildsDir>/var/builds/${ITEM_FULL_NAME}</buildsDir>
+        <buildsDir>/srv/builds/${ITEM_FULL_NAME}</buildsDir>
 
         <!-- MASTER EXECUTORS -->
         <!--
@@ -391,7 +391,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/config.xml
-          chmod 550 /var/jenkins/config.xml
+          chmod 770 /var/jenkins/config.xml
 
           if ( $(systemctl is-enabled --quiet jenkins) ); then
             if ( ! (systemctl is-active --quiet jenkins) ); then
@@ -523,7 +523,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
-          chmod 550 /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+          chmod 770 /var/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
 
           if ( $(systemctl is-enabled --quiet jenkins) ); then
             if ( ! (systemctl is-active --quiet jenkins) ); then
@@ -656,7 +656,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/hudson.tasks.Mailer.xml
-          chmod 550 /var/jenkins/hudson.tasks.Mailer.xml
+          chmod 770 /var/jenkins/hudson.tasks.Mailer.xml
 
           if ( $(systemctl is-enabled --quiet jenkins) ); then
             if ( ! (systemctl is-active --quiet jenkins) ); then
@@ -791,7 +791,7 @@ describe 'resource_build_master::jenkins_templates' do
       EOT
 
           chown jenkins:jenkins /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
-          chmod 550 /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
+          chmod 770 /var/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml
 
           if ( $(systemctl is-enabled --quiet jenkins) ); then
             if ( ! (systemctl is-active --quiet jenkins) ); then
@@ -914,48 +914,34 @@ describe 'resource_build_master::jenkins_templates' do
       {{ if keyExists "config/services/queue/protocols/amqp/host" }}
       {{ if keyExists "config/services/queue/builds/vhost" }}
       FLAG=$(cat /var/log/jenkins_rabbitmq_config.log)
-      if [ "$FLAG" = "NotInitialized" ]; then
-          echo "Write the jenkins rabbitmq configuration ..."
-          cat <<'EOT' > /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
-      <?xml version='1.0' encoding='UTF-8'?>
-      <org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration plugin="rabbitmq-consumer@2.7">
-      <urlValidator>
-          <options>8</options>
-          <allowedSchemes>
-          <string>amqps</string>
-          <string>amqp</string>
-          </allowedSchemes>
-      </urlValidator>
-      <enableConsumer>true</enableConsumer>
-      <serviceUri>amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/{{ key "config/services/queue/builds/vhost" }}</serviceUri>
-      {{ with secret "rabbitmq/creds/readwrite.vhost.build.trigger" }}
-      {{ if .Data.password }}
-          <userName>{{ .Data.username }}</userName>
-          <userPassword>{{ .Data.password }}</userPassword>
-      {{ end }}
-      {{ end }}
-      <watchdogPeriod>60000</watchdogPeriod>
-      <consumeItems>
-          <org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem>
-          <appId>remote-build</appId>
-          <queueName>builds</queueName>
-          </org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem>
-      </consumeItems>
-      <enableDebug>false</enableDebug>
-      </org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration>
+      echo "Write the jenkins rabbitmq configuration ..."
+      cat <<'EOT' > /etc/jenkins.d/casc/rabbitmq_consumer.yaml
+      unclassified:
+        globalRabbitmqConfiguration:
+          enableConsumer: true
+          serviceUri: "amqp://{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/queue/protocols/amqp/port" }}/{{ key "config/services/queue/builds/vhost" }}"
+        {{ with secret "secret/services/queue/users/build/triggers" }}
+        {{ if .Data.password }}
+          userName: "{{ .Data.username }}"
+          userPassword: "{{ .Data.password }}"
+        {{ end }}
+        {{ end }}
+          watchdogPeriod: 60000
+          consumeItems:
+          - appId: "remote-build"
+            queueName: "jenkins.trigger"
       EOT
 
-          chown jenkins:jenkins /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
-          chmod 550 /var/jenkins/org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration.xml
+      chown jenkins:jenkins /etc/jenkins.d/casc/rabbitmq_consumer.yaml
+      chmod 770 /etc/jenkins.d/casc/rabbitmq_consumer.yaml
 
-          if ( $(systemctl is-enabled --quiet jenkins) ); then
-            if ( ! (systemctl is-active --quiet jenkins) ); then
-              systemctl restart jenkins
-            fi
-          fi
-
-          echo "Initialized" > /var/log/jenkins_rabbitmq_config.log
+      if ( $(systemctl is-enabled --quiet jenkins) ); then
+        if ( ! (systemctl is-active --quiet jenkins) ); then
+          systemctl restart jenkins
+        fi
       fi
+
+      echo "Initialized" > /var/log/jenkins_rabbitmq_config.log
 
       {{ else }}
       echo "Not all Consul K-V values are available. Will not start Jenkins."
@@ -971,7 +957,7 @@ describe 'resource_build_master::jenkins_templates' do
       {{ end }}
     CONF
     it 'creates jenkins rabbitmq configuration script template file in the consul-template template directory' do
-      expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_rabbitmq_configuration.ctmpl')
+      expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_casc_rabbitmq.ctmpl')
         .with_content(jenkins_rabbitmq_configuration_script_template_content)
         .with(
           group: 'root',
@@ -988,12 +974,12 @@ describe 'resource_build_master::jenkins_templates' do
         # This is the source file on disk to use as the input template. This is often
         # called the "Consul Template template". This option is required if not using
         # the `contents` option.
-        source = "/etc/consul-template.d/templates/jenkins_rabbitmq_configuration.ctmpl"
+        source = "/etc/consul-template.d/templates/jenkins_casc_rabbitmq.ctmpl"
 
         # This is the destination path on disk where the source template will render.
         # If the parent directories do not exist, Consul Template will attempt to
         # create them, unless create_dest_dirs is false.
-        destination = "/tmp/jenkins_rabbitmq_configuration.sh"
+        destination = "/tmp/jenkins_casc_rabbitmq.sh"
 
         # This options tells Consul Template to create the parent directories of the
         # destination path if they do not exist. The default value is true.
@@ -1003,7 +989,7 @@ describe 'resource_build_master::jenkins_templates' do
         # command will only run if the resulting template changes. The command must
         # return within 30s (configurable), and it must have a successful exit code.
         # Consul Template is not a replacement for a process monitor or init system.
-        command = "sh /tmp/jenkins_rabbitmq_configuration.sh"
+        command = "sh /tmp/jenkins_casc_rabbitmq.sh"
 
         # This is the maximum amount of time to wait for the optional command to
         # return. Default is 30s.
@@ -1068,7 +1054,7 @@ describe 'resource_build_master::jenkins_templates' do
       #!/bin/sh
 
       FLAG=$(cat /var/log/jenkins_casc_credentials.log)
-      echo "Write the jenkins vault configuration ..."
+      echo "Write the jenkins credentials configuration ..."
       cat <<'EOT' > /etc/jenkins.d/casc/credentials.yaml
       credentials:
         system:
@@ -1184,6 +1170,136 @@ describe 'resource_build_master::jenkins_templates' do
     end
   end
 
+  context 'adds the consul-template files for the jenkins code-as-configuration logstash configuration' do
+    let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
+
+    it 'creates flag files for the jenkins CASSC logstash configuration' do
+      expect(chef_run).to create_file('/var/log/jenkins_casc_logstash.log')
+        .with_content(flag_content)
+    end
+
+    jenkins_logstash_configuration_script_template_content = <<~CONF
+      #!/bin/sh
+
+      FLAG=$(cat /var/log/jenkins_casc_logstash.log)
+      echo "Write the jenkins logstash configuration ..."
+      cat <<'EOT' > /etc/jenkins.d/casc/logstash.yaml
+      unclassified:
+        logstashConfiguration:
+          enableGlobally: true
+          enabled: true
+          logstashIndexer:
+            rabbitMq:
+              host: "{{ key "config/services/queue/protocols/amqp/host" }}.service.{{ key "config/services/consul/domain" }}"
+              port: {{ key "config/services/queue/protocols/amqp/port" }}
+              virtualHost: "{{ key "config/services/queue/logs/builds/vhost" }}"
+              queue: "{{ key "config/services/queue/logs/builds/queue" }}"
+            {{ with secret "secret/services/queue/users/build/logs" }}
+            {{ if .Data.password }}
+              username: "{{ .Data.username }}"
+              password: "{{ .Data.password }}"
+            {{ end }}
+            {{ end }}
+          milliSecondTimestamps: true
+      EOT
+
+      chown jenkins:jenkins /etc/jenkins.d/casc/logstash.yaml
+      chmod 550 /etc/jenkins.d/casc/logstash.yaml
+
+      if ( $(systemctl is-enabled --quiet jenkins) ); then
+        if ( ! (systemctl is-active --quiet jenkins) ); then
+          systemctl restart jenkins
+        fi
+      fi
+
+      echo "Initialized" > /var/log/jenkins_casc_logstash.log
+    CONF
+    it 'creates jenkins vault configuration script template file in the consul-template template directory' do
+      expect(chef_run).to create_file('/etc/consul-template.d/templates/jenkins_casc_logstash.ctmpl')
+        .with_content(jenkins_logstash_configuration_script_template_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
+    end
+
+    consul_template_jenkins_logstash_configuration_content = <<~CONF
+      # This block defines the configuration for a template. Unlike other blocks,
+      # this block may be specified multiple times to configure multiple templates.
+      # It is also possible to configure templates via the CLI directly.
+      template {
+        # This is the source file on disk to use as the input template. This is often
+        # called the "Consul Template template". This option is required if not using
+        # the `contents` option.
+        source = "/etc/consul-template.d/templates/jenkins_casc_logstash.ctmpl"
+
+        # This is the destination path on disk where the source template will render.
+        # If the parent directories do not exist, Consul Template will attempt to
+        # create them, unless create_dest_dirs is false.
+        destination = "/tmp/jenkins_casc_logstash.sh"
+
+        # This options tells Consul Template to create the parent directories of the
+        # destination path if they do not exist. The default value is true.
+        create_dest_dirs = false
+
+        # This is the optional command to run when the template is rendered. The
+        # command will only run if the resulting template changes. The command must
+        # return within 30s (configurable), and it must have a successful exit code.
+        # Consul Template is not a replacement for a process monitor or init system.
+        command = "sh /tmp/jenkins_casc_logstash.sh"
+
+        # This is the maximum amount of time to wait for the optional command to
+        # return. Default is 30s.
+        command_timeout = "60s"
+
+        # Exit with an error when accessing a struct or map field/key that does not
+        # exist. The default behavior will print "<no value>" when accessing a field
+        # that does not exist. It is highly recommended you set this to "true" when
+        # retrieving secrets from Vault.
+        error_on_missing_key = false
+
+        # This is the permission to render the file. If this option is left
+        # unspecified, Consul Template will attempt to match the permissions of the
+        # file that already exists at the destination path. If no file exists at that
+        # path, the permissions are 0644.
+        perms = 0550
+
+        # This option backs up the previously rendered template at the destination
+        # path before writing a new one. It keeps exactly one backup. This option is
+        # useful for preventing accidental changes to the data without having a
+        # rollback strategy.
+        backup = true
+
+        # These are the delimiters to use in the template. The default is "{{" and
+        # "}}", but for some templates, it may be easier to use a different delimiter
+        # that does not conflict with the output file itself.
+        left_delimiter  = "{{"
+        right_delimiter = "}}"
+
+        # This is the `minimum(:maximum)` to wait before rendering a new template to
+        # disk and triggering a command, separated by a colon (`:`). If the optional
+        # maximum value is omitted, it is assumed to be 4x the required minimum value.
+        # This is a numeric time with a unit suffix ("5s"). There is no default value.
+        # The wait value for a template takes precedence over any globally-configured
+        # wait.
+        wait {
+          min = "2s"
+          max = "10s"
+        }
+      }
+    CONF
+    it 'creates jenkins_logstash_configuration.hcl in the consul-template template directory' do
+      expect(chef_run).to create_file('/etc/consul-template.d/conf/jenkins_logstash_configuration.hcl')
+        .with_content(consul_template_jenkins_logstash_configuration_content)
+        .with(
+          group: 'root',
+          owner: 'root',
+          mode: '0550'
+        )
+    end
+  end
+
   context 'adds the consul-template files for the jenkins start script' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
@@ -1199,6 +1315,7 @@ describe 'resource_build_master::jenkins_templates' do
       # The vault configuration is: {{ file "/var/log/jenkins_vault_config.log" }}
       # The RabbitMQ configuration is: {{ file "/var/log/jenkins_rabbitmq_config.log" }}
       # The credentials configuration is: {{ file "/var/log/jenkins_casc_credentials.log" }}
+      # The logstash configuration is: {{ file "/var/log/jenkins_casc_logstash.log" }}
 
       if [ "$(cat /var/log/jenkins_groovy_ad.log)" = "Initialized" ]; then
         if [ "$(cat /var/log/jenkins_config.log)" = "Initialized" ]; then
@@ -1206,30 +1323,34 @@ describe 'resource_build_master::jenkins_templates' do
             if [ "$(cat /var/log/jenkins_mailer_config.log)" = "Initialized" ]; then
               if [ "$(cat /var/log/jenkins_vault_config.log)" = "Initialized" ]; then
                 if [ "$(cat /var/log/jenkins_rabbitmq_config.log)" = "Initialized" ]; then
-                  if ( ! $(systemctl is-enabled --quiet jenkins) ); then
-                    systemctl enable jenkins
+                  if [ "$(cat /var/log/jenkins_casc_credentials.log)" = "Initialized" ]; then
+                    if [ "$(cat /var/log/jenkins_casc_logstash.log)" = "Initialized" ]; then
+                      if ( ! $(systemctl is-enabled --quiet jenkins) ); then
+                        systemctl enable jenkins
 
-                    while true; do
-                      if ( (systemctl is-enabled --quiet jenkins) ); then
-                          break
+                        while true; do
+                          if ( (systemctl is-enabled --quiet jenkins) ); then
+                              break
+                          fi
+
+                          sleep 1
+                        done
                       fi
 
-                      sleep 1
-                    done
-                  fi
+                      if ( ! (systemctl is-active --quiet jenkins) ); then
+                        systemctl start jenkins
 
-                  if ( ! (systemctl is-active --quiet jenkins) ); then
-                    systemctl start jenkins
+                        while true; do
+                          if ( (systemctl is-active --quiet jenkins) ); then
+                              break
+                          fi
 
-                    while true; do
-                      if ( (systemctl is-active --quiet jenkins) ); then
-                          break
+                          sleep 1
+                        done
+                      else
+                        systemctl restart jenkins
                       fi
-
-                      sleep 1
-                    done
-                  else
-                    systemctl restart jenkins
+                    fi
                   fi
                 fi
               fi

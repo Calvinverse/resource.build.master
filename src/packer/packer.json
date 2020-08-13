@@ -22,7 +22,7 @@
         {
             "boot_wait": "5s",
             "boot_command": [],
-            "clone_from_vmxc_path": "{{ user `dir_vm_import` }}",
+            "clone_from_vmcx_path": "{{ user `dir_vm_import` }}",
             "communicator": "ssh",
             "enable_dynamic_memory": false,
             "enable_mac_spoofing": false,
@@ -34,8 +34,8 @@
             "http_directory": "{{ user `dir_http_user` }}",
             "http_port_min": 8150,
             "http_port_max": 8160,
+            "memory": "{{ user `vm_ram_size_in_mb` }}",
             "output_directory": "{{ user `dir_temp` }}/{{ user `vm_name` }}",
-            "ram_size": "{{ user `vm_ram_size_in_mb` }}",
             "secure_boot_template": "MicrosoftUEFICertificateAuthority",
             "shutdown_command": "echo '{{user `admin_password`}}' | sudo -S -E shutdown -P now",
             "shutdown_timeout": "5m",
@@ -106,9 +106,9 @@
             "expect_disconnect": false,
             "inline": [
                 "sudo rescan-scsi-bus.sh --remove --issue-lip",
-                "sudo mkdir -p /var/builds",
+                "sudo mkdir -p /srv/builds",
                 "sudo mkfs.ext4 /dev/sdb",
-                "echo \"UUID=$(sudo blkid -s UUID -o value /dev/sdb) /var/builds ext4 defaults 0 0 \" | sudo tee -a /etc/fstab"
+                "echo \"UUID=$(sudo blkid -s UUID -o value /dev/sdb) /srv/builds ext4 defaults 0 0 \" | sudo tee -a /etc/fstab"
             ],
             "pause_before" : "15s",
             "type": "shell"
@@ -142,7 +142,7 @@
             "cookbook_paths": [
                 "{{ user `dir_cookbooks_vendors` }}"
             ],
-            "execute_command": "sudo chef-solo --no-color -c {{.ConfigPath}} -j {{.JsonPath}}",
+            "execute_command": "sudo chef-solo --no-color -c {{.ConfigPath}} -j {{.JsonPath}} --chef-license accept-no-persist",
             "guest_os_type": "unix",
             "install_command": "echo \"Do nothing because chef should already be installed\"",
             "run_list": [

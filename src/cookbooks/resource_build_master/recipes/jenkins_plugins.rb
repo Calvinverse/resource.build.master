@@ -11,13 +11,13 @@ jenkins_plugins_path = "#{node['jenkins']['path']['home']}/plugins"
 directory jenkins_plugins_path do
   action :create
   group node['jenkins']['service_group']
-  mode '0750'
+  mode '0770'
   owner node['jenkins']['service_user']
 end
 
 plugins = node['jenkins']['plugins']
 plugins.each do |name, version|
-  remote_file "#{jenkins_plugins_path}/#{name}.hpi" do
+  remote_file "#{jenkins_plugins_path}/#{name}.jpi" do
     action :create
     group node['jenkins']['service_group']
     mode '0750'

@@ -3,26 +3,30 @@
     <plugin id="ace-editor" />
     <plugin id="active-directory" />
     <plugin id="analysis-core" />
+    <plugin id="analysis-model-api" />
     <plugin id="antisamy-markup-formatter" />
     <plugin id="apache-httpcomponents-client-4-api" />
+    <plugin id="audit-trail" />
     <plugin id="branch-api" />
-    <plugin id="build-failure-analyzer" />
     <plugin id="build-name-setter" />
     <plugin id="build-timeout" />
     <plugin id="build-user-vars-plugin" />
     <plugin id="buildtriggerbadge" />
     <plugin id="categorized-view" version="1.8" />
-    <plugin id="claim" />
     <plugin id="cloudbees-folder" />
     <plugin id="cobertura" />
+    <plugin id="code-coverage-api" />
     <plugin id="conditional-buildstep" />
+    <plugin id="configuration-as-code" version="1.31" />
     <plugin id="credentials" />
+    <plugin id="credentials-binding" />
     <plugin id="display-url-api" />
     <plugin id="durable-task" />
     <plugin id="email-ext" />
     <plugin id="embeddable-build-status" />
-    <plugin id="envinject-api" />
     <plugin id="envinject" />
+    <plugin id="envinject-api" />
+    <plugin id="forensics-api" />
     <plugin id="git-client" />
     <plugin id="git" />
     <plugin id="gravatar" />
@@ -32,7 +36,9 @@
     <plugin id="jackson2-api" />
     <plugin id="javadoc" />
     <plugin id="job-dsl" />
+    <plugin id="jquery" />
     <plugin id="jquery-detached" />
+    <plugin id="jquery-ui" />
     <plugin id="jsch" />
     <plugin id="junit" />
     <plugin id="logstash" />
@@ -43,9 +49,9 @@
     <plugin id="metrics" />
     <plugin id="msbuild" />
     <plugin id="multiple-scms" />
-    <plugin id="nomad" />
     <plugin id="nunit" />
     <plugin id="parameterized-trigger" />
+    <plugin id="plain-credentials" />
     <plugin id="powershell" />
     <plugin id="PrioritySorter" />
     <plugin id="rabbitmq-build-trigger" />
@@ -57,6 +63,7 @@
     <plugin id="scm-api" />
     <plugin id="script-security" />
     <plugin id="short-workspace-path" />
+    <plugin id="sonar" />
     <plugin id="ssh-credentials" />
     <plugin id="statistics-gatherer" />
     <plugin id="structs" />
@@ -76,9 +83,5 @@
     <plugin id="workflow-step-api" />
     <plugin id="workflow-support" />
     <plugin id="ws-cleanup" />
-    <plugin id="xunit" version="1.104" />
+    <plugin id="xunit" />
 </plugins>
-<!--
-    We also need to install the xunit-plugin version 1.x.
-    Plugin version 2.0.x breaks our builds as of 2.0.3
--->
