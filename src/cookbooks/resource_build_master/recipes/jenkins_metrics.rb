@@ -57,7 +57,6 @@ file "#{consul_template_template_path}/#{telegraf_jolokia_inputs_template_file}"
       [inputs.jolokia2_agent.tags]
         influxdb_database = "services"
         service = "jenkins"
-        build = "build.controller"
 
       # JVM metrics
       # Runtime

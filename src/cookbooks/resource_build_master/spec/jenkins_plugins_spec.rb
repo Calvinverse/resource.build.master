@@ -14,7 +14,7 @@ describe 'resource_build_master::jenkins_plugins' do
     it 'installs the plugins' do
       plugins = node['jenkins']['plugins']
       plugins.each do |name, version|
-        expect(chef_run).to create_remote_file("/var/jenkins/plugins/#{name}.hpi")
+        expect(chef_run).to create_remote_file("/var/jenkins/plugins/#{name}.jpi")
           .with(
             source: "https://updates.jenkins.io/download/plugins/#{name}/#{version}/#{name}.hpi",
             group: 'jenkins',

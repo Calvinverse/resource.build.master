@@ -17,7 +17,7 @@ end
 
 plugins = node['jenkins']['plugins']
 plugins.each do |name, version|
-  remote_file "#{jenkins_plugins_path}/#{name}.hpi" do
+  remote_file "#{jenkins_plugins_path}/#{name}.jpi" do
     action :create
     group node['jenkins']['service_group']
     mode '0750'
