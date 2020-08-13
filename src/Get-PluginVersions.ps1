@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string] $jenkinsVersion = '2.176'
+    [string] $jenkinsVersion = '2.190'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -22,7 +22,7 @@ $response = Invoke-WebRequest `
 $json = ConvertFrom-Json $response.Content
 $plugins = $json.plugins
 
-$rubyIncludeFile = Join-Path (Join-Path (Join-Path (Join-Path $PSScriptRoot 'cookbooks') 'resource_build_master') 'attributes' ) 'jenkins_plugin_versions.rb'
+$rubyIncludeFile = Join-Path (Join-Path (Join-Path (Join-Path $PSScriptRoot 'cookbooks') 'resource_build_controller') 'attributes' ) 'jenkins_plugin_versions.rb'
 Write-Verbose "Found ruby fille at: $rubyIncludeFile"
 
 $fileContent = '# frozen_string_literal: true' + [System.Environment]::NewLine
