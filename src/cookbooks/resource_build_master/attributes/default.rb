@@ -99,8 +99,8 @@ default['jolokia']['agent']['port'] = 8090
 
 default['jolokia']['telegraf']['consul_template_inputs_file'] = 'telegraf_jolokia_inputs.ctmpl'
 
-default['jolokia']['version'] = '1.6.0'
-default['jolokia']['checksum'] = '40123D4728CB62BF7D4FD3C8DE7CF3A0F955F89453A645837E611BA8E6924E02'
+default['jolokia']['version'] = '1.6.2'
+default['jolokia']['checksum'] = '95EEF794790AA98CFA050BDE4EC67A4E42C2519E130E5E44CE40BF124584F323'
 default['jolokia']['url']['jar'] = "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/#{node['jolokia']['version']}/jolokia-jvm-#{node['jolokia']['version']}-agent.jar"
 
 #
