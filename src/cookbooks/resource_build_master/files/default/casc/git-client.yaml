@@ -1,5 +1,5 @@
 tool:
   git:
     installations:
-      - name: git
+      - name: tool_global_git
         home: git
