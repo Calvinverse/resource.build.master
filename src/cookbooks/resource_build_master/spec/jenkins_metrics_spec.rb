@@ -13,7 +13,7 @@ describe 'resource_build_master::jenkins_metrics' do
     it 'installs the jolokia jar file' do
       expect(chef_run).to create_remote_file('/usr/local/jolokia/jolokia.jar')
         .with(
-          source: 'http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.6.0/jolokia-jvm-1.6.0-agent.jar'
+          source: 'http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.6.2/jolokia-jvm-1.6.2-agent.jar'
         )
     end
   end

@@ -81,8 +81,8 @@ default['jenkins']['consul_template']['start_file'] = '/tmp/jenkins_start_script
 default['jenkins']['consul_template']['vault_config_script_file'] = 'jenkins_vault_configuration.ctmpl'
 default['jenkins']['consul_template']['vault_config_file'] = '/tmp/jenkins_vault_configuration.sh'
 
-default['jenkins']['version'] = '2.190.3'
-default['jenkins']['checksum'] = '79C2042B30AD71DC9CF17A5877F64EAED405FA03E24E002CA60F8DB73B7AD490'
+default['jenkins']['version'] = '2.235.5'
+default['jenkins']['checksum'] = 'c786f7b18fd3fc1bafce85b3b9bc5d8c5f09e3a313cfd618bae8c1d920b6f70b'
 default['jenkins']['url']['war'] = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/#{node['jenkins']['version']}/jenkins-war-#{node['jenkins']['version']}.war"
 default['jenkins']['url']['plugins'] = 'https://updates.jenkins.io/download/plugins'
 
@@ -100,7 +100,7 @@ default['jolokia']['agent']['port'] = 8090
 default['jolokia']['telegraf']['consul_template_inputs_file'] = 'telegraf_jolokia_inputs.ctmpl'
 
 default['jolokia']['version'] = '1.6.2'
-default['jolokia']['checksum'] = '95EEF794790AA98CFA050BDE4EC67A4E42C2519E130E5E44CE40BF124584F323'
+default['jolokia']['checksum'] = '95eef794790aa98cfa050bde4ec67a4e42c2519e130e5e44ce40bf124584f323'
 default['jolokia']['url']['jar'] = "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/#{node['jolokia']['version']}/jolokia-jvm-#{node['jolokia']['version']}-agent.jar"
 
 #
