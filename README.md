@@ -9,6 +9,9 @@ The image is created by using the [Linux base image](https://github.com/Calvinve
 and ammending it using a [Chef](https://www.chef.io/chef/) cookbook which installs the Java
 Development Kit, Jenkins and Jolokia.
 
+There are two different images that can be created. One for use on a Hyper-V server and one for use
+in Azure. Which image is created depends on the build command line used.
+
 When the image is created the following additional virtual hard drives are attached:
 
 * For the jenkins build workspaces a dynamic virtual hard drive called `workspace.vhdx` is attached.
@@ -87,7 +90,61 @@ Metrics are collected from Jenkins and the JVM via [Jolokia](https://jolokia.org
 
 ## Build, test and deploy
 
-The build process follows the standard procedure for building Calvinverse images.
+The build process follows the standard procedure for
+[building Calvinverse images](https://www.calvinverse.net/documentation/how-to-build).
+
+### Hyper-V
+
+For building Hyper-V images use the following command line
+
+    msbuild entrypoint.msbuild /t:build /P:ShouldCreateHypervImage=true /P:RepositoryArchive=PATH_TO_ARTIFACTLOCATION
+
+where `PATH_TO_ARTIFACTLOCATION` is the full path to the directory where the base image artifact
+file is stored.
+
+In order to run the smoke tests on the generated image run the following command line
+
+    msbuild entrypoint.msbuild /t:test /P:ShouldCreateHypervImage=true
+
+
+### Azure
+
+For building Azure images use the following command line
+
+    msbuild entrypoint.msbuild /t:build
+        /P:ShouldCreateAzureImage=true
+        /P:AzureLocation=LOCATION
+        /P:AzureClientId=CLIENT_ID
+        /P:AzureClientCertPath=CLIENT_CERT_PATH
+        /P:AzureSubscriptionId=SUBSCRIPTION_ID
+        /P:AzureImageResourceGroup=IMAGE_RESOURCE_GROUP
+
+where:
+
+* `LOCATION` - The azure data center in which the image should be created. Note that this needs to be the same
+  region as the location of the base image. If you want to create the image in a different location then you need to
+  copy the base image to that region first.
+* `CLIENT_ID` - The client ID of the user that [Packer](https://packer.io) will use to
+  [authenticate with Azure](https://www.packer.io/docs/builders/azure#azure-active-directory-service-principal).
+* `CLIENT_CERT_PATH` - The client certificate which Packer will use to authenticate with Azure
+* `SUBSCRIPTION_ID` - The subscription ID in which the image should be created.
+* `IMAGE_RESOURCE_GROUP` - The resource group from which the base image will be pulled and in which the new image
+  will be placed once the build completes.
+
+For running the smoke tests on the Azure image
+
+    msbuild entrypoint.msbuild /t:test
+        /P:ShouldCreateAzureImage=true
+        /P:AzureLocation=LOCATION
+        /P:AzureClientId=CLIENT_ID
+        /P:AzureClientCertPath=CLIENT_CERT_PATH
+        /P:AzureSubscriptionId=SUBSCRIPTION_ID
+        /P:AzureImageResourceGroup=IMAGE_RESOURCE_GROUP
+        /P:AzureTestImageResourceGroup=TEST_RESOURCE_GROUP
+
+where all the arguments are similar to the build arguments and `TEST_RESOURCE_GROUP` points to an Azure resource
+group in which the test images are placed. Note that this resource group needs to be cleaned out after successful
+tests have been run because Packer will in that case create a new image.
 
 ## Deploy
 
@@ -139,6 +196,8 @@ Finally add the secrets to Vault at the following paths
 
 ### Image provisioning
 
+#### Hyper-V
+
 Once the environment is configured take the following steps to provision the Jenkins image
 
 * Download the new image to a Hyper-V hosts.
@@ -188,6 +247,10 @@ Once the environment is configured take the following steps to provision the Jen
     * SSH into the host
     * Shut the machine down with the `sudo shutdown now` command
     * Once the machine has stopped, delete it
+
+#### Azure
+
+**To be done!**
 
 ## Usage
 
